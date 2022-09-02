@@ -147,11 +147,22 @@ You will need to set up:
 <details id='next'> 
 <summary><h2>What's next?</h2></summary>
 
-> *Resources, real use cases, live session, and more ideas to expand the starter kit coming soon!*
-
-> *New stater kits coming soon!*
-
+- **Need more inspiration?** Check out our upcoming [live coding session](https://www.tinybird.co/live-coding-sessions/google-analytics-free).
+- **The big picture:** [How an eCommerce giant replaced Google Analytics for privacy and scale](https://www.tinybird.co/blog-posts/ecommerce-google-analytics-alternative)
 </details>
+
+
+##  Authors
+
+- [Rafa Moreno](https://github.com/rmorehig)
+- [Raquel Yuste](https://github.com/raqyuste)
+- [Alasdair Brown](https://github.com/sdairs)
+- [Kike Alonso](https://github.com/kukukaka)
+- [Cameron Archer](https://github.com/tb-peregrine)
+- [Javier Álvarez](https://github.com/xavijam)
+- [Sergio Álvarez](https://github.com/saleiva)
+- [Jorge Gomez](https://github.com/jorgesancha)
+- [Alejandro Martin](https://github.com/alejandromav)
 
 ---
 
