@@ -4,7 +4,7 @@ We are happy to receive pull requests contributions from the community. New feat
 
 Branching strategy:
 
-- Create a new branch, using these prefixes: `feature/`, `doc/`, `bugfux/`, etc.
+- Create a new branch, using these prefixes: `feature/`, `doc/`, `bugfix/`, etc.
 - Set `main` as target.
 
 Every pull request must comply all of the following:
