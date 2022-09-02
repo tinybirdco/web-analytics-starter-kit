@@ -8,11 +8,19 @@ Once you've finished the basic setup, expand your analytics with custom events t
 ![Tinybird Web Analytics Dashboard](./assets/img/repo-banner.png)
 
 
-## Basic setup
+## 1. Set up the data project
 
-### Set up the data project
+Click this button to deploy the data project to Tinybird 👇
 
-To get started in Tinybird, follow these steps:
+[![Deploy to Tinybird](https://cdn.tinybird.co/button)](https://ui.wadus2.tinybird.co/workspaces/new?name=web_analytics&starter_kit=web-analytics-starter-kit)
+
+Follow the guided process, and now your Tinybird workspace is now ready to start receiving events. All your Data Sources, [Materialized Views](https://www.tinybird.co/guide/materialized-columns) (to make the queries blazing fast), and API Endpoints should be installed and ready. If you go to the Data Flow tab in your browser you should see something like this:
+
+![](./assets/img/data_flow.png)
+<!-- maybe add some explanations on top of the flow? -->
+
+<details id='manual-install'> 
+<summary><h4>Manual installation (alternative)</h4></summary>
 
 1. Create a [Tinybird account](https://ui.tinybird.co/signup).
 2. Create a Workspace and go to **Manage Auth tokens** to copy your admin token.
@@ -30,44 +38,49 @@ cd tinybird
 
 6. Push the project using `tb push`.
 
-Your Tinybird workspace is now ready to start receiving events. All your Data Sources, [Materialized Views](https://www.tinybird.co/guide/materialized-columns) (to make the queries blazing fast), and API Endpoints should be installed and ready. If you go to the Data Flow tab in your browser you should see something like this:
+</details>
 
-![Tinybird Web Analytics Dashboard](./assets/img/data_flow.png)
-<!-- maybe add some explanations on top of the flow? -->
+## 2. Send events to your data source
 
-### Send events to your data source
+Copy the snippet from the banner, and paste it on your site `<head>`:
 
-1. Go to your browser, click Manage Auth Tokens, and copy the `tracker` token.
-
-2. Add the tracking script to your website, using that token:
-
-```html
-<script src="https://unpkg.com/@tinybirdco/flock.js" data-token="YOUR_TRACKER_TOKEN"></script>
-
-<!--
-  Alternatives:
-  
-  - Custom host (dedicated cluster, another region, etc.) 
-    <script src="https://unpkg.com/@tinybirdco/flock.js" data-host="https://api.us-east.tinybird.co" data-token="YOUR_TRACKER_TOKEN"></script>
-
-  - Append to another datasource
-    <script src="https://unpkg.com/@tinybirdco/flock.js" data-datasource="analytics_events__v2" data-token="YOUR_TRACKER_TOKEN"></script>
- -->
-```
+![](./assets/img/banner_snippet.png)
 
 If everything is working correctly, you should start seeing rows in your Data Source as visitors view and interact with your website
 
-![Tinybird Web Analytics Dashboard](./assets/img/events-incoming.png)
+![](./assets/img/events-incoming.png)
 
 And you're done! 🙌
 
-### Visualize the metrics on a readymade dashboard
+<details id='manual-install'> 
+<summary><h4>More details on the snippet</h4></summary>
 
-In the Tinybird project, you'll find a `dashboard` token with all the required permissions to visualized your site metrics in our readymade dashboard.
-Go to the following URL, customizing it with your `dashboard` token:
+The banner generates a snippet like this one, including the tracking script:
 
-https://analytics.tinybird.co/?token={your-dashboard-token}
+```html
+<script src="https://unpkg.com/@tinybirdco/flock.js" data-token="YOUR_TRACKER_TOKEN"></script>
+```
 
+Script parameters:
+
+| Parameter | Mandatory | Description |
+| --- | --- |--- |
+| `data-token` | Yes | Your `tracker` token. It's already created for you, you can find it on the Tinybird UI under "Manage Auth Tokens" |
+| `data-proxy` | No | Your domain URL to proxy the request, if you follow the optional steps for "GDPR Best Practices" |
+| `data-host` | No | Tinybird host URL. Ddefaults to `https://api.tinybird.co/`, but could be `https://api.us-east.tinybird.co` or a dedicated cluster. The banner already generates the snippet with the proper host. |
+| `data-datasource` | No | If you iterate the landing data source, or you just want to ingest the event in a different one, you can specify the landing data source name. |
+
+</details>
+
+## 3. Visualize the metrics on a readymade dashboard
+
+Now you'll see a banner with a link to the dashboard. Click to open it:
+
+![](./assets/img/banner_dashboard.png)
+
+Alternatively, you can always navigate to https://analytics.tinybird.co/ and paste your `dashboard` token.
+
+You'll find this `dashboard` alwaready created for you on the Tinybird UI, under "Manage Auth Tokens".
 
 <details>
 <summary><h2>Custom events (optional)</h2></summary>
@@ -93,7 +106,7 @@ You can also fork the dashboard project in this repository and create custom com
 <details>
 <summary><h2>GDPR best practices (optional)</h2></summary>
 
-> :warning: **GDPR**: These are some tips to follow the GDPR guidelines, but compliance is not guaranteed. Follow these instructions and assess with your legal team. For more details on how to implement a privacy-first tracker for compliance, [read this](https://www.tinybird.co/blog-posts/privacy-first-google-analytics-alternative).
+> :warning: **GDPR**: These are some tips to follow the GDPR guidelines, but compliance is not guaranteed. Follow these instructions and assess with your legal team. <!-- For more details on how to implement a privacy-first tracker for compliance, [read this](link to upcoming blog). -->
 
 Requirements:
 
@@ -134,22 +147,11 @@ You will need to set up:
 <details id='next'> 
 <summary><h2>What's next?</h2></summary>
 
-- **Need more inspiration?** Check out our upcoming [live coding session](https://www.tinybird.co/live-coding-sessions/google-analytics-free).
-- **The big picture:** [How an eCommerce giant replaced Google Analytics for privacy and scale](https://www.tinybird.co/blog-posts/ecommerce-google-analytics-alternative)
+> *Resources, real use cases, live session, and more ideas to expand the starter kit coming soon!*
+
+> *New stater kits coming soon!*
 
 </details>
-
-##  Authors
-
-- [Rafa Moreno](https://github.com/rmorehig)
-- [Raquel Yuste](https://github.com/raqyuste)
-- [Alasdair Brown](https://github.com/sdairs)
-- [Kike Alonso](https://github.com/kukukaka)
-- [Cameron Archer](https://github.com/tb-peregrine)
-- [Javier Álvarez](https://github.com/xavijam)
-- [Sergio Álvarez](https://github.com/saleiva)
-- [Jorge Gomez](https://github.com/jorgesancha)
-- [Alejandro Martin](https://github.com/alejandromav)
 
 ---
 
