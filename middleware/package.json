@@ -1,0 +1,40 @@
+{
+  "name": "@tinybirdco/flock.js",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "description": "Tinybird web analytics tracking script",
+  "author": "Tinybird team",
+  "source": [
+    "src/index.html"
+  ],
+  "targets": {
+    "main": false
+  },
+  "scripts": {
+    "start": "parcel",
+    "watch": "parcel watch",
+    "build": "parcel build"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "parcel": "^2.7.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tinybirdco/web-analytics-starter-kit"
+  },
+  "dependencies": {
+    "node-fetch": "^2.6.6"
+  },
+  "keywords": [
+    "tinybird",
+    "analytics",
+    "library",
+    "data",
+    "operational"
+  ],
+  "bugs": {
+    "url": "https://github.com/tinybirdco/web-analytics-starter-kit/issues"
+  },
+  "homepage": "https://github.com/tinybirdco/web-analytics-starter-kit#README"
+}

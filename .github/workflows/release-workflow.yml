@@ -1,0 +1,32 @@
+name: Release
+
+on:
+  release:
+    types: published
+
+jobs:
+  script:
+    name: "Publish tracking script to npm"
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Use Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: 18.x
+    - name: npm install, build, and test
+      run: |
+        npm install --prefix middleware
+        npm run lint --prefix middleware --if-present
+        npm run test:coverage --prefix middleware --if-present
+        npm run build --prefix middleware
+      env:
+        CI: true
+    - name: npm publish
+      run: |
+        npm config set //registry.npmjs.org/:_authToken=$NODE_AUTH_TOKEN
+        npm publish ./middleware --access public
+      env:
+        CI: true
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}

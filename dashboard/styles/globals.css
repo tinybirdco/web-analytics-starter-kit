@@ -1,0 +1,48 @@
+@font-face {
+  font-family: 'Inter var';
+  font-weight: 100 900;
+  font-display: block;
+  font-style: normal;
+  font-named-instance: 'Regular';
+  src: url(/fonts/Inter-roman-latin.var.woff2) format('woff2');
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.arrow {
+  clip-path: polygon(50% 50%, 0 0, 100% 0);
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+button[role='tab']:not([data-state='active']) > .arrow {
+  display: none;
+}
+
+.masonry-with-flex {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  max-height: 1000px;
+}
+
+.ant-picker-active-bar {
+  background: transparent !important;
+}
+
+.ant-picker-range-separator {
+  padding-left: 0px !important;
+  padding-right: 16px !important;
+}
+
+.ant-picker-separator {
+  display: inline-flex;
+  color: #CBCCD1;
+}
+
+.ant-picker-input > input {
+  outline: none;
+  max-width: 100px;
+}

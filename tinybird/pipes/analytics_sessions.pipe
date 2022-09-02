@@ -1,0 +1,25 @@
+NODE analytics_sessions_1
+DESCRIPTION >
+    Aggregate by session_id and calculate session metrics
+
+SQL >
+    select
+      toDate(timestamp) as date,
+      session_id,
+      anySimpleState(device) as device,
+      anySimpleState(browser) as browser,
+      anySimpleState(location) as location,
+      minSimpleState(timestamp) as first_hit,
+      maxSimpleState(timestamp) as latest_hit,
+      countState() as hits
+    from
+      analytics_hits
+    group by
+      date,
+      session_id
+
+TYPE materialized
+DATASOURCE analytics_sessions_mv
+ENGINE "AggregatingMergeTree"
+ENGINE_SORTING_KEY "date, session_id"
+ENGINE_PARTITION_KEY "toYYYYMM(date)"

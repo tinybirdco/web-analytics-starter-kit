@@ -1,0 +1,44 @@
+name: CI
+
+on: [ push ]
+
+jobs:
+  dashboard:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Use Node.js 18
+      uses: actions/setup-node@v2
+      with:
+        node-version: 18.x
+        cache: 'npm'
+        cache-dependency-path: dashboard/package-lock.json
+    - name: npm install, build, and test
+      run: |
+        npm install --prefix dashboard
+        npm run lint --prefix dashboard --if-present
+        npm run test --prefix dashboard --if-present
+        npm run build --prefix dashboard
+      env:
+        CI: true
+
+  script:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Use Node.js 18
+      uses: actions/setup-node@v2
+      with:
+        node-version: 18.x
+        cache: 'npm'
+        cache-dependency-path: middleware/package-lock.json
+    - name: npm install, build, and test
+      run: |
+        npm install --prefix middleware
+        npm run lint --prefix middleware --if-present
+        npm run test --prefix middleware --if-present
+        npm run build --prefix middleware
+      env:
+        CI: true

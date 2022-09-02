@@ -1,0 +1,11 @@
+#.npmignore
+src
+test
+CHANGELOG.md
+.parcel-cache
+.vercel
+node_modules
+.eslintrc
+.babelrc
+examples
+.vercelignore

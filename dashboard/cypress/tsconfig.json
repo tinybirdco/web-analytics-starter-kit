@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "noEmit": true,
+    "types": ["node", "cypress", "@testing-library/cypress"],
+    "esModuleInterop": true,
+    "jsx": "react",
+    "moduleResolution": "node",
+    "target": "es2019",
+    "strict": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true
+  },
+  "include": [
+    "./index.ts",
+    "e2e/**/*",
+    "plugins/**/*",
+    "support/**/*",
+    "../node_modules/cypress",
+    "../node_modules/@testing-library/cypress"
+  ],
+  "exclude": []
+}
