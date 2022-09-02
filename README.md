@@ -1,9 +1,9 @@
 # Tinybird Web Analytics Starter Kit
 
-Build your own web analytics platform using [Tinybird](https://www.tinybird.co/)'s Events API and Endpoints. Built with privacy and speed as top priorities, this Starter Kit lets you get real-time metrics in a pre-built dashboard in just a few minutes without any knowledge about Tinybird. Our [free accounts](https://www.tinybird.co/pricing) serve up to 1000 requests per day and unlimited processed GB, more than enough to get started.
+Build your own web analytics platform using <a href="https://www.tinybird.co/" target="_blank">Tinybird</a>'s Events API and Endpoints. Built with privacy and speed as top priorities, this Starter Kit lets you get real-time metrics in a pre-built dashboard in just a few minutes without any knowledge about Tinybird. Our [free accounts](https://www.tinybird.co/pricing) serve up to 1000 requests per day and unlimited processed GB, more than enough to get started.
 
 <!-- You can look at the [Web Analytics Starter Kit](https://www.tinybird.co/starter-kits) site to get a better glimpse of the final result.  -->
-Once you've finished the basic setup, expand your analytics with custom events tailored to your specific use cases (eCommerce, marketing, etc.), keeping the same real-time performance. If you need to be GDPR compliant, check out the GDPR best practices section.
+Once you've finished the basic setup, expand your analytics with custom events tailored to your specific use cases (eCommerce, marketing, etc.), keeping the same real-time performance. If you need to be GDPR compliant, check out the [GDPR best practices section](#gdpr).
 
 ![Tinybird Web Analytics Dashboard](./assets/img/repo-banner.png)
 
@@ -12,9 +12,9 @@ Once you've finished the basic setup, expand your analytics with custom events t
 
 Click this button to deploy the data project to Tinybird 👇
 
-[![Deploy to Tinybird](https://cdn.tinybird.co/button)](https://ui.wadus2.tinybird.co/workspaces/new?name=web_analytics&starter_kit=web-analytics-starter-kit)
+<a href="https://tinybird.co/workspaces/new?name=web_analytics&starter_kit=web-analytics-starter-kit" target="_blank">![Deploy to Tinybird](https://cdn.tinybird.co/button)</a>
 
-Follow the guided process, and now your Tinybird workspace is now ready to start receiving events. All your Data Sources, [Materialized Views](https://www.tinybird.co/guide/materialized-columns) (to make the queries blazing fast), and API Endpoints should be installed and ready. If you go to the Data Flow tab in your browser you should see something like this:
+Follow the guided process, and your Tinybird workspace is now ready to start receiving events. All your Data Sources, <a href="https://www.tinybird.co/guide/materialized-columns" target="_blank">Materialized Views</a> (to make the queries blazing fast), and API Endpoints should be installed and ready. If you go to the Data Flow tab in your browser you should see something like this:
 
 ![](./assets/img/data_flow.png)
 <!-- maybe add some explanations on top of the flow? -->
@@ -103,7 +103,7 @@ You can also fork the dashboard project in this repository and create custom com
 </details>
 
 
-<details>
+<details id='gdpr'> 
 <summary><h2>GDPR best practices (optional)</h2></summary>
 
 > :warning: **GDPR**: These are some tips to follow the GDPR guidelines, but compliance is not guaranteed. Follow these instructions and assess with your legal team. <!-- For more details on how to implement a privacy-first tracker for compliance, [read this](link to upcoming blog). -->
