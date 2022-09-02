@@ -106,7 +106,7 @@ You can also fork the dashboard project in this repository and create custom com
 <details id='gdpr'> 
 <summary><h2>GDPR best practices (optional)</h2></summary>
 
-> :warning: **GDPR**: These are some tips to follow the GDPR guidelines, but compliance is not guaranteed. Follow these instructions and assess with your legal team. <!-- For more details on how to implement a privacy-first tracker for compliance, [read this](link to upcoming blog). -->
+> :warning: **GDPR**: These are some tips to follow the GDPR guidelines, but compliance is not guaranteed. Follow these instructions and assess with your legal team. For more details on how to implement a privacy-first tracker for compliance, [read this](https://www.tinybird.co/blog-posts/privacy-first-google-analytics-alternative).
 
 Requirements:
 
