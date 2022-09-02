@@ -12,7 +12,7 @@ Once you've finished the basic setup, expand your analytics with custom events t
 
 Click this button to deploy the data project to Tinybird 👇
 
-[![Deploy to Tinybird](https://cdn.tinybird.co/button)](https://tinybird.co/workspaces/new?name=web_analytics&starter_kit=web-analytics-starter-kit)
+[![Deploy to Tinybird](https://cdn.tinybird.co/button)](https://ui.tinybird.co/workspaces/new?name=web_analytics&starter_kit=web-analytics-starter-kit)
 
 Follow the guided process, and your Tinybird workspace is now ready to start receiving events. All your Data Sources, [Materialized Views](https://www.tinybird.co/guide/materialized-columns) (to make the queries blazing fast), and API Endpoints should be installed and ready. If you go to the Data Flow tab in your browser you should see something like this:
 
