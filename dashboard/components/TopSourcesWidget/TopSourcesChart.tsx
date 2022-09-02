@@ -19,7 +19,7 @@ export default function TopSourcesChart({
   return (
     <>
       <div className="grid gap-x-4 mb-4 grid-cols-[4fr,1fr]">
-        <div className="text-xs tracking-widest font-medium capitalize text-left truncate">
+        <div className="text-xs tracking-widest font-medium uppercase text-left truncate">
           Refs
         </div>
         <div className="text-xs tracking-widest font-medium uppercase truncate text-right hover:text-primary">
