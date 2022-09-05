@@ -37,7 +37,16 @@ export default function DashboardPage({ host }: { host: string }) {
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  const { host } = req.headers
+  if (!host) {
+    return {
+      props: {
+        host: '',
+      },
+    }
+  }
+  const protocol = /^localhost(:\d+)?$/.test(host) ? 'http' : 'https'
   return {
-    props: { host: `https://${req.headers.host}` },
+    props: { host: `${protocol}://${host}` },
   }
 }
