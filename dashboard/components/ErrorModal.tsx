@@ -1,12 +1,13 @@
 import { useRouter } from 'next/router'
+import resolveConfig from 'tailwindcss/resolveConfig'
+
 import Button from './Button'
 import { useAnalytics } from './Provider'
 import Modal from './Modal'
-
-import resolveConfig from 'tailwindcss/resolveConfig'
 import tailwindConfig from '../tailwind.config.js'
 
 const fullConfig = resolveConfig(tailwindConfig)
+const colors = fullConfig?.theme?.extend?.colors ?? {}
 
 export default function ErrorModal() {
   const router = useRouter()
@@ -33,7 +34,7 @@ export default function ErrorModal() {
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
-            <rect width="16" height="16" rx="8" fill={fullConfig?.theme?.extend?.colors?.error} />
+            <rect width="16" height="16" rx="8" fill={colors.error} />
             <path
               fillRule="evenodd"
               clipRule="evenodd"

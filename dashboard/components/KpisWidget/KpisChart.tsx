@@ -1,8 +1,13 @@
 import * as echarts from 'echarts'
+import resolveConfig from 'tailwindcss/resolveConfig'
+
 import useChart from '../../lib/hooks/use-chart'
 import { ChartValue } from '../../lib/types/charts'
 import { KpiType, KPI_OPTIONS } from '../../lib/types/kpis'
-import { colors } from '../../styles/theme'
+import tailwindConfig from '../../tailwind.config.js'
+
+const fullConfig = resolveConfig(tailwindConfig)
+const colors = fullConfig?.theme?.extend?.colors ?? {}
 
 type KPIsChartProps = {
   dates: string[]
@@ -46,7 +51,7 @@ export default function KPIsChart({ dates, data, kpi }: KPIsChartProps) {
       },
       splitLine: {
         lineStyle: {
-          color: colors.border,
+          color: colors['neutral-08'],
         },
       },
     },
@@ -56,8 +61,8 @@ export default function KPIsChart({ dates, data, kpi }: KPIsChartProps) {
         type: 'line',
         areaStyle: {
           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-            { offset: 0, color: colors.primary },
-            { offset: 1, color: colors.white },
+            { offset: 0, color: colors?.primary },
+            { offset: 1, color: colors['neutral-01'] },
           ]),
           opacity: 0.1,
         },
@@ -83,7 +88,7 @@ export default function KPIsChart({ dates, data, kpi }: KPIsChartProps) {
         areaStyle: {
           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
             { offset: 0, color: colors.primary },
-            { offset: 1, color: colors.white },
+            { offset: 1, color: colors['neutral-08'] },
           ]),
           opacity: 0.1,
         },
@@ -111,7 +116,7 @@ export default function KPIsChart({ dates, data, kpi }: KPIsChartProps) {
       borderWidth: 0,
       backgroundColor: colors.secondary,
       textStyle: {
-        color: colors.white,
+        color: colors['neutral-08'],
       },
       formatter: (params: { [key: string]: any }) => {
         const kpiOption = KPI_OPTIONS.find(({ value }) => value === kpi)
