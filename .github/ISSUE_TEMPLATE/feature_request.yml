@@ -1,7 +1,7 @@
 name: Feature Request
 description: Create a feature request for the Web Analytiocs Starter Kit
-title: "[Feature Request]: "
-labels: ["feature_request", "triage"]
+title: "[Feature Request] "
+labels: ["feature request", "triage"]
 assignees:
   - alejandromav
   - kukukaka
@@ -29,4 +29,4 @@ body:
       label: Describe alternatives you've considered
       description: A clear and concise description of any alternative solutions or features you've considered.
     validations:
-      required: true
+      required: false

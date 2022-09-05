@@ -62,7 +62,7 @@ And you're done! 🙌
 The banner generates a snippet like this one, including the tracking script:
 
 ```html
-<script src="https://unpkg.com/@tinybirdco/flock.js" data-token="YOUR_TRACKER_TOKEN"></script>
+<script defer src="https://unpkg.com/@tinybirdco/flock.js" data-token="YOUR_TRACKER_TOKEN"></script>
 ```
 
 Script parameters:
@@ -144,7 +144,7 @@ You will need to set up:
 4. Update the snippet from the basic setup to this, using your configured subdomain:
 
 ```html
-<script src="https://events.example.com/index.js" data-proxy="https://events.example.com"></script>
+<script defer src="https://events.example.com/index.js" data-proxy="https://events.example.com"></script>
 ```
 
 </details>
