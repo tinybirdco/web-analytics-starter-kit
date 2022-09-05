@@ -25,6 +25,7 @@ module.exports = {
         body: '#f6f7f9',
         'neutral-01': '#fff',
         'neutral-04': '#fdfdfe',
+        'neutral-08': '#f7f7f7',
         'neutral-12': '#e8e9ed',
         'neutral-24': '#CBCCD1',
         'neutral-64': '#636679',
