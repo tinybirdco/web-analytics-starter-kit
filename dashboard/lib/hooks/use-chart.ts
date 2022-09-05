@@ -1,6 +1,11 @@
 import { useEffect, useRef } from 'react'
 import * as echarts from 'echarts'
-import { colors } from '../../styles/theme'
+import resolveConfig from 'tailwindcss/resolveConfig'
+
+import tailwindConfig from '../../tailwind.config.js'
+
+const fullConfig = resolveConfig(tailwindConfig) as any
+const colors = fullConfig?.theme?.colors ?? {}
 
 export default function useChart(option: echarts.EChartsOption) {
   const ref = useRef<HTMLDivElement>(null)

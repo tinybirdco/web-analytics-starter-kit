@@ -1,5 +1,11 @@
 import useChart from '../../lib/hooks/use-chart'
 
+import resolveConfig from 'tailwindcss/resolveConfig'
+import tailwindConfig from '../../tailwind.config.js'
+
+const fullConfig = resolveConfig(tailwindConfig) as any
+const colors = fullConfig?.theme?.colors ?? {}
+
 type TrendChartProps = {
   visits: number[]
   dates: string[]
@@ -48,9 +54,9 @@ export default function TrendChart({ dates, visits }: TrendChartProps) {
     tooltip: {
       show: true,
       borderWidth: 0,
-      backgroundColor: '#25283D',
+      backgroundColor: colors?.secondary,
       textStyle: {
-        color: '#ffffff',
+        color: colors['neutral-01'],
       },
       formatter: `{c} visitors<br/>{b}`,
     },
