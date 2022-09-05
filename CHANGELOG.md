@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - [Script] Improve script listeners, now can be imported as `defer`
 
+### Added
+- [Dashboard] Add trackign script to dashboard
+
+### Fixed
+- [Dashboard] Use Tailwind theme colors
+
 ## [1.0.0] - 2022-09-02
 ### Added
 - [Data project] Create data project template
