@@ -1,3 +1,7 @@
+<p>
+  <a href="https://www.tinybird.co/join-our-slack-community"><img alt="Slack Status" src="https://img.shields.io/badge/slack-chat-1FCC83?style=flat&logo=slack"></a>
+</p>
+
 # Tinybird Web Analytics Starter Kit
 
 Build your own web analytics platform using [Tinybird](https://www.tinybird.co/)'s Events API and Endpoints. Built with privacy and speed as top priorities, this Starter Kit lets you get real-time metrics in a pre-built dashboard in just a few minutes without any knowledge about Tinybird. Our [free accounts](https://www.tinybird.co/pricing) serve up to 1000 requests per day and unlimited processed GB, more than enough to get started.
@@ -16,7 +20,7 @@ Click this button to deploy the data project to Tinybird 👇
 
 Follow the guided process, and your Tinybird workspace is now ready to start receiving events. All your Data Sources, [Materialized Views](https://www.tinybird.co/guide/materialized-columns) (to make the queries blazing fast), and API Endpoints should be installed and ready. If you go to the Data Flow tab in your browser you should see something like this:
 
-![](./assets/img/data_flow.png)
+![Data flow](./assets/img/data_flow.png)
 <!-- maybe add some explanations on top of the flow? -->
 
 <details id='manual-install'> 
@@ -44,11 +48,11 @@ cd tinybird
 
 Copy the snippet from the banner, and paste it on your site `<head>`:
 
-![](./assets/img/banner_snippet.png)
+![Banner showed to copy HTML snippet](./assets/img/banner_snippet.png)
 
 If everything is working correctly, you should start seeing rows in your Data Source as visitors view and interact with your website
 
-![](./assets/img/events-incoming.png)
+![Incoming events](./assets/img/events-incoming.svg)
 
 And you're done! 🙌
 
@@ -76,7 +80,7 @@ Script parameters:
 
 Now you'll see a banner with a link to the dashboard. Click to open it:
 
-![](./assets/img/banner_dashboard.png)
+![Analytics dashboard preview](./assets/img/banner_dashboard.png)
 
 Alternatively, you can always navigate to https://analytics.tinybird.co/ and paste your `dashboard` token.
 
@@ -85,7 +89,8 @@ You'll find this `dashboard` alwaready created for you on the Tinybird UI, under
 <details>
 <summary><h2>Custom events (optional)</h2></summary>
 
-> :warning: **GDPR**: Don't track any personal (PII), ids, codes, or any other information that may lead to identify an individual (not even fingerprinting). Track only the essential events when needed, and use aggregated metrics.
+> **Warning**<br>
+> **GDPR**: Don't track any personal (PII), ids, codes, or any other information that may lead to identify an individual (not even fingerprinting). Track only the essential events when needed, and use aggregated metrics.
 
 The script also provides you with a function to send custom events. You can simply add this to your application at any point:
 
@@ -106,7 +111,8 @@ You can also fork the dashboard project in this repository and create custom com
 <details id='gdpr'> 
 <summary><h2>GDPR best practices (optional)</h2></summary>
 
-> :warning: **GDPR**: These are some tips to follow the GDPR guidelines, but compliance is not guaranteed. Follow these instructions and assess with your legal team. For more details on how to implement a privacy-first tracker for compliance, [read this](https://www.tinybird.co/blog-posts/privacy-first-google-analytics-alternative).
+> **Warning**<br>
+> **GDPR**: These are some tips to follow the GDPR guidelines, but compliance is not guaranteed. Follow these instructions and assess with your legal team. For more details on how to implement a privacy-first tracker for compliance, [read this](https://www.tinybird.co/blog-posts/privacy-first-google-analytics-alternative).
 
 Requirements:
 
