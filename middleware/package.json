@@ -1,6 +1,6 @@
 {
   "name": "@tinybirdco/flock.js",
-  "version": "1.1.0-SNAPSHOT",
+  "version": "1.1.0",
   "main": "dist/index.js",
   "description": "Tinybird web analytics tracking script",
   "author": "Tinybird team",
