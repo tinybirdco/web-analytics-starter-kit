@@ -6,7 +6,7 @@ import { useAnalytics } from './Provider'
 import Modal from './Modal'
 import tailwindConfig from '../tailwind.config.js'
 
-const fullConfig = resolveConfig(tailwindConfig)
+const fullConfig = resolveConfig(tailwindConfig) as any
 const colors = fullConfig?.theme?.colors ?? {}
 
 export default function ErrorModal() {

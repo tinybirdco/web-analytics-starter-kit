@@ -3,7 +3,7 @@ import useChart from '../../lib/hooks/use-chart'
 import resolveConfig from 'tailwindcss/resolveConfig'
 import tailwindConfig from '../../tailwind.config.js'
 
-const fullConfig = resolveConfig(tailwindConfig)
+const fullConfig = resolveConfig(tailwindConfig) as any
 const colors = fullConfig?.theme?.colors ?? {}
 
 type TrendChartProps = {
