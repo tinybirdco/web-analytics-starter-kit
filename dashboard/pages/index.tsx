@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import Script from 'next/script'
 import { GetServerSideProps } from 'next'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
@@ -13,6 +14,13 @@ export default function DashboardPage({ host }: { host: string }) {
 
   return (
     <>
+      {process.env.NODE_ENV === 'production' && (
+        <Script
+          defer
+          src="https://unpkg.com/@tinybirdco/flock.js"
+          data-token={process.env.NEXT_PUBLIC_TINYBIRD_TRACKER_TOKEN}
+        />
+      )}
       <Meta host={host} />
       <div className="bg-body min-h-screen py-5 px-5 sm:px-10 text-sm leading-5 text-secondary">
         <div className="max-w-7xl mx-auto">
