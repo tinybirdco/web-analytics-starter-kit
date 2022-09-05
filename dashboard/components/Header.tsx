@@ -21,7 +21,7 @@ export default function Header() {
         </h1>
         <CurrentVisitors />
       </div>
-      <div className="min-w-[140px]">
+      <div className="min-w-[165px]">
         <DateSelector />
       </div>
     </header>

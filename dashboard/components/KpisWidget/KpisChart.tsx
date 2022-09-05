@@ -7,7 +7,7 @@ import { KpiType, KPI_OPTIONS } from '../../lib/types/kpis'
 import tailwindConfig from '../../tailwind.config.js'
 
 const fullConfig = resolveConfig(tailwindConfig)
-const colors = fullConfig?.theme?.extend?.colors ?? {}
+const colors = fullConfig?.theme?.colors ?? {}
 
 type KPIsChartProps = {
   dates: string[]

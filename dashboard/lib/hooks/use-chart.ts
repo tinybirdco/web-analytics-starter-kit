@@ -5,8 +5,9 @@ import resolveConfig from 'tailwindcss/resolveConfig'
 import tailwindConfig from '../../tailwind.config.js'
 
 const fullConfig = resolveConfig(tailwindConfig)
-const colors = fullConfig?.theme?.extend?.colors ?? {}
-
+const colors = fullConfig?.theme?.colors ?? {}
+console.log('HOLAAAAA')
+console.log(fullConfig)
 export default function useChart(option: echarts.EChartsOption) {
   const ref = useRef<HTMLDivElement>(null)
 
