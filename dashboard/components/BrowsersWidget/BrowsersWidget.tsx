@@ -8,7 +8,7 @@ export default function BrowsersWidget() {
   const { data, status, warning } = useBrowsers()
 
   return (
-    <Widget height={312}>
+    <Widget>
       <Widget.Title className="mb-7">Top Browsers</Widget.Title>
       <Widget.Content status={status}>
         {data?.length && !warning ? (

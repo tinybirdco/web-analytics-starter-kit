@@ -6,7 +6,7 @@ export default function TopSourcesWidget() {
   const { data, status, warning } = useTopSources()
 
   return (
-    <Widget height={472}>
+    <Widget>
       <Widget.Title className="mb-6">Top Sources</Widget.Title>
       <Widget.Content className="flex flex-col" status={status}>
         {data?.refs.length && !warning ? (
