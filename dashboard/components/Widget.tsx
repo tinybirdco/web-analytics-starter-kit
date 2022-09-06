@@ -16,7 +16,7 @@ function Widget({ children, className, height, noPadding }: WidgetProps) {
       className={cx(
         className,
         noPadding ? 'p-0' : 'px-10 py-9',
-        'bg-white rounded-xl w-full flex flex-col relative'
+        'bg-white rounded-xl w-full flex flex-col relative h-full'
       )}
       style={{ height }}
     >
@@ -55,6 +55,20 @@ type WidgetContentProps = {
   loaderSize?: number
 }
 
+function WidgetLoading({
+  loaderSize,
+  height,
+}: {
+  loaderSize?: number
+  height?: number
+}) {
+  return (
+    <div className="grid place-content-center w-full h-full" style={{ height }}>
+      <Loader size={loaderSize} />
+    </div>
+  )
+}
+
 function WidgetContent({
   children,
   className,
@@ -62,9 +76,7 @@ function WidgetContent({
   loaderSize,
 }: WidgetContentProps) {
   return status === 'loading' ? (
-    <div className="grid place-content-center w-full h-full">
-      <Loader size={loaderSize} />
-    </div>
+    <WidgetLoading loaderSize={loaderSize} />
   ) : (
     <div className={cx(className, 'h-full')}>
       {status !== 'updating' && children}
@@ -117,4 +129,5 @@ export default Object.assign(Widget, {
   Content: WidgetContent,
   Warning: WidgetWarning,
   NoData: WidgetNoData,
+  Loading: WidgetLoading,
 })

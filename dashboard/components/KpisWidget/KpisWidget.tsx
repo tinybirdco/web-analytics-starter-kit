@@ -9,7 +9,7 @@ export default function KPIsWidget() {
   const { data: kpiTotals, warning: warningTotals } = useKpiTotals()
 
   return (
-    <Widget noPadding height={620}>
+    <Widget noPadding>
       <Widget.Title isVisuallyHidden>KPIs</Widget.Title>
       <KPIsTabs value={kpi} onChange={setKpi} totals={kpiTotals} />
       <Widget.Content status={status}>

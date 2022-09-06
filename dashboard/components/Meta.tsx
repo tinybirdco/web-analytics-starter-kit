@@ -7,8 +7,8 @@ const { description, imagePath, title, url } = {
   imagePath: `/banner.png`,
 }
 
-export default function Meta({ host }: { host: string }) {
-  const image = `${host}${imagePath}`
+export default function Meta() {
+  const image = `${process.env.NEXT_PUBLIC_TINYBIRD_DASHBOARD_URL}${imagePath}`
   return (
     <Head>
       <title>{title}</title>

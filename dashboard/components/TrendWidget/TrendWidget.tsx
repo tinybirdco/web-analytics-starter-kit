@@ -6,7 +6,7 @@ export default function TrendWidget() {
   const { data, status, warning } = useTrend()
 
   return (
-    <Widget className="pb-0" height={151}>
+    <Widget className="pb-0">
       <Widget.Title className="mb-0">Users in last 30 minutes</Widget.Title>
       <Widget.Content status={status} loaderSize={40}>
         <h3 className="text-neutral-64 font-normal text-2xl leading-5 mt-4 mb-2">

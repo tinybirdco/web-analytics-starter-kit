@@ -26,13 +26,13 @@
   "dependencies": {
     "@headlessui/react": "^1.6.6",
     "@radix-ui/react-dialog": "^1.0.0",
-    "@radix-ui/react-tabs": "^1.0.0",
     "antd": "^4.22.8",
     "echarts": "^5.3.3",
     "moment": "^2.29.4",
     "next": "12.2.5",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-intersection-observer": "^9.4.0",
     "swr": "^1.3.0"
   },
   "devDependencies": {
