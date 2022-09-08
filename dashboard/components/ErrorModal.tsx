@@ -1,13 +1,9 @@
 import { useRouter } from 'next/router'
-import resolveConfig from 'tailwindcss/resolveConfig'
 
 import Button from './Button'
 import { useAnalytics } from './Provider'
 import Modal from './Modal'
-import tailwindConfig from '../tailwind.config.js'
-
-const fullConfig = resolveConfig(tailwindConfig) as any
-const colors = fullConfig?.theme?.colors ?? {}
+import { colors } from '../styles/theme'
 
 export default function ErrorModal() {
   const router = useRouter()

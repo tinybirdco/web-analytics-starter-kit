@@ -1,8 +1,4 @@
-import resolveConfig from 'tailwindcss/resolveConfig'
-import tailwindConfig from '../tailwind.config.js'
-
-const fullConfig = resolveConfig(tailwindConfig) as any
-const colors = fullConfig?.theme?.colors ?? {}
+import { colors } from '../styles/theme'
 
 export default function Loader({ size = 80 }: { size?: number }) {
   return (

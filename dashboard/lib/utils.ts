@@ -1,7 +1,7 @@
 export const cx = (...args: (string | undefined | false)[]) =>
   args.filter(Boolean).join(' ')
 
-export const formatNumber = (num: number) => Intl.NumberFormat().format(num)
+export const formatNumber = (num: number) => Intl.NumberFormat().format(+num)
 
 export function kFormatter(value: number): string {
   return value > 999 ? `${(value / 1000).toFixed(1)}K` : String(value)

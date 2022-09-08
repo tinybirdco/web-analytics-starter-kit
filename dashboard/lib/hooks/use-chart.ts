@@ -1,11 +1,6 @@
 import { useEffect, useRef } from 'react'
 import * as echarts from 'echarts'
-import resolveConfig from 'tailwindcss/resolveConfig'
-
-import tailwindConfig from '../../tailwind.config.js'
-
-const fullConfig = resolveConfig(tailwindConfig) as any
-const colors = fullConfig?.theme?.colors ?? {}
+import { colors, typography } from '../../styles/theme'
 
 export default function useChart(option: echarts.EChartsOption) {
   const ref = useRef<HTMLDivElement>(null)
@@ -19,7 +14,7 @@ export default function useChart(option: echarts.EChartsOption) {
         fontSize: 11,
         fontWeight: 400,
         color: colors.secondary,
-        fontFamily: 'Inter var',
+        fontFamily: typography.fontFamily,
       },
       grid: {
         left: 0,

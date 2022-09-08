@@ -33,6 +33,7 @@ export type KpiTotals = Record<KpiType, number>
 export type KpiOption = {
   label: string
   value: KpiType
+  tooltip: string
   formatter: (value: number) => string
 }
 
@@ -40,21 +41,25 @@ export const KPI_OPTIONS: KpiOption[] = [
   {
     label: 'unique visitors',
     value: 'visits',
+    tooltip: 'visits',
     formatter: formatNumber,
   },
   {
     label: 'site pageviews',
     value: 'pageviews',
+    tooltip: 'pageviews',
     formatter: kFormatter,
   },
   {
     label: 'avg. visit time',
     value: 'avg_session_sec',
+    tooltip: 'avg. visit time',
     formatter: formatMinSec,
   },
   {
     label: 'bounce rate',
     value: 'bounce_rate',
+    tooltip: 'bounce rate',
     formatter: formatPercentage,
   },
 ]
