@@ -1,7 +1,8 @@
+import { ReactNode } from 'react'
 import { useInView } from 'react-intersection-observer'
 
 type InViewProps = {
-  children: JSX.Element
+  children: ReactNode
   height: number
 }
 
