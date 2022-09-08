@@ -89,7 +89,10 @@
 
         payload = _maskSuspiciousAttributes(payload);
 
-        return navigator.sendBeacon(url, JSON.stringify({
+        const request = new XMLHttpRequest();
+        request.open('POST', url, true);
+        request.setRequestHeader('Content-Type', 'text/plain');
+        request.send(JSON.stringify({
             timestamp: new Date().toISOString(),
             action: name,
             version: '1',
