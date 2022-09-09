@@ -1,13 +1,9 @@
 import * as echarts from 'echarts'
-import resolveConfig from 'tailwindcss/resolveConfig'
 
 import useChart from '../../lib/hooks/use-chart'
 import { ChartValue } from '../../lib/types/charts'
 import { KpiType, KPI_OPTIONS } from '../../lib/types/kpis'
-import tailwindConfig from '../../tailwind.config.js'
-
-const fullConfig = resolveConfig(tailwindConfig) as any
-const colors = fullConfig?.theme?.colors ?? {}
+import { colors } from '../../styles/theme'
 
 type KPIsChartProps = {
   dates: string[]
@@ -118,15 +114,18 @@ export default function KPIsChart({ dates, data, kpi }: KPIsChartProps) {
       textStyle: {
         color: colors['neutral-08'],
       },
-      formatter: (params: { [key: string]: any }) => {
+      formatter: params => {
         const kpiOption = KPI_OPTIONS.find(({ value }) => value === kpi)
-
+        if (!kpiOption || !Array.isArray(params)) return ''
+        const [{ value: pastValue, dataIndex }, { value: currentValue }] =
+          params
+        const value = pastValue || currentValue
         return `
-        <span class="text-sm font-medium">${kpiOption?.formatter(
-          params[0].value
-        )} ${kpi.replaceAll('_', ' ')}</span>
+        <span class="text-sm font-medium">${
+          typeof value === 'number' ? kpiOption.formatter(value) : value
+        } ${kpiOption.tooltip}</span>
         <br/>
-        <span class="text-xs">${params[0].axisValue}</span>
+        <span class="text-xs">${dates[dataIndex] ?? ''}</span>
       `
       },
     },

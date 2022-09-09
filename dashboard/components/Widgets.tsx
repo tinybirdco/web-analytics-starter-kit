@@ -19,25 +19,36 @@ function WidgetLoading({ size }: { size?: number }) {
   )
 }
 const KPIsWidget = dynamic(() => import('./KpisWidget'), {
-  loading: () => <WidgetLoading />,
+  loading: () => (
+    <Widget>
+      <Widget.Content />
+    </Widget>
+  ),
+  ssr: false,
 })
+
 const BrowsersWidget = dynamic(() => import('./BrowsersWidget'), {
   loading: () => <WidgetLoading />,
+  ssr: false,
 })
 const TopPagesWidget = dynamic(() => import('./TopPagesWidget'), {
   loading: () => <WidgetLoading />,
+  ssr: false,
 })
 const TrendWidget = dynamic(() => import('./TrendWidget'), {
   loading: () => <WidgetLoading size={40} />,
 })
 const TopDevicesWidget = dynamic(() => import('./TopDevicesWidget'), {
   loading: () => <WidgetLoading />,
+  ssr: false,
 })
 const TopSourcesWidget = dynamic(() => import('./TopSourcesWidget'), {
   loading: () => <WidgetLoading />,
+  ssr: false,
 })
 const TopLocationsWidget = dynamic(() => import('./TopLocationsWidget'), {
   loading: () => <WidgetLoading />,
+  ssr: false,
 })
 
 export default function Widgets() {

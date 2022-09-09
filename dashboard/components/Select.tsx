@@ -1,3 +1,4 @@
+import { ReactNode } from 'react'
 import { Listbox } from '@headlessui/react'
 import { OptionType } from '../lib/types/options'
 import { cx } from '../lib/utils'
@@ -6,9 +7,9 @@ import { ChevronDownIcon } from './Icons'
 interface SelectProps<T extends string | number> {
   value: T
   options: OptionType<T>[]
-  icon?: React.ReactNode
+  icon?: ReactNode
   label?: string
-  renderButton?: React.ReactNode
+  renderButton?: ReactNode
   id: string
   onChange: (value: T) => void
 }
