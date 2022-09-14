@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { CSSProperties, ReactNode } from 'react'
 import { QueryStatus } from '../lib/types/api'
 import { cx } from '../lib/utils'
 import Loader from './Loader'
@@ -8,9 +8,18 @@ type WidgetProps = {
   children?: ReactNode
   height?: number
   noPadding?: boolean
+  status?: QueryStatus
+  loaderSize?: number
 }
 
-function Widget({ children, className, height, noPadding }: WidgetProps) {
+function Widget({
+  children,
+  className,
+  height,
+  noPadding,
+  status,
+  loaderSize,
+}: WidgetProps) {
   return (
     <div
       className={cx(
@@ -20,7 +29,11 @@ function Widget({ children, className, height, noPadding }: WidgetProps) {
       )}
       style={{ height }}
     >
-      {children}
+      {status === 'loading' ? (
+        <WidgetLoading loaderSize={loaderSize} />
+      ) : (
+        children
+      )}
     </div>
   )
 }
@@ -48,13 +61,6 @@ function WidgetTitle({
   )
 }
 
-type WidgetContentProps = {
-  className?: string
-  children?: ReactNode
-  status?: QueryStatus
-  loaderSize?: number
-}
-
 function WidgetLoading({
   loaderSize,
   height,
@@ -69,17 +75,16 @@ function WidgetLoading({
   )
 }
 
-function WidgetContent({
-  children,
-  className,
-  status,
-  loaderSize,
-}: WidgetContentProps) {
-  return status === 'loading' ? (
-    <WidgetLoading loaderSize={loaderSize} />
-  ) : (
-    <div className={cx(className, 'h-full')}>
-      {status !== 'updating' && children}
+type WidgetContentProps = {
+  className?: string
+  children?: ReactNode
+  style?: CSSProperties
+}
+
+function WidgetContent({ children, className, style }: WidgetContentProps) {
+  return (
+    <div className={cx(className, 'h-full')} style={style}>
+      {children}
     </div>
   )
 }

@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import CurrentVisitors from './CurrentVisitors'
-import DateSelector from './DateSelector'
+import DateFilter from './DateFilter'
 import useDomain from '../lib/hooks/use-domain'
 
 export default function Header() {
@@ -22,7 +22,7 @@ export default function Header() {
         </h1>
         <CurrentVisitors />
       </div>
-      <DateSelector minWidth={165} />
+      <DateFilter />
     </header>
   )
 }

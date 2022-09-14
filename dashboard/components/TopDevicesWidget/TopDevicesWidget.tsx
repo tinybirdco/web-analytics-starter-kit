@@ -8,9 +8,9 @@ export default function TopDevicesWidget() {
   const { data, warning, status } = useTopDevices()
 
   return (
-    <Widget>
+    <Widget status={status}>
       <Widget.Title className="mb-7">Top Devices</Widget.Title>
-      <Widget.Content status={status}>
+      <Widget.Content>
         {data?.length && !warning ? (
           <div
             className="w-full h-full grid"

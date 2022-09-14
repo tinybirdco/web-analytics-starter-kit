@@ -1,4 +1,4 @@
-import dynamic from 'next/dynamic'
+import dynamic, { LoaderComponent } from 'next/dynamic'
 import InView from './InView'
 import Widget from './Widget'
 
@@ -9,47 +9,23 @@ const enum WidgetHeight {
   Small = 152,
 }
 
-function WidgetLoading({ size }: { size?: number }) {
-  return (
-    <Widget>
-      <Widget.Content>
-        <Widget.Loading loaderSize={size} />
-      </Widget.Content>
-    </Widget>
-  )
+function lazyLoadWidget(
+  importPromise: () => LoaderComponent,
+  loaderSize?: number
+) {
+  return dynamic(importPromise, {
+    loading: () => <Widget status="loading" loaderSize={loaderSize} />,
+    ssr: false,
+  })
 }
-const KPIsWidget = dynamic(() => import('./KpisWidget'), {
-  loading: () => (
-    <Widget>
-      <Widget.Content />
-    </Widget>
-  ),
-  ssr: false,
-})
 
-const BrowsersWidget = dynamic(() => import('./BrowsersWidget'), {
-  loading: () => <WidgetLoading />,
-  ssr: false,
-})
-const TopPagesWidget = dynamic(() => import('./TopPagesWidget'), {
-  loading: () => <WidgetLoading />,
-  ssr: false,
-})
-const TrendWidget = dynamic(() => import('./TrendWidget'), {
-  loading: () => <WidgetLoading size={40} />,
-})
-const TopDevicesWidget = dynamic(() => import('./TopDevicesWidget'), {
-  loading: () => <WidgetLoading />,
-  ssr: false,
-})
-const TopSourcesWidget = dynamic(() => import('./TopSourcesWidget'), {
-  loading: () => <WidgetLoading />,
-  ssr: false,
-})
-const TopLocationsWidget = dynamic(() => import('./TopLocationsWidget'), {
-  loading: () => <WidgetLoading />,
-  ssr: false,
-})
+const KPIsWidget = lazyLoadWidget(() => import('./KpisWidget'), 80)
+const BrowsersWidget = lazyLoadWidget(() => import('./BrowsersWidget'))
+const TopPagesWidget = lazyLoadWidget(() => import('./TopPagesWidget'))
+const TrendWidget = lazyLoadWidget(() => import('./TrendWidget'), 40)
+const TopDevicesWidget = lazyLoadWidget(() => import('./TopDevicesWidget'))
+const TopSourcesWidget = lazyLoadWidget(() => import('./TopSourcesWidget'))
+const TopLocationsWidget = lazyLoadWidget(() => import('./TopLocationsWidget'))
 
 export default function Widgets() {
   return (
