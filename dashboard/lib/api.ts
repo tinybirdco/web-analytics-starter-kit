@@ -31,10 +31,7 @@ export async function client<T>(
       'https://ui.us-east.tinybird.co': 'https://api.us-east.tinybird.io',
     }[host] ?? host
 
-  const url = `${apiUrl}/v0${path}`
-  console.log('data', url)
-
-  const response = await fetch(url, {
+  const response = await fetch(`${apiUrl}/v0${path}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
