@@ -3,7 +3,7 @@ import { server } from './mocks/server'
 
 beforeAll(() => {
   window.location = {
-    search: '?token=my_token&host=https://ui.tinybird.co',
+    search: '?token=my_token&host=https://analytics-api.com',
   } as any
   server.listen({ onUnhandledRequest: 'error' })
 })

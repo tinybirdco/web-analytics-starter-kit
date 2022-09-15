@@ -43,7 +43,7 @@ export const data = {
 
 // Define handlers that catch the corresponding requests and returns the mock data.
 export const handlers = [
-  rest.get('/pipes/trend.json', (_, res, ctx) => {
+  rest.get('https://analytics-api.com/v0/pipes/trend.json', (_, res, ctx) => {
     return res(ctx.status(200), ctx.json(data))
   }),
 ]
