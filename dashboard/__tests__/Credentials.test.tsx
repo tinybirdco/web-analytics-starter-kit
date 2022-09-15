@@ -2,21 +2,19 @@ import { expect, test, vi } from 'vitest'
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import Credentials from '../components/Credentials'
-import { HostType } from '../lib/types/credentials'
-
-const push = vi.fn()
-const pathname = '/'
-
-vi.mock('next/router', () => ({
-  useRouter: () => ({
-    query: {},
-    isReady: true,
-    push,
-    pathname,
-  }),
-}))
 
 test('Credentials', async () => {
+  const push = vi.fn()
+  const pathname = '/'
+
+  vi.mock('next/router', () => ({
+    useRouter: () => ({
+      query: {},
+      isReady: true,
+      push,
+      pathname,
+    }),
+  }))
   const token = 'my_token'
   render(<Credentials />)
   const form = within(screen.getByRole('form'))
