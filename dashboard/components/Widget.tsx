@@ -19,22 +19,24 @@ function Widget({
   noPadding,
   status,
   loaderSize,
+  ...props
 }: WidgetProps) {
   return (
-    <div
+    <section
       className={cx(
         className,
         noPadding ? 'p-0' : 'px-10 py-9',
         'bg-white rounded-xl w-full flex flex-col relative h-full'
       )}
       style={{ height }}
+      {...props}
     >
       {status === 'loading' ? (
         <WidgetLoading loaderSize={loaderSize} />
       ) : (
         children
       )}
-    </div>
+    </section>
   )
 }
 
@@ -42,12 +44,14 @@ type WidgetTitleProps = {
   className?: string
   children?: ReactNode
   isVisuallyHidden?: boolean
+  id?: string
 }
 
 function WidgetTitle({
   children,
   className,
   isVisuallyHidden,
+  id,
 }: WidgetTitleProps) {
   return (
     <h2
@@ -55,6 +59,7 @@ function WidgetTitle({
         className,
         isVisuallyHidden ? 'sr-only' : 'text-lg font-medium mb-4'
       )}
+      id={id}
     >
       {children}
     </h2>
@@ -69,7 +74,13 @@ function WidgetLoading({
   height?: number
 }) {
   return (
-    <div className="grid place-content-center w-full h-full" style={{ height }}>
+    <div
+      className="grid place-content-center w-full h-full"
+      style={{ height }}
+      role="alert"
+      aria-busy="true"
+      aria-label="Loading"
+    >
       <Loader size={loaderSize} />
     </div>
   )

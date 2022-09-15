@@ -2,12 +2,21 @@ import Widget from '../Widget'
 import TrendChart from './TrendChart'
 import useTrend from '../../lib/hooks/use-trend'
 
+const titleId = 'trend-widget-title'
+
 export default function TrendWidget() {
   const { data, status, warning } = useTrend()
 
   return (
-    <Widget className="pb-0" status={status} loaderSize={40}>
-      <Widget.Title className="mb-0">Users in last 30 minutes</Widget.Title>
+    <Widget
+      className="pb-0"
+      status={status}
+      loaderSize={40}
+      aria-labelledby={titleId}
+    >
+      <Widget.Title className="mb-0" id={titleId}>
+        Users in last 30 minutes
+      </Widget.Title>
       <Widget.Content>
         <h3 className="text-neutral-64 font-normal text-2xl leading-5 mt-4 mb-2">
           {data?.totalVisits ?? 0}

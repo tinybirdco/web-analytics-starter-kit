@@ -33,6 +33,7 @@ export default function CredentialsForm() {
     <form
       onSubmit={handleSubmit}
       className="flex flex-col justify-between h-full"
+      aria-labelledby="credentials-title"
     >
       <div className="space-y-10">
         <Input
