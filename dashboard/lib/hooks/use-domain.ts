@@ -7,6 +7,7 @@ async function getDomain(): Promise<DomainData> {
   const { data } = await querySQL<DomainQueryData>(`
     SELECT domainWithoutWWW(href) as domain
     FROM analytics_hits
+    where timestamp >= today() - interval 7 day
     group by domain
     order by count(1) desc
     limit 1 FORMAT JSON
