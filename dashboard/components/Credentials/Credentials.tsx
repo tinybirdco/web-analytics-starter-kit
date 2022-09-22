@@ -17,7 +17,7 @@ export default function Credentials() {
   return (
     <Modal isOpen={isOpen}>
       <Modal.Content>
-        <Modal.Title>Enter credentials</Modal.Title>
+        <Modal.Title id="credentials-title">Enter credentials</Modal.Title>
         <Modal.Description>
           To visualize your analytics data in the pre-built dashboard, you need
           to specify a token with read access to the pipes, and your workspace

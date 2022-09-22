@@ -6,9 +6,9 @@ export default function TopPagesWidget() {
   const { data, status, warning } = useTopPages()
 
   return (
-    <Widget>
+    <Widget status={status}>
       <Widget.Title className="mb-6">Top Pages</Widget.Title>
-      <Widget.Content className="flex flex-col" status={status}>
+      <Widget.Content className="flex flex-col">
         {data?.pages.length && !warning ? (
           <TopPagesChart {...data} />
         ) : (

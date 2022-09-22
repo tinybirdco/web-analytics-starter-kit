@@ -5,9 +5,9 @@ import useTopLocations from '../../lib/hooks/use-top-locations'
 export default function TopLocationsWidget() {
   const { data, status, warning } = useTopLocations()
   return (
-    <Widget>
+    <Widget status={status}>
       <Widget.Title className="mb-6">Top Locations</Widget.Title>
-      <Widget.Content status={status}>
+      <Widget.Content>
         {data?.locations.length && !warning ? (
           <TopLocationsChart {...data} />
         ) : (

@@ -1,6 +1,6 @@
-import { expect, test } from 'vitest'
+import { expect, test, vi } from 'vitest'
 import { render, screen, within } from '@testing-library/react'
-import Dashboard from '../pages'
+import Dashboard from '../pages/index'
 
 vi.mock('next/router', () => ({
   useRouter: () => ({

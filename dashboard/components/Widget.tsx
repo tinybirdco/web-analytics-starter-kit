@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { CSSProperties, ReactNode } from 'react'
 import { QueryStatus } from '../lib/types/api'
 import { cx } from '../lib/utils'
 import Loader from './Loader'
@@ -8,20 +8,35 @@ type WidgetProps = {
   children?: ReactNode
   height?: number
   noPadding?: boolean
+  status?: QueryStatus
+  loaderSize?: number
 }
 
-function Widget({ children, className, height, noPadding }: WidgetProps) {
+function Widget({
+  children,
+  className,
+  height,
+  noPadding,
+  status,
+  loaderSize,
+  ...props
+}: WidgetProps) {
   return (
-    <div
+    <section
       className={cx(
         className,
         noPadding ? 'p-0' : 'px-10 py-9',
         'bg-white rounded-xl w-full flex flex-col relative h-full'
       )}
       style={{ height }}
+      {...props}
     >
-      {children}
-    </div>
+      {status === 'loading' ? (
+        <WidgetLoading loaderSize={loaderSize} />
+      ) : (
+        children
+      )}
+    </section>
   )
 }
 
@@ -29,12 +44,14 @@ type WidgetTitleProps = {
   className?: string
   children?: ReactNode
   isVisuallyHidden?: boolean
+  id?: string
 }
 
 function WidgetTitle({
   children,
   className,
   isVisuallyHidden,
+  id,
 }: WidgetTitleProps) {
   return (
     <h2
@@ -42,17 +59,11 @@ function WidgetTitle({
         className,
         isVisuallyHidden ? 'sr-only' : 'text-lg font-medium mb-4'
       )}
+      id={id}
     >
       {children}
     </h2>
   )
-}
-
-type WidgetContentProps = {
-  className?: string
-  children?: ReactNode
-  status?: QueryStatus
-  loaderSize?: number
 }
 
 function WidgetLoading({
@@ -63,23 +74,28 @@ function WidgetLoading({
   height?: number
 }) {
   return (
-    <div className="grid place-content-center w-full h-full" style={{ height }}>
+    <div
+      className="grid place-content-center w-full h-full"
+      style={{ height }}
+      role="alert"
+      aria-busy="true"
+      aria-label="Loading"
+    >
       <Loader size={loaderSize} />
     </div>
   )
 }
 
-function WidgetContent({
-  children,
-  className,
-  status,
-  loaderSize,
-}: WidgetContentProps) {
-  return status === 'loading' ? (
-    <WidgetLoading loaderSize={loaderSize} />
-  ) : (
-    <div className={cx(className, 'h-full')}>
-      {status !== 'updating' && children}
+type WidgetContentProps = {
+  className?: string
+  children?: ReactNode
+  style?: CSSProperties
+}
+
+function WidgetContent({ children, className, style }: WidgetContentProps) {
+  return (
+    <div className={cx(className, 'h-full')} style={style}>
+      {children}
     </div>
   )
 }
