@@ -4,19 +4,18 @@ import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import Credentials from '../components/Credentials'
 
-vi.mock('next/router', () => {
-  const push = vi.fn()
-  return {
-    useRouter: () => ({
-      query: {},
-      isReady: true,
-      push,
-      pathname: '/',
-    }),
-  }
-})
-
 test('Credentials', async () => {
+  vi.mock('next/router', () => {
+    const push = vi.fn()
+    return {
+      useRouter: () => ({
+        query: {},
+        isReady: true,
+        push,
+        pathname: '/',
+      }),
+    }
+  })
   const token = 'my_token'
   render(<Credentials />)
   const form = within(screen.getByRole('form'))
