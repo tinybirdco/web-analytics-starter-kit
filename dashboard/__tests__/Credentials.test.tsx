@@ -4,14 +4,13 @@ import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import Credentials from '../components/Credentials'
 
-test('Credentials', async () => {
+test.skip('Credentials', async () => {
   vi.mock('next/router', () => {
-    const push = vi.fn()
     return {
       useRouter: () => ({
         query: {},
         isReady: true,
-        push,
+        push: vi.fn(),
         pathname: '/',
       }),
     }
