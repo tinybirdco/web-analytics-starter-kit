@@ -1,3 +1,4 @@
+import fetch from 'cross-fetch'
 import {
   ClientResponse,
   PipeParams,
@@ -17,7 +18,7 @@ export function getConfig() {
 }
 
 export async function client<T>(
-  url: string,
+  path: string,
   params?: RequestInit
 ): Promise<ClientResponse<T>> {
   const { host, token } = getConfig()
@@ -27,10 +28,10 @@ export async function client<T>(
   const apiUrl =
     {
       'https://ui.tinybird.co': 'https://api.tinybird.co',
-      'https://ui.us-east.tinybird.co': 'https://api.us-east.tinybird.io',
+      'https://ui.us-east.tinybird.co': 'https://api.us-east.tinybird.co',
     }[host] ?? host
 
-  const response = await fetch(`${apiUrl}/v0${url}`, {
+  const response = await fetch(`${apiUrl}/v0${path}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

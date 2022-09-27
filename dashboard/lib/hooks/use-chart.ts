@@ -2,7 +2,10 @@ import { useEffect, useRef } from 'react'
 import * as echarts from 'echarts'
 import { colors, typography } from '../../styles/theme'
 
-export default function useChart(option: echarts.EChartsOption) {
+export default function useChart(
+  option: echarts.EChartsOption,
+  dependencies: any[] = []
+) {
   const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -33,7 +36,7 @@ export default function useChart(option: echarts.EChartsOption) {
       chart.dispose()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [...dependencies])
 
   return ref
 }

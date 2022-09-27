@@ -84,7 +84,7 @@ Now you'll see a banner with a link to the dashboard. Click to open it:
 
 Alternatively, you can always navigate to https://analytics.tinybird.co/ and paste your `dashboard` token.
 
-You'll find this `dashboard` alwaready created for you on the Tinybird UI, under "Manage Auth Tokens".
+You'll find this `dashboard` token already created for you on the Tinybird UI, under "Manage Auth Tokens".
 
 <details>
 <summary><h2>Custom events (optional)</h2></summary>
