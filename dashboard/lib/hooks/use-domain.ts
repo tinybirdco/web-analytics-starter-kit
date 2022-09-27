@@ -22,7 +22,7 @@ async function getDomain(): Promise<DomainData> {
       FROM analytics_hits
       limit 1
     ) as some_domain
-    select coalesce(top_domain, some_domain) as domain
+    select coalesce(top_domain, some_domain) as domain format JSON
   `)
   const domain = data[0]['domain'];
   const logo = domain
