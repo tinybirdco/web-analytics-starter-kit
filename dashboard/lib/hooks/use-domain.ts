@@ -27,7 +27,7 @@ async function getDomain(): Promise<DomainData> {
   `)
   const domain = data[0]['domain'];
   const logo = domain
-    ? `https://s2.googleusercontent.com/s2/favicons?domain=${domain}`
+    ? `https://${domain}/favicon.ico`
     : FALLBACK_LOGO
 
   return {
