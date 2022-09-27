@@ -118,9 +118,9 @@ export default function KPIsChart({ dates, data, kpi }: KPIsChartProps) {
         formatter: params => {
           const kpiOption = KPI_OPTIONS.find(({ value }) => value === kpi)
           if (!kpiOption || !Array.isArray(params)) return ''
-          const [pastMarams, currentParams] = params
-          const value = pastMarams?.value ?? currentParams?.value
-          const index = pastMarams?.dataIndex ?? 0
+          const [previousParams, currentParams] = params
+          const value = previousParams?.value ?? currentParams?.value
+          const index = previousParams?.dataIndex ?? 0
           return `
         <span class="text-sm font-medium">${
           typeof value === 'number' ? kpiOption.formatter(value) : value
