@@ -10,11 +10,9 @@ async function getDomain(): Promise<DomainData> {
   // Best balance between data accuracy and performance I can get.
   const { data } = await querySQL<DomainQueryData>(`
     with (
-      SELECT domainWithoutWWW(href) as domain
+      SELECT nullif(domainWithoutWWW(href),'') as domain
       FROM analytics_hits
-      where
-        timestamp >= now() - interval 1 hour
-        and domainWithoutWWW(href) <> ''
+      where timestamp >= now() - interval 1 hour
       group by domain
       order by count(1) desc
       limit 1
@@ -22,7 +20,7 @@ async function getDomain(): Promise<DomainData> {
     (
       SELECT domainWithoutWWW(href)
       FROM analytics_hits
-      where domainWithoutWWW(href) <> ''
+      where href not like '%localhost%'
       limit 1
     ) as some_domain
     select coalesce(top_domain, some_domain) as domain format JSON
