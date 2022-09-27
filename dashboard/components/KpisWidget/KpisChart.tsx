@@ -117,15 +117,15 @@ export default function KPIsChart({ dates, data, kpi }: KPIsChartProps) {
       formatter: params => {
         const kpiOption = KPI_OPTIONS.find(({ value }) => value === kpi)
         if (!kpiOption || !Array.isArray(params)) return ''
-        const [{ value: pastValue, dataIndex }, { value: currentValue }] =
-          params
-        const value = pastValue || currentValue
+        const [pastMarams, currentParams] = params
+        const value = pastMarams?.value ?? currentParams?.value
+        const index = pastMarams?.dataIndex ?? 0
         return `
         <span class="text-sm font-medium">${
           typeof value === 'number' ? kpiOption.formatter(value) : value
         } ${kpiOption.tooltip}</span>
         <br/>
-        <span class="text-xs">${dates[dataIndex] ?? ''}</span>
+        <span class="text-xs">${dates[index] ?? ''}</span>
       `
       },
     },
