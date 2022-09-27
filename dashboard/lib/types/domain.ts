@@ -1,4 +1,4 @@
-export type DomainQueryData = { href: string }
+export type DomainQueryData = { domain: string }
 
 export type DomainData = {
   domain: string | null
