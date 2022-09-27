@@ -20,6 +20,7 @@ async function getDomain(): Promise<DomainData> {
     (
       SELECT domainWithoutWWW(href)
       FROM analytics_hits
+      where domainWithoutWWW(href) <> ''
       limit 1
     ) as some_domain
     select coalesce(top_domain, some_domain) as domain format JSON
