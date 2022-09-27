@@ -12,7 +12,9 @@ async function getDomain(): Promise<DomainData> {
     with (
       SELECT domainWithoutWWW(href) as domain
       FROM analytics_hits
-      where timestamp >= now() - interval 1 hour
+      where
+        timestamp >= now() - interval 1 hour
+        and domainWithoutWWW(href) <> ''
       group by domain
       order by count(1) desc
       limit 1
