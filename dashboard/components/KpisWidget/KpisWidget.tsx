@@ -12,7 +12,7 @@ export default function KPIsWidget() {
     <Widget noPadding>
       <Widget.Title isVisuallyHidden>KPIs</Widget.Title>
       <KPIsTabs value={kpi} onChange={setKpi} totals={kpiTotals} />
-      <Widget.Content style={{ height: 494 }}>
+      <Widget.Content style={{ height: 494, position: 'relative' }}>
         {data?.dates.length && !warning ? (
           <KPIsChart kpi={kpi} {...data} />
         ) : status === 'success' ? (

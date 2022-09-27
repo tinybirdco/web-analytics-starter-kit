@@ -38,7 +38,7 @@ export default function useDateFilter() {
       : DateFilter.Last7Days
 
   return useMemo(() => {
-    const today = new Date(new Date().toISOString().substring(0, 10))
+    const today = moment().utc()
     if (lastDaysParam === DateFilter.Custom) {
       const startDateParam = router.query.start_date as string
       const endDateParam = router.query.end_date as string
