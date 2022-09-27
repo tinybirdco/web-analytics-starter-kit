@@ -13,123 +13,126 @@ type KPIsChartProps = {
 
 export default function KPIsChart({ dates, data, kpi }: KPIsChartProps) {
   const [firstPoints, lastPoints] = data
-  const ref = useChart({
-    grid: {
-      left: 50,
-      top: 30,
-      right: 50,
-      bottom: 50,
-    },
-    xAxis: {
-      boundaryGap: false,
-      type: 'category',
-      data: dates,
-      axisLine: {
-        show: false,
-        lineStyle: {},
+  const ref = useChart(
+    {
+      grid: {
+        left: 50,
+        top: 30,
+        right: 50,
+        bottom: 50,
       },
-      axisTick: {
-        show: false,
+      xAxis: {
+        boundaryGap: false,
+        type: 'category',
+        data: dates,
+        axisLine: {
+          show: false,
+          lineStyle: {},
+        },
+        axisTick: {
+          show: false,
+        },
+        splitLine: {},
+        axisLabel: {
+          fontSize: 11,
+          fontWeight: 500,
+          margin: 16,
+          formatter: (value: string) => value.toUpperCase(),
+        },
       },
-      splitLine: {},
-      axisLabel: {
-        fontSize: 11,
-        fontWeight: 500,
-        margin: 16,
-        formatter: (value: string) => value.toUpperCase(),
+      yAxis: {
+        type: 'value',
+        axisLabel: {
+          fontSize: 11,
+          fontWeight: 500,
+        },
+        splitLine: {
+          lineStyle: {
+            color: colors['neutral-08'],
+          },
+        },
       },
-    },
-    yAxis: {
-      type: 'value',
-      axisLabel: {
-        fontSize: 11,
-        fontWeight: 500,
-      },
-      splitLine: {
-        lineStyle: {
+      series: [
+        {
+          data: firstPoints,
+          type: 'line',
+          areaStyle: {
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              { offset: 0, color: colors?.primary },
+              { offset: 1, color: colors['neutral-01'] },
+            ]),
+            opacity: 0.1,
+          },
+          itemStyle: {
+            opacity: 0,
+          },
+          lineStyle: {
+            width: 4,
+            cap: 'square',
+          },
+          emphasis: {
+            itemStyle: {
+              opacity: 1,
+              borderWidth: 3,
+            },
+          },
+          showSymbol: false,
+        },
+        {
+          showSymbol: false,
+          data: lastPoints,
+          type: 'line',
+          areaStyle: {
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              { offset: 0, color: colors.primary },
+              { offset: 1, color: colors['neutral-08'] },
+            ]),
+            opacity: 0.1,
+          },
+          itemStyle: {
+            opacity: 0,
+          },
+          lineStyle: { type: 5, width: 4 },
+          emphasis: {
+            itemStyle: {
+              opacity: 1,
+              borderWidth: 3,
+            },
+          },
+        },
+      ],
+      tooltip: {
+        show: true,
+        trigger: 'axis',
+        axisPointer: {
+          animation: false,
+          lineStyle: {
+            opacity: 0,
+          },
+        },
+        borderWidth: 0,
+        backgroundColor: colors.secondary,
+        textStyle: {
           color: colors['neutral-08'],
         },
-      },
-    },
-    series: [
-      {
-        data: firstPoints,
-        type: 'line',
-        areaStyle: {
-          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-            { offset: 0, color: colors?.primary },
-            { offset: 1, color: colors['neutral-01'] },
-          ]),
-          opacity: 0.1,
-        },
-        itemStyle: {
-          opacity: 0,
-        },
-        lineStyle: {
-          width: 4,
-          cap: 'square',
-        },
-        emphasis: {
-          itemStyle: {
-            opacity: 1,
-            borderWidth: 3,
-          },
-        },
-        showSymbol: false,
-      },
-      {
-        showSymbol: false,
-        data: lastPoints,
-        type: 'line',
-        areaStyle: {
-          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-            { offset: 0, color: colors.primary },
-            { offset: 1, color: colors['neutral-08'] },
-          ]),
-          opacity: 0.1,
-        },
-        itemStyle: {
-          opacity: 0,
-        },
-        lineStyle: { type: 5, width: 4 },
-        emphasis: {
-          itemStyle: {
-            opacity: 1,
-            borderWidth: 3,
-          },
-        },
-      },
-    ],
-    tooltip: {
-      show: true,
-      trigger: 'axis',
-      axisPointer: {
-        animation: false,
-        lineStyle: {
-          opacity: 0,
-        },
-      },
-      borderWidth: 0,
-      backgroundColor: colors.secondary,
-      textStyle: {
-        color: colors['neutral-08'],
-      },
-      formatter: params => {
-        const kpiOption = KPI_OPTIONS.find(({ value }) => value === kpi)
-        if (!kpiOption || !Array.isArray(params)) return ''
-        const [{ value: pastValue, dataIndex }, { value: currentValue }] =
-          params
-        const value = pastValue || currentValue
-        return `
+        formatter: params => {
+          const kpiOption = KPI_OPTIONS.find(({ value }) => value === kpi)
+          if (!kpiOption || !Array.isArray(params)) return ''
+          const [pastMarams, currentParams] = params
+          const value = pastMarams?.value ?? currentParams?.value
+          const index = pastMarams?.dataIndex ?? 0
+          return `
         <span class="text-sm font-medium">${
           typeof value === 'number' ? kpiOption.formatter(value) : value
         } ${kpiOption.tooltip}</span>
         <br/>
-        <span class="text-xs">${dates[dataIndex] ?? ''}</span>
+        <span class="text-xs">${dates[index] ?? ''}</span>
       `
+        },
       },
     },
-  })
+    [dates, data, kpi]
+  )
 
   return (
     <div

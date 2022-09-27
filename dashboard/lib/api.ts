@@ -28,7 +28,7 @@ export async function client<T>(
   const apiUrl =
     {
       'https://ui.tinybird.co': 'https://api.tinybird.co',
-      'https://ui.us-east.tinybird.co': 'https://api.us-east.tinybird.io',
+      'https://ui.us-east.tinybird.co': 'https://api.us-east.tinybird.co',
     }[host] ?? host
 
   const response = await fetch(`${apiUrl}/v0${path}`, {
