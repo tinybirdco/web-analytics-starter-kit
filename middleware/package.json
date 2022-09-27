@@ -13,7 +13,7 @@
   "scripts": {
     "start": "parcel",
     "watch": "parcel watch",
-    "build": "parcel build"
+    "build": "parcel build --no-source-maps"
   },
   "license": "MIT",
   "devDependencies": {
