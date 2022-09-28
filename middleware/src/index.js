@@ -91,7 +91,7 @@
 
         const request = new XMLHttpRequest();
         request.open('POST', url, true);
-        request.setRequestHeader('Content-Type', 'text/plain');
+        request.setRequestHeader('Content-Type', 'application/json');
         request.send(JSON.stringify({
             timestamp: new Date().toISOString(),
             action: name,
