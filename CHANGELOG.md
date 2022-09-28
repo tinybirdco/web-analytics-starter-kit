@@ -6,7 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 ### Fixed
-- [Dashboard] Stop using Google'd favicon service (#30)
+- [Dashboard] Stop using Google's favicon service (#30)
+- [Script] Fix `Content-Type` (#33)
 
 ## [1.2.1] - 2022-09-27
 ### Fixed
