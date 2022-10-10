@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Fixed
+- [Dashboard] Fix total KPIs for arbitrary date ranges (#37)
+- [Dashboard] Fix tooltip for the last data point in the chart
+
 ## [1.2.2] - 2022-09-28
 ### Fixed
 - [Dashboard] Stop using Google's favicon service (#30)

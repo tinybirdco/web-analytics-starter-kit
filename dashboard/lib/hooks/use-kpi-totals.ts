@@ -32,14 +32,14 @@ async function getKpiTotals(
 
   // Sum total KPI value from the trend
   const KPITotal = (kpi: KpiType) => 
-    queryData.reduce((prev, curr) => curr[kpi] ?? 0 + prev, 0);
+    queryData.reduce((prev, curr) => (curr[kpi] ?? 0) + prev, 0);
 
   // Get total number of sessions
   const totalVisits = KPITotal('visits');
 
   // Sum total KPI value from the trend, ponderating using sessions
   const _ponderatedKPIsTotal = (kpi: KpiType) => 
-    queryData.reduce((prev, curr) => prev + (curr[kpi] ?? 0 * curr['visits'] / totalVisits), 0);
+    queryData.reduce((prev, curr) => prev + ((curr[kpi] ?? 0) * curr['visits'] / totalVisits), 0);
 
   return {
     avg_session_sec: _ponderatedKPIsTotal('avg_session_sec'),
