@@ -31,11 +31,11 @@ async function getKpiTotals(
   const queryData = data.filter(record => record['date'] != date_to_aux_str);
 
   // Sum total KPI value from the trend
-  const KPITotal = (kpi: KpiType) => 
+  const _KPITotal = (kpi: KpiType) => 
     queryData.reduce((prev, curr) => (curr[kpi] ?? 0) + prev, 0);
 
   // Get total number of sessions
-  const totalVisits = KPITotal('visits');
+  const totalVisits = _KPITotal('visits');
 
   // Sum total KPI value from the trend, ponderating using sessions
   const _ponderatedKPIsTotal = (kpi: KpiType) => 
@@ -43,7 +43,7 @@ async function getKpiTotals(
 
   return {
     avg_session_sec: _ponderatedKPIsTotal('avg_session_sec'),
-    pageviews: KPITotal('pageviews'),
+    pageviews: _KPITotal('pageviews'),
     visits: totalVisits,
     bounce_rate: _ponderatedKPIsTotal('bounce_rate')
   }
