@@ -1,5 +1,5 @@
-import { querySQL } from '../api'
-import { KpiTotals, KpiType } from '../types/kpis'
+import { queryPipe } from '../api'
+import { KpisData, KpiTotals, KpiType } from '../types/kpis'
 import useDateFilter from './use-date-filter'
 import useQuery from './use-query'
 import { QueryError } from '../types/api'
@@ -8,42 +8,44 @@ async function getKpiTotals(
   date_from?: string,
   date_to?: string
 ): Promise<KpiTotals> {
-  const { data } = await querySQL<Record<KpiType, number>>(
-    `SELECT 
-      sum(visits) as visits, 
-      sum(pageviews) as pageviews, 
-      avg(avg_session_sec) as avg_session_sec, 
-      avg(bounce_rate) as bounce_rate
-      FROM kpis 
-      WHERE date between 
-      ${
-        date_from ? `'${date_from}'` : 'timestampAdd(today(), interval -7 day)'
-      } 
-      AND
-      ${date_to ? `'${date_to}'` : 'today()'}
-    FORMAT JSON`
-  )
 
-  const { data: previousData } = await querySQL<Record<KpiType, number>>(
-    `SELECT 
-      sum(visits) as visits, 
-      sum(pageviews) as pageviews, 
-      avg(avg_session_sec) as avg_session_sec, 
-      avg(bounce_rate) as bounce_rate
-      FROM kpis 
-      WHERE date between ${`timestampAdd(toDate('${date_from}'), interval -${
-        date_from ? '7' : '14'
-      } day)`} AND ${`toDate('${date_to}')`} 
-      FORMAT JSON`
-  )
+  /**
+   * If we sent the same value for date_from and date_to, the result is one row per hour.
+   * 
+   * But we actually need one row per date, so we're sending one extra day in the filter,
+   * and removing ir afterwards.
+   * 
+   * Not the best approach, it'd be better to modify the kpis endpoint. But we don't want
+   * to break the backwards compatibility (breaking the dashboard for alreayd active users).
+   * 
+   */
+  let date_to_aux = date_to ? new Date(date_to) : new Date();
+  date_to_aux.setDate(date_to_aux.getDate() + 1);
+  const date_to_aux_str = date_to_aux.toISOString().substring(0,10);
 
-  const { bounce_rate, avg_session_sec, pageviews, visits } = data[0]
+  const { data } = await queryPipe<KpisData>('kpis', {
+    date_from,
+    date_to: date_to_aux_str
+  })
+
+  const queryData = data.filter(record => record['date'] != date_to_aux_str);
+
+  // Sum total KPI value from the trend
+  const _KPITotal = (kpi: KpiType) => 
+    queryData.reduce((prev, curr) => (curr[kpi] ?? 0) + prev, 0);
+
+  // Get total number of sessions
+  const totalVisits = _KPITotal('visits');
+
+  // Sum total KPI value from the trend, ponderating using sessions
+  const _ponderatedKPIsTotal = (kpi: KpiType) => 
+    queryData.reduce((prev, curr) => prev + ((curr[kpi] ?? 0) * curr['visits'] / totalVisits), 0);
 
   return {
-    avg_session_sec: avg_session_sec,
-    pageviews: pageviews,
-    visits: visits,
-    bounce_rate: bounce_rate,
+    avg_session_sec: _ponderatedKPIsTotal('avg_session_sec'),
+    pageviews: _KPITotal('pageviews'),
+    visits: totalVisits,
+    bounce_rate: _ponderatedKPIsTotal('bounce_rate')
   }
 }
 

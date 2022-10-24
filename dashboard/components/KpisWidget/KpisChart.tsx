@@ -12,7 +12,7 @@ type KPIsChartProps = {
 }
 
 export default function KPIsChart({ dates, data, kpi }: KPIsChartProps) {
-  const [firstPoints, lastPoints] = data
+  const [firstPoints, lastPoints] = data;
   const ref = useChart(
     {
       grid: {
@@ -119,7 +119,7 @@ export default function KPIsChart({ dates, data, kpi }: KPIsChartProps) {
           const kpiOption = KPI_OPTIONS.find(({ value }) => value === kpi)
           if (!kpiOption || !Array.isArray(params)) return ''
           const [previousParams, currentParams] = params
-          const value = previousParams?.value ?? currentParams?.value
+          const value = previousParams?.value && previousParams?.value ? previousParams.value : currentParams?.value
           const index = previousParams?.dataIndex ?? 0
           return `
         <span class="text-sm font-medium">${
