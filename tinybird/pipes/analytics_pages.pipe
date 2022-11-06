@@ -10,7 +10,7 @@ SQL >
       location,
       pathname,
       uniqState(session_id) as visits,
-      count() as hits
+      countState() as hits
     from
       analytics_hits
     group by

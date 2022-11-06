@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - [Dashboard] Fix total KPIs for arbitrary date ranges (#37)
 - [Dashboard] Fix tooltip for the last data point in the chart
+- [Data project]  Fix `analytics_pages` query
 
 ## [1.2.2] - 2022-09-28
 ### Fixed
