@@ -20,17 +20,19 @@ function Widget({
   noData,
 }: WidgetProps) {
   return (
-    <Card hFull>
-      {status === 'loading' ? (
-        <WidgetLoading loaderSize={loaderSize} />
-      ) : status === 'error' ? (
-        <WidgetWarning>{warning}</WidgetWarning>
-      ) : status === 'success' && noData ? (
-        <WidgetNoData />
-      ) : (
-        children
-      )}
-    </Card>
+    <section role="region">
+      <Card hFull>
+        {status === 'loading' ? (
+          <WidgetLoading loaderSize={loaderSize} />
+        ) : status === 'error' ? (
+          <WidgetWarning>{warning}</WidgetWarning>
+        ) : status === 'success' && noData ? (
+          <WidgetNoData />
+        ) : (
+          children
+        )}
+      </Card>
+    </section>
   )
 }
 
