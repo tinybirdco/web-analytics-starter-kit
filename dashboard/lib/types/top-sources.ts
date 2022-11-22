@@ -8,3 +8,9 @@ export type TopSource = {
   visits: number
   href?: string
 }
+
+export type TopSources = {
+  data: Array<TopSourcesData>
+  refs: string[]
+  visits: number[]
+}

@@ -1,6 +1,7 @@
 import type { AppProps } from 'next/app'
 import AnalyticsProvider from '../components/Provider'
 import '../styles/globals.css'
+import '@tremor/react/dist/esm/tremor.css'
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (

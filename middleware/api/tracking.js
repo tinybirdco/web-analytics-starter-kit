@@ -10,7 +10,7 @@ const DATASOURCE = 'analytics_events';
  * Post event to Tinybird HFI
  *
  * @param  { string } event Event object
- * @return { string } Tinybird HFI response
+ * @return { Promise<string> } Tinybird HFI response
  */
 const _postEvent = async event => {
     const options = {

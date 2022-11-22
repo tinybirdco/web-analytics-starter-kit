@@ -31,5 +31,5 @@ export default function BrowsersChart({ data }: BrowsersChartProps) {
       },
     ],
   })
-  return <div className="w-full h-full" ref={ref} />
+  return <div className="w-full h-[176px]" ref={ref} />
 }

@@ -1,9 +1,12 @@
 import { queryPipe } from '../api'
-import { TopSource, TopSourcesData } from '../types/top-sources'
+import { TopSource, TopSources, TopSourcesData } from '../types/top-sources'
 import useDateFilter from './use-date-filter'
 import useQuery from './use-query'
 
-async function getTopSources(date_from?: string, date_to?: string) {
+async function getTopSources(
+  date_from?: string,
+  date_to?: string
+): Promise<TopSources> {
   const { data: queryData, meta } = await queryPipe<TopSourcesData>(
     'top_sources',
     {

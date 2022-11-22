@@ -1,32 +1,43 @@
+import { BarChart } from '@tremor/react'
 import Widget from '../Widget'
-import TrendChart from './TrendChart'
 import useTrend from '../../lib/hooks/use-trend'
-
-const titleId = 'trend-widget-title'
+import { useMemo } from 'react'
+import moment from 'moment'
 
 export default function TrendWidget() {
   const { data, status, warning } = useTrend()
+  const chartData = useMemo(
+    () =>
+      (data?.data ?? []).map(d => ({
+        Date: moment(d.t).format('HH:mm'),
+        'Number of visits': d.visits,
+      })),
+    [data]
+  )
 
   return (
     <Widget
-      className="pb-0"
       status={status}
       loaderSize={40}
-      aria-labelledby={titleId}
+      warning={warning?.message}
+      noData={!chartData.length}
     >
-      <Widget.Title className="mb-0" id={titleId}>
-        Users in last 30 minutes
-      </Widget.Title>
-      <Widget.Content>
-        <h3 className="text-neutral-64 font-normal text-2xl leading-5 mt-4 mb-2">
+      <div className="flex items-center justify-between">
+        <Widget.Title>Users in last 30 minutes</Widget.Title>
+        <h3 className="text-neutral-64 font-normal text-xl">
           {data?.totalVisits ?? 0}
         </h3>
-        {data?.visits.length && !warning ? (
-          <TrendChart {...data} />
-        ) : (
-          <Widget.NoData />
-        )}
-        {!!warning && <Widget.Warning>{warning.message}</Widget.Warning>}
+      </div>
+      <Widget.Content>
+        <BarChart
+          data={chartData}
+          dataKey="Date"
+          categories={['Number of visits']}
+          colors={['blue']}
+          height="h-32"
+          showXAxis={false}
+          showYAxis={false}
+        />
       </Widget.Content>
     </Widget>
   )
