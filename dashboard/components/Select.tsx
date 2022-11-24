@@ -40,7 +40,7 @@ export default function Select<T extends string | number>({
             <div className="relative">
               <Listbox.Button
                 className={cx(
-                  'relative flex text-secondary items-center gap-2 text-sm bg-white h-9 px-3 py-0 w-full border border-gray-300 hover:border-secondary rounded focus:outline-none focus:ring-secondary focus:border-secondary'
+                  'relative flex text-secondary items-center gap-2 text-sm h-9 px-3 py-0 w-full tr-ring-1 bg-white tr-shadow tr-border-blue-400 tr-ring-gray-200 tr-rounded-lg hover:border hover:border-secondary focus:outline-none focus:ring-secondary focus:border-secondary'
                 )}
               >
                 {icon}
