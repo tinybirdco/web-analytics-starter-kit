@@ -3,7 +3,7 @@ import InView from './InView'
 import Widget from './Widget'
 
 const enum WidgetHeight {
-  XLarge = 620,
+  XLarge = 524,
   Large = 472,
   Medium = 344,
   Small = 216,
