@@ -8,9 +8,13 @@ export default function BrowsersWidget() {
   const { data, status, warning } = useBrowsers()
 
   return (
-    <Widget status={status} noData={!data?.length} warning={warning?.message}>
+    <Widget>
       <Widget.Title>Top Browsers</Widget.Title>
-      <Widget.Content>
+      <Widget.Content
+        status={status}
+        noData={!data?.length}
+        warning={warning?.message}
+      >
         <div className="w-full h-full grid grid-cols-2 items-center">
           <BrowsersChart data={data ?? []} />
           <div className="justify-self-end">

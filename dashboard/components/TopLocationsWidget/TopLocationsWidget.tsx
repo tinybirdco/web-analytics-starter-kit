@@ -22,13 +22,13 @@ export default function TopLocationsWidget() {
   )
 
   return (
-    <Widget
-      status={status}
-      warning={warning?.message}
-      noData={!data?.data.length}
-    >
+    <Widget>
       <Widget.Title>Top Pages</Widget.Title>
-      <Widget.Content>
+      <Widget.Content
+        status={status}
+        noData={!data?.data?.length}
+        warning={warning?.message}
+      >
         <div className="grid grid-cols-5 gap-x-4 gap-y-2">
           <div className="col-span-3 text-xs font-semibold tracking-widest text-gray-500 uppercase h-5">
             Country

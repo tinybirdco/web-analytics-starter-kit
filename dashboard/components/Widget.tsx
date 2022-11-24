@@ -1,37 +1,17 @@
 import { Card, Title } from '@tremor/react'
-import { CSSProperties, ReactNode } from 'react'
+import { ReactNode } from 'react'
 import { QueryStatus } from '../lib/types/api'
 import { cx } from '../lib/utils'
 import Loader from './Loader'
 
 type WidgetProps = {
   children?: ReactNode
-  status?: QueryStatus
-  loaderSize?: number
-  warning?: string | null
-  noData?: boolean
 }
 
-function Widget({
-  children,
-  status,
-  loaderSize,
-  warning,
-  noData,
-}: WidgetProps) {
+function Widget({ children }: WidgetProps) {
   return (
-    <section role="region">
-      <Card hFull>
-        {status === 'loading' ? (
-          <WidgetLoading loaderSize={loaderSize} />
-        ) : status === 'error' ? (
-          <WidgetWarning>{warning}</WidgetWarning>
-        ) : status === 'success' && noData ? (
-          <WidgetNoData />
-        ) : (
-          children
-        )}
-      </Card>
+    <section role="region" className="h-full">
+      <Card hFull>{children}</Card>
     </section>
   )
 }
@@ -72,13 +52,31 @@ function WidgetLoading({
 type WidgetContentProps = {
   className?: string
   children?: ReactNode
-  style?: CSSProperties
+  status?: QueryStatus
+  loaderSize?: number
+  warning?: string | null
+  noData?: boolean
 }
 
-function WidgetContent({ children, className, style }: WidgetContentProps) {
+function WidgetContent({
+  children,
+  className,
+  status,
+  loaderSize,
+  warning,
+  noData,
+}: WidgetContentProps) {
   return (
-    <div className={cx(className, 'mt-4 h-full')} style={style}>
-      {children}
+    <div className={cx(className, 'mt-4 h-full')}>
+      {status === 'loading' ? (
+        <WidgetLoading loaderSize={loaderSize} />
+      ) : status === 'error' ? (
+        <WidgetWarning>{warning}</WidgetWarning>
+      ) : status === 'success' && noData ? (
+        <WidgetNoData />
+      ) : (
+        children
+      )}
     </div>
   )
 }

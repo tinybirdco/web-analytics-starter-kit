@@ -14,7 +14,11 @@ function lazyLoadWidget(
   loaderSize?: number
 ) {
   return dynamic(importPromise, {
-    loading: () => <Widget status="loading" loaderSize={loaderSize} />,
+    loading: () => (
+      <Widget>
+        <Widget.Content status="loading" loaderSize={loaderSize} />
+      </Widget>
+    ),
     ssr: false,
   })
 }

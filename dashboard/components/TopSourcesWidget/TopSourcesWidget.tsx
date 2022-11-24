@@ -16,13 +16,13 @@ export default function TopSourcesWidget() {
   )
 
   return (
-    <Widget
-      status={status}
-      warning={warning?.message}
-      noData={!chartData.length}
-    >
+    <Widget>
       <Widget.Title>Top Sources</Widget.Title>
-      <Widget.Content>
+      <Widget.Content
+        status={status}
+        noData={!chartData?.length}
+        warning={warning?.message}
+      >
         <div className="grid gap-x-4 grid-cols-[4fr,1fr] mb-4">
           <div className="text-xs tracking-widest font-medium uppercase text-left truncate">
             Refs

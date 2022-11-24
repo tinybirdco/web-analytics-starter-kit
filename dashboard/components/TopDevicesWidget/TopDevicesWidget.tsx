@@ -12,13 +12,13 @@ export default function TopDevicesWidget() {
   const { data, warning, status } = useTopDevices()
 
   return (
-    <Widget
-      status={status}
-      warning={warning?.message}
-      noData={!data?.data.length}
-    >
+    <Widget>
       <Widget.Title>Top Devices</Widget.Title>
-      <Widget.Content>
+      <Widget.Content
+        status={status}
+        noData={!data?.data?.length}
+        warning={warning?.message}
+      >
         <div className="w-full h-full grid grid-cols-2 items-center">
           <DonutChart
             data={data?.data ?? []}
