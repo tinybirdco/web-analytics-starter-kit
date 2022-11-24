@@ -11,6 +11,11 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Reset tremor font-family */
+:root {
+  --tr-font-family: 'Inter var' !important;
+}
+
 .arrow {
   clip-path: polygon(50% 50%, 0 0, 100% 0);
   left: 50%;
@@ -39,7 +44,7 @@ button[role='tab']:not([data-state='active']) > .arrow {
 
 .ant-picker-separator {
   display: inline-flex;
-  color: #CBCCD1;
+  color: #cbccd1;
 }
 
 .ant-picker-input > input {
