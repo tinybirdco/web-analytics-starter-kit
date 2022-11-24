@@ -14,7 +14,7 @@ export default function KpisTabs({
   return (
     <div
       role="tablist"
-      className="grid grid-cols-2 sm:grid-cols-4 lg:flex lg:flex-wrap rounded-t-xl overflow-hidden"
+      className="grid grid-cols-2 sm:grid-cols-4 lg:flex lg:flex-wrap rounded-t-xl overflow-hidden -mt-6 -mx-6"
     >
       {KPI_OPTIONS.map(({ label, value, formatter }) => (
         <button
