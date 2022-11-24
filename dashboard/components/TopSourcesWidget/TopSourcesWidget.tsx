@@ -23,15 +23,28 @@ export default function TopSourcesWidget() {
         noData={!chartData?.length}
         warning={warning?.message}
       >
-        <div className="grid gap-x-4 grid-cols-[4fr,1fr] mb-4">
-          <div className="text-xs tracking-widest font-medium uppercase text-left truncate">
+        <div className="grid grid-cols-5 gap-x-4 gap-y-2">
+          <div className="col-span-4 text-xs font-semibold tracking-widest text-gray-500 uppercase h-5">
             Refs
           </div>
-          <div className="text-xs tracking-widest font-medium uppercase truncate text-right hover:text-primary">
+          <div className="col-span-1 font-semibold text-xs text-right tracking-widest uppercase h-5">
             Visitors
           </div>
+
+          <div className="col-span-4">
+            <BarList data={chartData} valueFormatter={_ => ''} />
+          </div>
+          <div className="flex flex-col col-span-1 row-span-4 gap-2">
+            {(data?.data ?? []).map(({ referrer, visits }) => (
+              <div
+                key={referrer}
+                className="flex items-center justify-end w-full font-bold h-9"
+              >
+                {formatNumber(visits ?? 0)}
+              </div>
+            ))}
+          </div>
         </div>
-        <BarList data={chartData} valueFormatter={formatNumber} />
       </Widget.Content>
     </Widget>
   )

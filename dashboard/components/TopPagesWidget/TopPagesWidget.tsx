@@ -55,9 +55,7 @@ export default function TopPagesWidget() {
           <div className="col-span-3">
             <BarList
               data={chartData}
-              color="blue"
-              showAnimation={true}
-              valueFormatter={_ => ''}
+               valueFormatter={_ => ''}
             />
           </div>
           <div className="flex flex-col col-span-1 row-span-4 gap-2">
