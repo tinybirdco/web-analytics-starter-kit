@@ -32,6 +32,7 @@ export default function KPIsWidget() {
         status={status}
         noData={!chartData?.length}
         warning={warning?.message}
+        className="pt-2"
       >
         <AreaChart
           data={chartData}
