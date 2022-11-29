@@ -39,7 +39,7 @@ export default function TopSourcesWidget() {
             {(data?.data ?? []).map(({ referrer, visits }) => (
               <div
                 key={referrer}
-                className="flex items-center justify-end w-full font-bold h-9"
+                className="flex items-center justify-end w-full text-neutral-64 h-9"
               >
                 {formatNumber(visits ?? 0)}
               </div>

@@ -59,7 +59,7 @@ export default function TopLocationsWidget() {
             {(data?.data ?? []).map(({ location, visits }) => (
               <div
                 key={location}
-                className="flex items-center justify-end w-full font-bold h-9"
+                className="flex items-center justify-end w-full text-neutral-64 h-9"
               >
                 {visits}
               </div>
@@ -69,7 +69,7 @@ export default function TopLocationsWidget() {
             {(data?.data ?? []).map(({ location, hits }) => (
               <div
                 key={location}
-                className="flex items-center justify-end w-full font-bold h-9"
+                className="flex items-center justify-end w-full text-neutral-64 h-9"
               >
                 {hits}
               </div>
