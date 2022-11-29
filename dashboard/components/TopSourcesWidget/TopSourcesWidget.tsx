@@ -11,6 +11,7 @@ export default function TopSourcesWidget() {
       (data?.data ?? []).map(d => ({
         name: d.referrer,
         value: d.visits,
+        href: d.href,
       })),
     [data?.data]
   )

@@ -1,8 +1,9 @@
 import { Fragment } from 'react'
 import Widget from '../Widget'
-import BrowsersChart from './BrowsersChart'
 import useBrowsers from '../../lib/hooks/use-top-browsers'
 import { formatNumber } from '../../lib/utils'
+import { DonutChart } from '@tremor/react'
+import { tremorColorNames } from '../../lib/constants/tremor-colors'
 
 export default function BrowsersWidget() {
   const { data, status, warning } = useBrowsers()
@@ -12,11 +13,19 @@ export default function BrowsersWidget() {
       <Widget.Title>Top Browsers</Widget.Title>
       <Widget.Content
         status={status}
-        noData={!data?.length}
+        noData={!data?.data?.length}
         warning={warning?.message}
       >
         <div className="w-full h-full grid grid-cols-2 items-center">
-          <BrowsersChart data={data ?? []} />
+          <DonutChart
+            variant="pie"
+            data={data?.data ?? []}
+            category="visits"
+            dataKey="browser"
+            colors={tremorColorNames.slice(0, data?.data.length ?? 0)}
+            showLabel={false}
+            valueFormatter={formatNumber}
+          />
           <div className="justify-self-end">
             <div className="grid gap-y-1 gap-4 grid-cols-2">
               <div className="text-xs tracking-widest font-medium uppercase text-center truncate">
@@ -25,12 +34,12 @@ export default function BrowsersWidget() {
               <div className="text-xs tracking-widest font-medium uppercase text-right truncate">
                 Visitors
               </div>
-              {(data ?? []).map(({ browser, visits, opacity }) => (
+              {(data?.data ?? []).map(({ browser, visits, color }) => (
                 <Fragment key={browser}>
                   <div className="flex items-center gap-2 text-sm leading-5 text-neutral-64 h-9 px-4 py-2 rounded-md z-10">
                     <div
                       className="bg-primary h-4 min-w-[1rem]"
-                      style={{ opacity }}
+                      style={{ backgroundColor: color }}
                     />
                     <span>{browser}</span>
                   </div>

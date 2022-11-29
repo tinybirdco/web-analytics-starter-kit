@@ -5,9 +5,11 @@ import { useMemo } from 'react'
 import { cx, formatNumber } from '../../lib/utils'
 import { TopPagesSorting } from '../../lib/types/top-pages'
 import useParams from '../../lib/hooks/use-params'
+import useDomain from '../../lib/hooks/use-domain'
 
 export default function TopPagesWidget() {
   const { data, status, warning } = useTopPages()
+  const { domain } = useDomain()
   const [sorting, setSorting] = useParams({
     key: 'top_pages_sorting',
     values: Object.values(TopPagesSorting),
@@ -17,8 +19,9 @@ export default function TopPagesWidget() {
       (data?.data ?? []).map(d => ({
         name: d.pathname,
         value: d[sorting],
+        href: `https://${domain}${d.pathname}`,
       })),
-    [data?.data, sorting]
+    [data?.data, domain, sorting]
   )
 
   return (
@@ -53,10 +56,7 @@ export default function TopPagesWidget() {
           </div>
 
           <div className="col-span-3">
-            <BarList
-              data={chartData}
-               valueFormatter={_ => ''}
-            />
+            <BarList data={chartData} valueFormatter={_ => ''} />
           </div>
           <div className="flex flex-col col-span-1 row-span-4 gap-2">
             {(data?.data ?? []).map(({ pathname, visits }) => (

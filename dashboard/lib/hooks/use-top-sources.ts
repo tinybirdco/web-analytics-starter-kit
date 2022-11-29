@@ -1,5 +1,5 @@
 import { queryPipe } from '../api'
-import { TopSource, TopSources, TopSourcesData } from '../types/top-sources'
+import { TopSource, TopSources } from '../types/top-sources'
 import useDateFilter from './use-date-filter'
 import useQuery from './use-query'
 
@@ -7,14 +7,11 @@ async function getTopSources(
   date_from?: string,
   date_to?: string
 ): Promise<TopSources> {
-  const { data: queryData, meta } = await queryPipe<TopSourcesData>(
-    'top_sources',
-    {
-      limit: 8,
-      date_from,
-      date_to,
-    }
-  )
+  const { data: queryData } = await queryPipe<TopSource>('top_sources', {
+    limit: 8,
+    date_from,
+    date_to,
+  })
 
   const data: TopSource[] = [...queryData]
     .sort((a, b) => b.visits - a.visits)

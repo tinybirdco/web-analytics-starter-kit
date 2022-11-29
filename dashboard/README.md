@@ -10,7 +10,7 @@ To build this Starter Kit template we have used:
 - [Vercel](https://vercel.com/) as deployment system
 - [Tailwind](https://tailwindcss.com/) with theme configuration for CSS styling
 - [SWR](https://swr.vercel.app/es-ES) for data fetching
-- [echarts](https://echarts.apache.org/) for graph plotting
+- [Tremor](https://tremor.so/) for graph plotting
 - [Vitest](https://vitest.dev/) for unit testing
 - [Cypress](https://www.cypress.io/) for e2e testing
 

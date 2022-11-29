@@ -36,12 +36,12 @@ export default function TopDevicesWidget() {
               <div className="text-xs tracking-widest font-medium uppercase text-right truncate">
                 Visitors
               </div>
-              {(data?.data ?? []).map(({ device, visits }, index) => (
+              {(data?.data ?? []).map(({ device, visits, color }) => (
                 <Fragment key={device}>
                   <div className="flex items-center gap-2 text-sm leading-5 text-neutral-64 h-9 px-4 py-2 rounded-md z-10">
                     <div
                       className="h-4 min-w-[1rem]"
-                      style={{ backgroundColor: tremorColorCodes[index] }}
+                      style={{ backgroundColor: color }}
                     />
                     <span>{device}</span>
                   </div>

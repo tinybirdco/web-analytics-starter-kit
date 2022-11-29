@@ -1,8 +1,3 @@
-export type TopSourcesData = {
-  referrer: string
-  visits: number
-}
-
 export type TopSource = {
   referrer: string
   visits: number
@@ -10,7 +5,7 @@ export type TopSource = {
 }
 
 export type TopSources = {
-  data: Array<TopSourcesData>
+  data: Array<TopSource>
   refs: string[]
   visits: number[]
 }
