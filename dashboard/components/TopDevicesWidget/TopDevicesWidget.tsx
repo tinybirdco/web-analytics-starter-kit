@@ -3,8 +3,7 @@ import { DonutChart } from '@tremor/react'
 import Widget from '../Widget'
 import useTopDevices from '../../lib/hooks/use-top-devices'
 import { formatNumber } from '../../lib/utils'
-import {
-  tremorColorCodes,
+import tremorColors, {
   tremorColorNames,
 } from '../../lib/constants/tremor-colors'
 
@@ -41,7 +40,7 @@ export default function TopDevicesWidget() {
                   <div className="flex items-center gap-2 text-sm leading-5 text-neutral-64 h-9 px-4 py-2 rounded-md z-10">
                     <div
                       className="h-4 min-w-[1rem]"
-                      style={{ backgroundColor: color }}
+                      style={{ backgroundColor: tremorColors[color] }}
                     />
                     <span>{device}</span>
                   </div>

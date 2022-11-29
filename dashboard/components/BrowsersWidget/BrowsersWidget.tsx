@@ -3,7 +3,9 @@ import Widget from '../Widget'
 import useBrowsers from '../../lib/hooks/use-top-browsers'
 import { formatNumber } from '../../lib/utils'
 import { DonutChart } from '@tremor/react'
-import { tremorColorNames } from '../../lib/constants/tremor-colors'
+import tremorColors, {
+  tremorColorNames,
+} from '../../lib/constants/tremor-colors'
 
 export default function BrowsersWidget() {
   const { data, status, warning } = useBrowsers()
@@ -38,8 +40,8 @@ export default function BrowsersWidget() {
                 <Fragment key={browser}>
                   <div className="flex items-center gap-2 text-sm leading-5 text-neutral-64 h-9 px-4 py-2 rounded-md z-10">
                     <div
-                      className="bg-primary h-4 min-w-[1rem]"
-                      style={{ backgroundColor: color }}
+                      className="h-4 min-w-[1rem]"
+                      style={{ backgroundColor: tremorColors[color] }}
                     />
                     <span>{browser}</span>
                   </div>
