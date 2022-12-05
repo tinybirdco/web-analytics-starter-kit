@@ -38,6 +38,7 @@ export default function TrendWidget() {
           showXAxis={false}
           showYAxis={false}
           showLegend={false}
+          showGridLines={false}
         />
       </Widget.Content>
     </Widget>

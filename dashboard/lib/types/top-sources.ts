@@ -5,7 +5,7 @@ export type TopSource = {
 }
 
 export type TopSources = {
-  data: Array<TopSource>
+  data: TopSource[]
   refs: string[]
   visits: number[]
 }
