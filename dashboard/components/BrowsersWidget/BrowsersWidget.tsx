@@ -18,7 +18,7 @@ export default function BrowsersWidget() {
         noData={!data?.data?.length}
         warning={warning?.message}
       >
-        <div className="w-full h-full grid grid-cols-2 items-center">
+        <div className="w-full h-full grid grid-cols-2">
           <DonutChart
             variant="pie"
             data={data?.data ?? []}
