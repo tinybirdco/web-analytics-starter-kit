@@ -157,6 +157,13 @@ You will need to set up:
 - **The big picture:** [How an eCommerce giant replaced Google Analytics for privacy and scale](https://www.tinybird.co/blog-posts/ecommerce-google-analytics-alternative)
 </details>
 
+## Deploying the dashboard to Vercel
+
+If you want to customize & host your own dashboard, you can easily deploy the project to Vercel using the button below:
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Ftinybirdco%2Fweb-analytics-starter-kit&project-name=tinybird-web-analytics-starter-kit&repository-name=tinybird-web-analytics-starter-kit&root-directory=dashboard)
+
+
 
 ##  Authors
 
