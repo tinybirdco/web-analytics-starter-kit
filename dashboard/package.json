@@ -50,6 +50,7 @@
     "cypress": "^10.6.0",
     "eslint": "^8.22.0",
     "eslint-config-next": "12.2.5",
+    "eslint-config-prettier": "^8.5.0",
     "jsdom": "^20.0.0",
     "msw": "^0.44.2",
     "postcss": "^8.4.16",

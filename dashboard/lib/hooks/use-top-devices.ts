@@ -1,5 +1,4 @@
 import { queryPipe } from '../api'
-import { tremorColorNames } from '../constants/tremor-colors'
 import devices from '../constants/devices'
 import { TopDevicesData, TopDevices } from '../types/top-devices'
 import useDateFilter from './use-date-filter'
@@ -16,10 +15,9 @@ async function getTopDevices(
   })
   const data = [...queryData]
     .sort((a, b) => b.visits - a.visits)
-    .map(({ device, visits }, index) => ({
+    .map(({ device, visits }) => ({
       device: devices[device] ?? device,
       visits,
-      color: tremorColorNames[index],
     }))
 
   return { data }

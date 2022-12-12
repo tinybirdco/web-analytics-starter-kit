@@ -11,7 +11,6 @@ export type TopBrowsersData = {
 export type TopBrowser = {
   browser: string
   visits: number
-  color: Color
 }
 
 export type TopBrowsers = {

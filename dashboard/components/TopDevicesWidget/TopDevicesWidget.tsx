@@ -3,9 +3,7 @@ import { DonutChart } from '@tremor/react'
 import Widget from '../Widget'
 import useTopDevices from '../../lib/hooks/use-top-devices'
 import { formatNumber } from '../../lib/utils'
-import tremorColors, {
-  tremorColorNames,
-} from '../../lib/constants/tremor-colors'
+import { tremorPieChartColors } from '../../styles/theme/tremor-colors'
 
 export default function TopDevicesWidget() {
   const { data, warning, status } = useTopDevices()
@@ -23,7 +21,7 @@ export default function TopDevicesWidget() {
             data={data?.data ?? []}
             category="visits"
             dataKey="device"
-            colors={tremorColorNames.slice(0, data?.data.length ?? 0)}
+            colors={tremorPieChartColors.map(([color]) => color)}
             showLabel={false}
             valueFormatter={formatNumber}
           />
@@ -35,12 +33,14 @@ export default function TopDevicesWidget() {
               <div className="text-xs tracking-widest font-medium uppercase text-right truncate">
                 Visitors
               </div>
-              {(data?.data ?? []).map(({ device, visits, color }) => (
+              {(data?.data ?? []).map(({ device, visits }, index) => (
                 <Fragment key={device}>
                   <div className="flex items-center gap-2 text-sm leading-5 text-neutral-64 h-9 px-4 py-2 rounded-md z-10">
                     <div
                       className="h-4 min-w-[1rem]"
-                      style={{ backgroundColor: tremorColors[color] }}
+                      style={{
+                        backgroundColor: tremorPieChartColors[index][1],
+                      }}
                     />
                     <span>{device}</span>
                   </div>

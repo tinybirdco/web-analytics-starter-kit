@@ -3,9 +3,7 @@ import Widget from '../Widget'
 import useBrowsers from '../../lib/hooks/use-top-browsers'
 import { formatNumber } from '../../lib/utils'
 import { DonutChart } from '@tremor/react'
-import tremorColors, {
-  tremorColorNames,
-} from '../../lib/constants/tremor-colors'
+import { tremorPieChartColors } from '../../styles/theme/tremor-colors'
 
 export default function BrowsersWidget() {
   const { data, status, warning } = useBrowsers()
@@ -24,7 +22,7 @@ export default function BrowsersWidget() {
             data={data?.data ?? []}
             category="visits"
             dataKey="browser"
-            colors={tremorColorNames.slice(0, data?.data.length ?? 0)}
+            colors={tremorPieChartColors.map(([color]) => color)}
             showLabel={false}
             valueFormatter={formatNumber}
           />
@@ -36,12 +34,14 @@ export default function BrowsersWidget() {
               <div className="text-xs tracking-widest font-medium uppercase text-right truncate">
                 Visitors
               </div>
-              {(data?.data ?? []).map(({ browser, visits, color }) => (
+              {(data?.data ?? []).map(({ browser, visits }, index) => (
                 <Fragment key={browser}>
                   <div className="flex items-center gap-2 text-sm leading-5 text-neutral-64 h-9 px-4 py-2 rounded-md z-10">
                     <div
                       className="h-4 min-w-[1rem]"
-                      style={{ backgroundColor: tremorColors[color] }}
+                      style={{
+                        backgroundColor: tremorPieChartColors[index][1],
+                      }}
                     />
                     <span>{browser}</span>
                   </div>

@@ -1,6 +1,5 @@
 import { queryPipe } from '../api'
 import browsers from '../constants/browsers'
-import { tremorColorNames } from '../constants/tremor-colors'
 import { TopBrowsers, TopBrowsersData } from '../types/top-browsers'
 import useDateFilter from './use-date-filter'
 import useQuery from './use-query'
@@ -16,10 +15,9 @@ async function getTopBrowsers(
   })
   const data = [...queryData]
     .sort((a, b) => b.visits - a.visits)
-    .map(({ browser, visits }, index) => ({
+    .map(({ browser, visits }) => ({
       browser: browsers[browser] ?? browser,
       visits,
-      color: tremorColorNames[index],
     }))
 
   return { data }

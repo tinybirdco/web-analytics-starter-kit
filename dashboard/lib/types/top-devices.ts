@@ -12,7 +12,6 @@ export type TopDevicesData = {
 export type TopDevice = {
   device: string
   visits: number
-  color: Color
 }
 
 export type TopDevices = {
