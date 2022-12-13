@@ -2,7 +2,7 @@ import { useRouter } from 'next/router'
 import moment from 'moment'
 
 import { queryPipe } from '../api'
-import { KpisData, KpiType, isKpi } from '../types/kpis'
+import { KpisData, KpiType, isKpi, KPI_OPTIONS } from '../types/kpis'
 import useDateFilter from './use-date-filter'
 import useQuery from './use-query'
 import { ChartValue } from '../types/charts'
@@ -55,6 +55,7 @@ export default function useKpis() {
   const router = useRouter()
   const { kpi: kpiParam } = router.query
   const kpi = isKpi(kpiParam) ? kpiParam : 'visits'
+  const kpiOption = KPI_OPTIONS.find(({ value }) => value === kpi)!
   const query = useQuery([kpi, startDate, endDate, 'kpis'], getKpis)
 
   const setKpi = (kpi: KpiType) => {
@@ -72,6 +73,7 @@ export default function useKpis() {
   return {
     setKpi,
     kpi,
+    kpiOption,
     ...query,
   }
 }

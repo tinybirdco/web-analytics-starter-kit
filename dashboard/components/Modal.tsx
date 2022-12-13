@@ -27,8 +27,10 @@ type ModalProps = {
 function Modal({ children, isOpen }: ModalProps) {
   return (
     <Dialog.Root open={isOpen}>
-      <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
-      {children}
+      <Dialog.Portal>
+        <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+        {children}
+      </Dialog.Portal>
     </Dialog.Root>
   )
 }

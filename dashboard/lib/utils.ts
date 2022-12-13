@@ -8,6 +8,8 @@ export function kFormatter(value: number): string {
 }
 
 export function formatMinSec(totalSeconds: number) {
+  if (isNaN(totalSeconds)) return '0s'
+
   const minutes = Math.floor(totalSeconds / 60)
   const seconds = Math.floor(totalSeconds % 60)
   const padTo2Digits = (value: number) => value.toString().padStart(2, '0')

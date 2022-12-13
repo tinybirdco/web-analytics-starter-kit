@@ -3,10 +3,10 @@ import InView from './InView'
 import Widget from './Widget'
 
 const enum WidgetHeight {
-  XLarge = 620,
+  XLarge = 588,
   Large = 472,
-  Medium = 312,
-  Small = 152,
+  Medium = 344,
+  Small = 216,
 }
 
 function lazyLoadWidget(
@@ -14,7 +14,11 @@ function lazyLoadWidget(
   loaderSize?: number
 ) {
   return dynamic(importPromise, {
-    loading: () => <Widget status="loading" loaderSize={loaderSize} />,
+    loading: () => (
+      <Widget>
+        <Widget.Content status="loading" loaderSize={loaderSize} />
+      </Widget>
+    ),
     ssr: false,
   })
 }

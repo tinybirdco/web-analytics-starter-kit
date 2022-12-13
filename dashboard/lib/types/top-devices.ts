@@ -1,3 +1,5 @@
+import { Color } from '@tremor/react'
+
 export type DeviceType = 'desktop' | 'mobile-ios' | 'mobile-android' | 'bot'
 
 export type TopDevicesData = {
@@ -10,5 +12,8 @@ export type TopDevicesData = {
 export type TopDevice = {
   device: string
   visits: number
-  opacity: number
+}
+
+export type TopDevices = {
+  data: TopDevice[]
 }

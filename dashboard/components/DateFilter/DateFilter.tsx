@@ -27,7 +27,7 @@ export default function DateFilter() {
   const { lastDays, startDate, endDate, setDateFilter } = useDateFilter()
 
   return (
-    <div className="flex gap-4">
+    <div className="flex items-center gap-4">
       <Tooltip.Provider delayDuration={0}>
         <Tooltip.Root>
           <Tooltip.Trigger>

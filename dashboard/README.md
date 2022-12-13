@@ -1,6 +1,6 @@
 # Dashboard Starter Kit
 
-This is a tool to consume the pipes and visualize all the events that has been sent to your data project. 
+This is a tool to consume the pipes and visualize all the events that has been sent to your data project.
 
 ## Tech stack
 
@@ -10,7 +10,7 @@ To build this Starter Kit template we have used:
 - [Vercel](https://vercel.com/) as deployment system
 - [Tailwind](https://tailwindcss.com/) with theme configuration for CSS styling
 - [SWR](https://swr.vercel.app/es-ES) for data fetching
-- [echarts](https://echarts.apache.org/) for graph plotting
+- [Tremor](https://tremor.so/) for graph plotting
 - [Vitest](https://vitest.dev/) for unit testing
 - [Cypress](https://www.cypress.io/) for e2e testing
 
@@ -38,7 +38,8 @@ Once you have installed the dependencies, run:
 ```bash
 npm run dev
 ```
- You will find the app running at http://localhost:3000
+
+You will find the app running at http://localhost:3000
 
 ### Build for Production
 
@@ -70,9 +71,10 @@ Also, you can [open an issue](https://github.com/tinybirdco/web-analytics-starte
 
 We encourage you to [fork](https://docs.github.com/es/get-started/quickstart/fork-a-repo) the repo and customize the dashboard adapting it to your needs and to your branding image.
 
-You will be able to change the main colors, the font and other theme configration modifying the [tailwind.config.js](./tailwind.config.js) file
+You will be able to change the main colors, the font and other theme configration modifying the [tailwind.config.js](./tailwind.config.js) file. However, colors defined in [styles/theme/tremor-colors.ts](styles/theme/tremor-colors.ts) are predefined and cannot be changed
 
 ## Authors
+
 [Rafa Moreno](https://github.com/rmorehig)
 
 [Raquel Yuste](https://github.com/raqyuste)

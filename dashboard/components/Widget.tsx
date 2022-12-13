@@ -1,68 +1,31 @@
-import { CSSProperties, ReactNode } from 'react'
+import { Card, Title } from '@tremor/react'
+import { ReactNode } from 'react'
 import { QueryStatus } from '../lib/types/api'
 import { cx } from '../lib/utils'
 import Loader from './Loader'
 
 type WidgetProps = {
-  className?: string
   children?: ReactNode
-  height?: number
-  noPadding?: boolean
-  status?: QueryStatus
-  loaderSize?: number
 }
 
-function Widget({
-  children,
-  className,
-  height,
-  noPadding,
-  status,
-  loaderSize,
-  ...props
-}: WidgetProps) {
+function Widget({ children }: WidgetProps) {
   return (
-    <section
-      className={cx(
-        className,
-        noPadding ? 'p-0' : 'px-10 py-9',
-        'bg-white rounded-xl w-full flex flex-col relative h-full'
-      )}
-      style={{ height }}
-      {...props}
-    >
-      {status === 'loading' ? (
-        <WidgetLoading loaderSize={loaderSize} />
-      ) : (
-        children
-      )}
+    <section role="region" className="h-full">
+      <Card hFull>{children}</Card>
     </section>
   )
 }
 
 type WidgetTitleProps = {
-  className?: string
   children?: ReactNode
   isVisuallyHidden?: boolean
-  id?: string
 }
 
-function WidgetTitle({
-  children,
-  className,
-  isVisuallyHidden,
-  id,
-}: WidgetTitleProps) {
+function WidgetTitle({ children, isVisuallyHidden }: WidgetTitleProps) {
   return (
-    <h2
-      className={cx(
-        className,
-        isVisuallyHidden ? 'sr-only' : 'text-lg font-medium mb-4'
-      )}
-      id={id}
-    >
-      {children}
-    </h2>
+    <div className={isVisuallyHidden ? 'sr-only' : ''}>
+      <Title>{children}</Title>
+    </div>
   )
 }
 
@@ -89,13 +52,31 @@ function WidgetLoading({
 type WidgetContentProps = {
   className?: string
   children?: ReactNode
-  style?: CSSProperties
+  status?: QueryStatus
+  loaderSize?: number
+  warning?: string | null
+  noData?: boolean
 }
 
-function WidgetContent({ children, className, style }: WidgetContentProps) {
+function WidgetContent({
+  children,
+  className,
+  status,
+  loaderSize,
+  warning,
+  noData,
+}: WidgetContentProps) {
   return (
-    <div className={cx(className, 'h-full')} style={style}>
-      {children}
+    <div className={cx(className, 'mt-4 h-full')}>
+      {status === 'loading' ? (
+        <WidgetLoading loaderSize={loaderSize} />
+      ) : status === 'error' ? (
+        <WidgetWarning>{warning}</WidgetWarning>
+      ) : status === 'success' && noData ? (
+        <WidgetNoData />
+      ) : (
+        children
+      )}
     </div>
   )
 }
