@@ -18,3 +18,5 @@ export type DateRangePickerOption = {
   text: string
   startDate: Date
 }
+
+export const dateFormat = 'YYYY-MM-DD'
