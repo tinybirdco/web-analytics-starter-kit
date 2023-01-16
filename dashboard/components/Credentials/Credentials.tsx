@@ -15,7 +15,7 @@ export default function Credentials() {
   }, [isReady])
 
   return (
-    <Modal isOpen={isOpen}>
+    <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
       <Modal.Content>
         <Modal.Title id="credentials-title">Enter credentials</Modal.Title>
         <Modal.Description>

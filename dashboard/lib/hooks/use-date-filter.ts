@@ -1,19 +1,21 @@
 import moment from 'moment'
 import { useRouter } from 'next/router'
 import { useCallback, useMemo } from 'react'
-import { DateFilter } from '../types/date-filter'
+import { DateFilter, DateRangePickerValue } from '../types/date-filter'
 
 export default function useDateFilter() {
   const router = useRouter()
 
   const setDateFilter = useCallback(
-    (value: DateFilter, startDate?: string, endDate?: string) => {
-      const searchParams = new URLSearchParams(window.location.search)
-      searchParams.set('last_days', value)
+    ([startDate, endDate, value]: DateRangePickerValue) => {
+      const lastDays = value || DateFilter.Custom
 
-      if (value === DateFilter.Custom && startDate && endDate) {
-        searchParams.set('start_date', startDate)
-        searchParams.set('end_date', endDate)
+      const searchParams = new URLSearchParams(window.location.search)
+      searchParams.set('last_days', lastDays)
+
+      if (lastDays === DateFilter.Custom && startDate && endDate) {
+        searchParams.set('start_date', moment(startDate).format('YYYY-MM-DD'))
+        searchParams.set('end_date', moment(endDate).format('YYYY-MM-DD'))
       } else {
         searchParams.delete('start_date')
         searchParams.delete('end_date')
