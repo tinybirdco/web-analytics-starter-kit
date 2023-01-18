@@ -1,13 +1,11 @@
 import { Popover } from '@headlessui/react'
 import { DateRangePicker } from '@tremor/react'
 import moment from 'moment'
-import { useMemo } from 'react'
 import { QuestionIcon } from './Icons'
 
 import {
   DateFilter as DateFilterType,
   DateRangePickerOption,
-  DateRangePickerValue,
 } from '../lib/types/date-filter'
 import useDateFilter from '../lib/hooks/use-date-filter'
 
@@ -36,12 +34,7 @@ const dateFilterOptions: DateRangePickerOption[] = [
 ]
 
 export default function DateFilter() {
-  const { startDate, endDate, lastDays, setDateFilter } = useDateFilter()
-
-  const dateRangePickerValue: DateRangePickerValue = useMemo(
-    () => [moment(startDate).toDate(), moment(endDate).toDate(), lastDays],
-    [startDate, endDate, lastDays]
-  )
+  const { dateRangePickerValue, onDateRangePickerValueChange } = useDateFilter()
 
   return (
     <div className="flex items-center gap-4">
@@ -59,8 +52,9 @@ export default function DateFilter() {
       <div className="min-w-[165px]">
         <DateRangePicker
           value={dateRangePickerValue}
-          onValueChange={setDateFilter}
+          onValueChange={onDateRangePickerValueChange}
           options={dateFilterOptions}
+          enableYearPagination
         />
       </div>
     </div>

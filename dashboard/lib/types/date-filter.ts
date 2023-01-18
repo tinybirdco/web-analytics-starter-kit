@@ -7,12 +7,6 @@ export enum DateFilter {
   Custom = 'custom',
 }
 
-export type DateRangePickerValue = [
-  (Date | null)?,
-  (Date | null)?,
-  (string | null)?
-]
-
 export type DateRangePickerOption = {
   value: string
   text: string
