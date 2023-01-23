@@ -6,10 +6,11 @@ import { HostType } from '../../lib/types/credentials'
 import { OptionType } from '../../lib/types/options'
 
 const hostOptions: OptionType<HostType>[] = [
-  { label: HostType.Eu, value: HostType.Eu },
-  { label: HostType.Us, value: HostType.Us },
-  { label: 'Other', value: HostType.Other },
+  { text: HostType.Eu, value: HostType.Eu },
+  { text: HostType.Us, value: HostType.Us },
+  { text: 'Other', value: HostType.Other },
 ]
+
 export default function CredentialsForm() {
   const router = useRouter()
   const [hostType, setHostType] = useState<HostType>(hostOptions[0].value)
@@ -54,8 +55,8 @@ export default function CredentialsForm() {
               Host
             </label>
             <SelectBox value={hostType} handleSelect={setHostType}>
-              {hostOptions.map(({ label, value }) => (
-                <SelectBoxItem key={value} text={label} value={value} />
+              {hostOptions.map(({ text, value }) => (
+                <SelectBoxItem key={value} text={text} value={value} />
               ))}
             </SelectBox>
           </div>

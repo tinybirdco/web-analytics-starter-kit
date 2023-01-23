@@ -1,4 +1,4 @@
 export interface OptionType<T> {
-  label: string
+  text: string
   value: T
 }
