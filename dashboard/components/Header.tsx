@@ -7,8 +7,8 @@ export default function Header() {
   const { domain, logo, handleLogoError } = useDomain()
 
   return (
-    <header className="flex justify-between">
-      <div className="flex flex-col gap-2 md:flex-row md:gap-10">
+    <header className="flex justify-between flex-col lg:flex-row gap-6">
+      <div className="flex gap-2 md:gap-10 justify-between md:justify-start">
         <h1 className="flex items-center gap-2 min-w-max">
           <img
             src={logo}
