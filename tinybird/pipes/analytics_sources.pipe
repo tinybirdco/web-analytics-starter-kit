@@ -11,7 +11,12 @@ SQL >
       location,
       referrer,
       uniqState(session_id) AS visits,
-      countState() AS hits
+      countState() AS hits,
+      utm_source,
+      utm_medium,
+      utm_campaign,
+      utm_term,
+      utm_content
     from
       analytics_hits
     where
@@ -21,7 +26,12 @@ SQL >
       device,
       browser,
       location,
-      referrer
+      referrer,
+      utm_source,
+      utm_medium,
+      utm_campaign,
+      utm_term,
+      utm_content
 
 TYPE materialized
 DATASOURCE analytics_sources_mv

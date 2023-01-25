@@ -1,15 +1,27 @@
-import { BarList } from '@tremor/react'
+import { BarList, Flex, SelectBox, SelectBoxItem } from '@tremor/react'
 import Widget from '../Widget'
 import useTopSources from '../../lib/hooks/use-top-sources'
+import { OptionType } from '../../lib/types/options'
+import { UTMFilter } from '../../lib/types/top-sources'
 import { formatNumber } from '../../lib/utils'
 import { useMemo } from 'react'
 
+const utmFilterOptions: OptionType<UTMFilter>[] = [
+  { text: 'All', value: UTMFilter.All },
+  { text: 'UTM Medium', value: UTMFilter.Medium },
+  { text: 'UTM Source', value: UTMFilter.Source },
+  { text: 'UTM Campaign', value: UTMFilter.Campaign },
+  { text: 'UTM Content', value: UTMFilter.Content },
+  { text: 'UTM Term', value: UTMFilter.Term },
+]
+
 export default function TopSourcesWidget() {
-  const { data, status, warning } = useTopSources()
+  const { utmFilter, setUtmFilter, data, status, warning } = useTopSources()
+
   const chartData = useMemo(
     () =>
       (data?.data ?? []).map(d => ({
-        name: d.referrer,
+        name: (d.referrer || d.utm_filter) as string,
         value: d.visits,
         href: d.href,
       })),
@@ -18,7 +30,18 @@ export default function TopSourcesWidget() {
 
   return (
     <Widget>
-      <Widget.Title>Top Sources</Widget.Title>
+      <Flex justifyContent="justify-between">
+        <Widget.Title>Top Sources</Widget.Title>
+        <SelectBox
+          maxWidth="max-w-fit"
+          value={utmFilter}
+          onValueChange={setUtmFilter}
+        >
+          {utmFilterOptions.map(({ value, text }) => (
+            <SelectBoxItem key={value} value={value} text={text} />
+          ))}
+        </SelectBox>
+      </Flex>
       <Widget.Content
         status={status}
         noData={!chartData?.length}

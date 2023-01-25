@@ -12,7 +12,11 @@ DESCRIPTION >
 SQL >
     %
     select
-      domainWithoutWWW(referrer) as referrer,
+      {% if defined(utm_filter) %}
+        {{column(utm_filter)}} as utm_filter,
+      {% else %}
+        domainWithoutWWW(referrer) as referrer,
+      {% end %}
       uniqMerge(visits) as visits,
       countMerge(hits) as hits
     from
@@ -28,8 +32,15 @@ SQL >
       {% else %}
         and date <= today()
       {% end %}
+      {% if defined(utm_filter) %}
+        and {{column(utm_filter)}} != ''
+      {% end %}
     group by
-      referrer
+      {% if defined(utm_filter) %}
+        {{column(utm_filter)}}
+      {% else %}
+        referrer
+      {% end %}
     order by
       visits desc
     limit {{Int32(skip, 0)}},{{Int32(limit, 50)}}
