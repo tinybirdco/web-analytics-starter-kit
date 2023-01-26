@@ -1,19 +1,24 @@
 import moment from 'moment'
 import { useRouter } from 'next/router'
-import { useCallback, useMemo } from 'react'
-import { DateFilter } from '../types/date-filter'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { DateRangePickerValue } from '@tremor/react'
+import { DateFilter, dateFormat } from '../types/date-filter'
 
 export default function useDateFilter() {
   const router = useRouter()
+  const [dateRangePickerValue, setDateRangePickerValue] =
+    useState<DateRangePickerValue>()
 
   const setDateFilter = useCallback(
-    (value: DateFilter, startDate?: string, endDate?: string) => {
-      const searchParams = new URLSearchParams(window.location.search)
-      searchParams.set('last_days', value)
+    ([startDate, endDate, value]: DateRangePickerValue) => {
+      const lastDays = value ?? DateFilter.Custom
 
-      if (value === DateFilter.Custom && startDate && endDate) {
-        searchParams.set('start_date', startDate)
-        searchParams.set('end_date', endDate)
+      const searchParams = new URLSearchParams(window.location.search)
+      searchParams.set('last_days', lastDays)
+
+      if (lastDays === DateFilter.Custom && startDate && endDate) {
+        searchParams.set('start_date', moment(startDate).format(dateFormat))
+        searchParams.set('end_date', moment(endDate).format(dateFormat))
       } else {
         searchParams.delete('start_date')
         searchParams.delete('end_date')
@@ -37,9 +42,9 @@ export default function useDateFilter() {
       ? lastDaysParam
       : DateFilter.Last7Days
 
-  return useMemo(() => {
+  const { startDate, endDate } = useMemo(() => {
     const today = moment().utc()
-    if (lastDaysParam === DateFilter.Custom) {
+    if (lastDays === DateFilter.Custom) {
       const startDateParam = router.query.start_date as string
       const endDateParam = router.query.end_date as string
 
@@ -47,28 +52,48 @@ export default function useDateFilter() {
         startDateParam ||
         moment(today)
           .subtract(+DateFilter.Last7Days, 'days')
-          .format('YYYY-MM-DD')
-      const endDate = endDateParam || moment(today).format('YYYY-MM-DD')
+          .format(dateFormat)
+      const endDate = endDateParam || moment(today).format(dateFormat)
 
-      return { lastDays, setDateFilter, startDate, endDate }
+      return { startDate, endDate }
     }
 
     const startDate = moment(today)
       .subtract(+lastDays, 'days')
-      .format('YYYY-MM-DD')
+      .format(dateFormat)
     const endDate =
-      lastDaysParam === DateFilter.Yesterday
+      lastDays === DateFilter.Yesterday
         ? moment(today)
             .subtract(+DateFilter.Yesterday, 'days')
-            .format('YYYY-MM-DD')
-        : moment(today).format('YYYY-MM-DD')
+            .format(dateFormat)
+        : moment(today).format(dateFormat)
 
-    return { lastDays, setDateFilter, startDate, endDate }
-  }, [
-    lastDaysParam,
-    router.query.start_date,
-    router.query.end_date,
-    lastDays,
-    setDateFilter,
-  ])
+    return { startDate, endDate }
+  }, [lastDays, router.query.start_date, router.query.end_date])
+
+  useEffect(() => {
+    setDateRangePickerValue([
+      moment(startDate).toDate(),
+      moment(endDate).toDate(),
+      lastDays === DateFilter.Custom ? null : lastDays,
+    ])
+  }, [startDate, endDate, lastDays])
+
+  const onDateRangePickerValueChange = useCallback(
+    ([startDate, endDate, value]: DateRangePickerValue) => {
+      if (startDate && endDate) {
+        setDateFilter([startDate, endDate, value])
+      } else {
+        setDateRangePickerValue([startDate, endDate, value])
+      }
+    },
+    [setDateFilter]
+  )
+
+  return {
+    startDate,
+    endDate,
+    dateRangePickerValue,
+    onDateRangePickerValueChange,
+  }
 }

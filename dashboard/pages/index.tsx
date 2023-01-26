@@ -24,8 +24,12 @@ export default function DashboardPage() {
       <div className="bg-body min-h-screen py-5 px-5 sm:px-10 text-sm leading-5 text-secondary">
         <div className="max-w-7xl mx-auto">
           <div className="space-y-6 sm:space-y-10">
-            <img src="/icon.png" alt="" width={24} height={24} />
-            {isAuthenticated && isTokenValid && <Header />}
+            {isAuthenticated && isTokenValid && (
+              <>
+                <img src="/icon.png" alt="" width={24} height={24} />
+                <Header />
+              </>
+            )}
             <main>
               {isAuthenticated && !isTokenValid && <ErrorModal />}
               {isAuthenticated && isTokenValid && <Widgets />}

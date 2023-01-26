@@ -3,25 +3,6 @@ export type IconProps = {
   className?: string
 }
 
-export function CalendarIcon({ className, size = 12 }: IconProps) {
-  return (
-    <svg
-      className={className}
-      width={size}
-      height={size}
-      viewBox="0 0 12 12"
-      fill="currentColor"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        fillRule="evenodd"
-        clipRule="evenodd"
-        d="M3 0.5C3 0.223858 3.22386 0 3.5 0C3.77614 0 4 0.223858 4 0.5V1H8V0.5C8 0.223858 8.22386 0 8.5 0C8.77614 0 9 0.223858 9 0.5V1H10C11.1046 1 12 1.89543 12 3V10C12 11.1046 11.1046 12 10 12H2C0.895431 12 0 11.1046 0 10V3C0 1.89543 0.895431 1 2 1H3V0.5ZM8 2V3.5C8 3.77614 8.22386 4 8.5 4C8.77614 4 9 3.77614 9 3.5V2H10C10.5523 2 11 2.44772 11 3V5H1V3C1 2.44772 1.44772 2 2 2H3V3.5C3 3.77614 3.22386 4 3.5 4C3.77614 4 4 3.77614 4 3.5V2H8ZM1 6V10C1 10.5523 1.44772 11 2 11H10C10.5523 11 11 10.5523 11 10V6H1Z"
-      />
-    </svg>
-  )
-}
-
 export function ChevronDownIcon({ size = 16, className }: IconProps) {
   return (
     <svg

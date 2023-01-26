@@ -6,3 +6,11 @@ export enum DateFilter {
   Last12Months = '365',
   Custom = 'custom',
 }
+
+export type DateRangePickerOption = {
+  value: string
+  text: string
+  startDate: Date
+}
+
+export const dateFormat = 'YYYY-MM-DD'

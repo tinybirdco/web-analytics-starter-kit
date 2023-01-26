@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router'
 
-import Button from './Button'
+import { Button } from '@tremor/react'
 import { useAnalytics } from './Provider'
 import Modal from './Modal'
 import { colors } from '../styles/theme'
@@ -20,7 +20,7 @@ export default function ErrorModal() {
   }
 
   return (
-    <Modal isOpen={!!error}>
+    <Modal isOpen={!!error} onClose={handleClose}>
       <Modal.Content>
         <span className="text-sm text-error font-semibold flex items-center gap-2 mb-4">
           <svg
@@ -62,9 +62,12 @@ export default function ErrorModal() {
           </Modal.Description>
         </div>
         <div className="flex justify-end">
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
+          <Button
+            text="Close"
+            importance="secondary"
+            color="slate"
+            onClick={handleClose}
+          />
         </div>
       </Modal.Content>
     </Modal>
