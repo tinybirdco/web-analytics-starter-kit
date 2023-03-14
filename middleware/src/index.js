@@ -12,7 +12,7 @@
         DATASOURCE = document.currentScript.getAttribute('data-datasource') || DATASOURCE;
        
         for (const attr of  document.currentScript.attributes) {
-           if( attr.name.startsWith('tb_') {
+           if( attr.name.startsWith('tb_')) {
               globalAttributes[attr.name.slice(3)] = attr.value;
            }
         }
@@ -96,8 +96,8 @@
         }
 
         payload = _maskSuspiciousAttributes(payload);
-        
-        payload = {...payloadglobalAttributes, payload}
+        payload = Object.assign({}, JSON.parse(payload), globalAttributes);
+        payload = JSON.stringify(payload);
 
         const request = new XMLHttpRequest();
         request.open('POST', url, true);
