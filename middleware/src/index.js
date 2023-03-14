@@ -13,7 +13,7 @@
        
         for (const attr of  document.currentScript.attributes) {
            if( attr.name.startsWith('tb_') {
-              globalAttributes[attr.name.slice(2)] = attr.value;
+              globalAttributes[attr.name.slice(3)] = attr.value;
            }
         }
         
