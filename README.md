@@ -107,6 +107,21 @@ You can also fork the dashboard project in this repository and create custom com
 
 </details>
 
+<details>
+<summary><h2>Custom attributes (optional)</h2></summary>
+
+You can include custom attributes in the import library snippet. Attributes name must have **tb_** prefix. Every attribute included with this requirement would be save in the payload column of your analytics_events datasource and will be included in every event. For example:
+
+```js
+<script
+    src="https://unpkg.com/@tinybirdco/flock.js"
+    data-token="TOKEN-ID"
+    tb_customer_id="CUSTOMER_ID">
+</script>
+```
+
+Would append customer_id:CUSTOMER_ID to the rest of variables saved in payload column.
+</details>
 
 <details id='gdpr'> 
 <summary><h2>GDPR best practices (optional)</h2></summary>
