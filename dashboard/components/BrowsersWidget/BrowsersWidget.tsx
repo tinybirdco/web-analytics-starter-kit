@@ -21,7 +21,7 @@ export default function BrowsersWidget() {
             variant="pie"
             data={data?.data ?? []}
             category="visits"
-            dataKey="browser"
+            index="browser"
             colors={tremorPieChartColors.map(([color]) => color)}
             showLabel={false}
             valueFormatter={formatNumber}

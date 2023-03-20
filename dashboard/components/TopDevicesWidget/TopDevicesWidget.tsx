@@ -20,7 +20,7 @@ export default function TopDevicesWidget() {
           <DonutChart
             data={data?.data ?? []}
             category="visits"
-            dataKey="device"
+            index="device"
             colors={tremorPieChartColors.map(([color]) => color)}
             showLabel={false}
             valueFormatter={formatNumber}
