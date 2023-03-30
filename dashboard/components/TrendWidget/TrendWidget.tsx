@@ -31,10 +31,10 @@ export default function TrendWidget() {
       >
         <BarChart
           data={chartData}
-          dataKey="Date"
+          index="Date"
           categories={['Number of visits']}
           colors={['blue']}
-          height="h-32"
+          className="h-32"
           showXAxis={false}
           showYAxis={false}
           showLegend={false}

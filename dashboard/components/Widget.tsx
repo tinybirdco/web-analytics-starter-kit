@@ -11,7 +11,7 @@ type WidgetProps = {
 function Widget({ children }: WidgetProps) {
   return (
     <section role="region" className="h-full">
-      <Card hFull>{children}</Card>
+      <Card className="h-full">{children}</Card>
     </section>
   )
 }
