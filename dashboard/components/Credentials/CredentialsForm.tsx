@@ -42,7 +42,6 @@ export default function CredentialsForm() {
           <TextInput
             name="token"
             placeholder="p.eyJ3kdsfk2395IjogImMzZTMwNDIxLTYwNzctNGZhMS1iMjY1LWQwM2JhZDIzZGRlOCIsICJpZCI6ICIwYmUzNTgzNi0zODAyLTQwMmUtOTUxZi0zOWFm"
-            marginTop="mt-0"
           />
           <p className="text-xs text-secondaryLight">
             Copy the token named dashboard generated with your web-analytics
@@ -54,7 +53,10 @@ export default function CredentialsForm() {
             <label className="block text-sm font-normal text-neutral-64 mb-1">
               Host
             </label>
-            <SelectBox value={hostType} onValueChange={setHostType}>
+            <SelectBox
+              value={hostType}
+              onValueChange={value => setHostType(value as HostType)}
+            >
               {hostOptions.map(({ text, value }) => (
                 <SelectBoxItem key={value} text={text} value={value} />
               ))}
@@ -72,7 +74,9 @@ export default function CredentialsForm() {
           </div>
         </div>
         <div className="flex justify-end">
-          <Button type="submit" text="View dashboard" color="emerald" />
+          <Button type="submit" color="emerald">
+            View dashboard
+          </Button>
         </div>
       </div>
     </form>

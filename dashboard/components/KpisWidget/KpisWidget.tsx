@@ -32,15 +32,14 @@ export default function KPIsWidget() {
         status={status}
         noData={!chartData?.length}
         warning={warning?.message}
-        className="pt-2"
+        className="pt-2 mt-4"
       >
         <AreaChart
           data={chartData}
-          dataKey="date"
+          index="date"
           categories={[kpiOption.label]}
           colors={['blue']}
           valueFormatter={kpiOption.formatter}
-          marginTop="mt-4"
           showLegend={false}
         />
       </Widget.Content>
