@@ -6,11 +6,12 @@ import {
   QuerySQL,
   QueryError,
 } from './types/api'
+import config from './config'
 
 export function getConfig() {
   const params = new URLSearchParams(window.location.search)
-  const token = params.get('token')
-  const host = params.get('host')
+  const token = config.authToken ?? params.get('token')
+  const host = config.host ?? params.get('host')
   return {
     token,
     host,
