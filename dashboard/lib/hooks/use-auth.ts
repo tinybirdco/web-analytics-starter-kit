@@ -18,6 +18,5 @@ export default function useAuth() {
   const { error } = useAnalytics()
   const isTokenValid = !error || ![401, 403].includes(error.status ?? 0)
   const isAuthenticated = !!token && !!host
-  const isSetup = !!config.host && !!config.authToken
-  return { isAuthenticated, token, host, isTokenValid, isSetup }
+  return { isAuthenticated, token, host, isTokenValid }
 }
