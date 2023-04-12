@@ -9,7 +9,7 @@
         host = document.currentScript.getAttribute('data-host');
         proxy = document.currentScript.getAttribute('data-proxy');
         token = document.currentScript.getAttribute('data-token');
-        domain = document.currentScript.getAttribute('data-domain')
+        domain = document.currentScript.getAttribute('data-domain');
         DATASOURCE = document.currentScript.getAttribute('data-datasource') || DATASOURCE;
        
         for (const attr of  document.currentScript.attributes) {
