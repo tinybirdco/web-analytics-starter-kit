@@ -4,11 +4,12 @@
     let DATASOURCE = 'analytics_events';
     let globalAttributes = {};
 
-    let proxy, token, host;
+    let proxy, token, host, domain;
     if (document.currentScript) {
         host = document.currentScript.getAttribute('data-host');
         proxy = document.currentScript.getAttribute('data-proxy');
         token = document.currentScript.getAttribute('data-token');
+        domain = document.currentScript.getAttribute('data-domain')
         DATASOURCE = document.currentScript.getAttribute('data-datasource') || DATASOURCE;
        
         for (const attr of  document.currentScript.attributes) {
@@ -47,7 +48,13 @@
          *   - The next request will keep the same session id and extend the TTL for 30 more minutes
          */
         const sessionId = _getSessionId() || _uuidv4();
-        document.cookie = `${COOKIE_NAME}=${sessionId}; Max-Age=1800; path=/; secure`;
+        let cookieValue = `${COOKIE_NAME}=${sessionId}; Max-Age=1800; path=/; secure`
+
+        if (domain) {
+            cookieValue += `; domain=${domain}`
+        }
+
+        document.cookie = cookieValue;
     }
 
     /**
