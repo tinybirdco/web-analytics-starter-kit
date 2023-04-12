@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+
+## [1.4.0] - 2023-04-12
+### Added
+- [Script] Add support to set the domain for the cookie
+
 ## [1.3.0] - 2023-03-15
 ### Added
 - [Script] Add support to send attributes set in the script tag
