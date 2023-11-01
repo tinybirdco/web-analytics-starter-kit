@@ -75,7 +75,7 @@ export default function useDateFilter() {
     setDateRangePickerValue({
       from: moment(from).toDate(),
       to: moment(to).toDate(),
-      selectValue: lastDays === DateFilter.Custom ? "" : lastDays,
+      selectValue: lastDays === DateFilter.Custom ? undefined : lastDays,
     });
   }, [from, to, lastDays])
 

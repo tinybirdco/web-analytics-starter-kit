@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import { Button } from '@tremor/react'
 import { useAnalytics } from './Provider'
 import Modal from './Modal'
-import { colors } from '../styles/theme'
+import { colorsTinybird } from '../styles/theme'
 
 export default function ErrorModal() {
   const router = useRouter()
@@ -30,7 +30,7 @@ export default function ErrorModal() {
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
-            <rect width="16" height="16" rx="8" fill={colors.error} />
+            <rect width="16" height="16" rx="8" fill={colorsTinybird.error} />
             <path
               fillRule="evenodd"
               clipRule="evenodd"
