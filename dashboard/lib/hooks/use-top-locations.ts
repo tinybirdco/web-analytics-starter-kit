@@ -53,14 +53,14 @@ async function getTopLocations(
 }
 
 export default function useTopLocations() {
-  const { startDate, endDate } = useDateFilter()
+  const { from, to } = useDateFilter()
   const [sorting] = useParams({
     key: 'top_locations_sorting',
     defaultValue: TopLocationsSorting.Visitors,
     values: Object.values(TopLocationsSorting),
   })
   return useQuery(
-    [sorting, startDate, endDate, 'topLocations'],
+    [sorting, from, to, 'topLocations'],
     getTopLocations
   )
 }

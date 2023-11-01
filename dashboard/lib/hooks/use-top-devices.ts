@@ -24,6 +24,6 @@ async function getTopDevices(
 }
 
 export default function useTopDevices() {
-  const { startDate, endDate } = useDateFilter()
-  return useQuery([startDate, endDate, 'topDevices'], getTopDevices)
+  const { from, to } = useDateFilter()
+  return useQuery([from, to, 'topDevices'], getTopDevices)
 }

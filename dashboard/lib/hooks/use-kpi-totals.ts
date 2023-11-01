@@ -76,9 +76,9 @@ function getNotFoundColumnsWarning(warning: QueryError | null): string | null {
 }
 
 export default function useKpiTotals() {
-  const { startDate, endDate } = useDateFilter()
+  const { from, to } = useDateFilter()
   const { warning, ...query } = useQuery(
-    [startDate, endDate, 'kpiTotals'],
+    [from, to, 'kpiTotals'],
     getKpiTotals
   )
   return { ...query, warning: getNotFoundColumnsWarning(warning) }

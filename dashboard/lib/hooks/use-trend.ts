@@ -24,6 +24,6 @@ export async function getTrend(
 }
 
 export default function useTrend() {
-  const { startDate, endDate } = useDateFilter()
-  return useQuery([startDate, endDate, 'trend'], getTrend)
+  const { from, to } = useDateFilter()
+  return useQuery([from, to, 'trend'], getTrend)
 }

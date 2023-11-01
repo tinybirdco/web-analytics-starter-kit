@@ -31,6 +31,6 @@ async function getTopSources(
 }
 
 export default function useTopSources() {
-  const { startDate, endDate } = useDateFilter()
-  return useQuery([startDate, endDate, 'topSources'], getTopSources)
+  const { from, to } = useDateFilter()
+  return useQuery([from, to, 'topSources'], getTopSources)
 }
