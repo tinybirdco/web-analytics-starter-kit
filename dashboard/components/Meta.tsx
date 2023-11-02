@@ -1,14 +1,16 @@
 import Head from 'next/head'
+import config from '../lib/config'
 
-const { description, imagePath, title, url } = {
+const meta = {
   title: 'Web Analytics Dashboard  · Tinybird',
   description: 'Web Analytics Starter Kit built with Tinybird and Next.js',
   url: 'https://analytics.tinybird.co',
-  imagePath: `/banner.png`,
-}
+  image: `${config.dashboardURL}/banner.png`,
+} as const
 
 export default function Meta() {
-  const image = `${process.env.NEXT_PUBLIC_TINYBIRD_DASHBOARD_URL}${imagePath}`
+  const { description, image, title, url } = meta
+
   return (
     <Head>
       <title>{title}</title>

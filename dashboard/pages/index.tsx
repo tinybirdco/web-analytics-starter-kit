@@ -7,6 +7,7 @@ import Credentials from '../components/Credentials'
 import useAuth from '../lib/hooks/use-auth'
 import Meta from '../components/Meta'
 import ErrorModal from '../components/ErrorModal'
+import config from '../lib/config'
 
 export default function DashboardPage() {
   const { isAuthenticated, isTokenValid } = useAuth()
@@ -17,12 +18,12 @@ export default function DashboardPage() {
         <Script
           defer
           src="https://unpkg.com/@tinybirdco/flock.js"
-          data-token={process.env.NEXT_PUBLIC_TINYBIRD_TRACKER_TOKEN}
+          data-token={config.trackerToken}
         />
       )}
       <Meta />
-      <div className="bg-body min-h-screen py-5 px-5 sm:px-10 text-sm leading-5 text-secondary">
-        <div className="max-w-7xl mx-auto">
+      <div className="min-h-screen px-5 py-5 text-sm leading-5 bg-body sm:px-10 text-secondary">
+        <div className="mx-auto max-w-7xl">
           <div className="space-y-6 sm:space-y-10">
             {isAuthenticated && isTokenValid && (
               <>
