@@ -1,10 +1,10 @@
-import Widget from '../Widget'
-import useTopLocations from '../../lib/hooks/use-top-locations'
 import { BarList } from '@tremor/react'
+import { TopLocationsSorting } from '../../lib/types/top-locations'
+import Widget from '../Widget'
+import { cx } from '../../lib/utils'
 import { useMemo } from 'react'
 import useParams from '../../lib/hooks/use-params'
-import { TopLocationsSorting } from '../../lib/types/top-locations'
-import { cx } from '../../lib/utils'
+import useTopLocations from '../../lib/hooks/use-top-locations'
 
 export default function TopLocationsWidget() {
   const { data, status, warning } = useTopLocations()
@@ -23,7 +23,7 @@ export default function TopLocationsWidget() {
 
   return (
     <Widget>
-      <Widget.Title>Top Pages</Widget.Title>
+      <Widget.Title>Top Countries</Widget.Title>
       <Widget.Content
         status={status}
         noData={!data?.data?.length}
