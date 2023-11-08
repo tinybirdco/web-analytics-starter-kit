@@ -28,6 +28,9 @@ SQL >
       {% else %}
         and date <= today()
       {% end %}
+      {% if defined(client_id) %}
+      and client_id = {{client_id}}
+      {% end %}
     group by
       referrer
     order by
