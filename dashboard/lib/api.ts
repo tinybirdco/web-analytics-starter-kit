@@ -11,9 +11,11 @@ export function getConfig() {
   const params = new URLSearchParams(window.location.search)
   const token = params.get('token')
   const host = params.get('host')
+  const client_id = params.get('client_id')
   return {
     token,
     host,
+    client_id
   }
 }
 
@@ -21,7 +23,7 @@ export async function client<T>(
   path: string,
   params?: RequestInit
 ): Promise<ClientResponse<T>> {
-  const { host, token } = getConfig()
+  const { host, token, client_id } = getConfig()
 
   if (!token || !host) throw new Error('Configuration not found')
 
@@ -31,11 +33,11 @@ export async function client<T>(
       'https://ui.us-east.tinybird.co': 'https://api.us-east.tinybird.co',
     }[host] ?? host
 
-  const response = await fetch(`${apiUrl}/v0${path}`, {
+  const response = await fetch(`${apiUrl}/v0${path}&client_id=${client_id}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
-    ...params,
+    ...{client_id, ...params},
   })
   const data = (await response.json()) as ClientResponse<T>
 

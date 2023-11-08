@@ -4,6 +4,7 @@ DESCRIPTION >
 
 SQL >
     select
+      client_id,
       toDate(timestamp) as date,
       device,
       browser,
@@ -14,6 +15,7 @@ SQL >
     from
       analytics_hits
     group by
+      client_id,
       date,
       device,
       browser,
@@ -23,5 +25,5 @@ SQL >
 TYPE materialized
 DATASOURCE analytics_pages_mv
 ENGINE "AggregatingMergeTree"
-ENGINE_SORTING_KEY "date, device, browser, location, pathname"
+ENGINE_SORTING_KEY "client_id,date, device, browser, location, pathname"
 ENGINE_PARTITION_KEY "toYYYYMM(date)"
