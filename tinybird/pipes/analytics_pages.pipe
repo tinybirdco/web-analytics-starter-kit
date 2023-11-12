@@ -3,27 +3,28 @@ DESCRIPTION >
     Aggregate by pathname and calculate session and hits
 
 SQL >
-    select
-      client_id,
-      toDate(timestamp) as date,
-      device,
-      browser,
-      location,
-      pathname,
-      uniqState(session_id) as visits,
-      countState() as hits
-    from
-      analytics_hits
-    group by
-      client_id,
-      date,
-      device,
-      browser,
-      location,
-      pathname
+
+    SELECT
+        client_id,
+        toDate(timestamp) AS date,
+        device,
+        browser,
+        location,
+        pathname,
+        uniqState(session_id) AS visits,
+        countState() AS hits
+    FROM analytics_hits
+    GROUP BY
+        client_id,
+        date,
+        device,
+        browser,
+        location,
+        pathname
 
 TYPE materialized
 DATASOURCE analytics_pages_mv
 ENGINE "AggregatingMergeTree"
-ENGINE_SORTING_KEY "client_id,date, device, browser, location, pathname"
 ENGINE_PARTITION_KEY "toYYYYMM(date)"
+ENGINE_SORTING_KEY "client_id, date, device, browser, location, pathname"
+

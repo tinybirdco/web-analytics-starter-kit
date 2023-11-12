@@ -1,4 +1,4 @@
-TOKEN tracker APPEND
+TOKEN "tracker" APPEND
 
 DESCRIPTION >
     Analytics events landing data source

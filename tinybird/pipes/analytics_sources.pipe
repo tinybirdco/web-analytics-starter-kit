@@ -3,6 +3,7 @@ DESCRIPTION >
     Aggregate by referral and calculate session and hits
 
 SQL >
+
     select
       client_id,
       toDate(timestamp) AS date,
@@ -25,5 +26,6 @@ SQL >
 TYPE materialized
 DATASOURCE analytics_sources_mv
 ENGINE "AggregatingMergeTree"
-ENGINE_SORTING_KEY "client_id, date, device, browser, location, referrer"
 ENGINE_PARTITION_KEY "toYYYYMM(date)"
+ENGINE_SORTING_KEY "client_id, date, device, browser, location, referrer"
+
