@@ -12,7 +12,7 @@ export function getConfig() {
   const params = new URLSearchParams(window.location.search)
   const token = config.authToken ?? params.get('token')
   const host = config.host ?? params.get('host')
-  const client_id = config.client_id ?? params.get('client_id')
+  const client_id = params.get('client_id')
   return {
     token,
     host,

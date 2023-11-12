@@ -6,3 +6,5 @@ node_modules
 dist
 .e
 *.swp
+dashboard/.env
+pnpm-lock.yaml

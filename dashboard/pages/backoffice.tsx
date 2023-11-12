@@ -9,18 +9,22 @@ import useAuth from '../lib/hooks/use-auth'
 import Meta from '../components/Meta'
 import ErrorModal from '../components/ErrorModal'
 
+interface LinkListProps {
+  links: string[];
+}
 
-function LinkList({ links }) {
+
+function LinkList({ links }: LinkListProps) {
   const { token } = useAuth()
   return (
     <ul>
       {links.map((link, index) => (
         <li key={index}>
-          <a href={"/company_website?client_id=" + link +"&seed=" + (index+100) + "&token=" + token  } target="_blank" rel="noopener noreferrer">
-            {link}
+          <a href={"/company_website?client_id=" + link + "&token=" + token  } target="_blank" rel="noopener noreferrer">
+            {link} Homepage
           </a>
           <a href={"/?client_id=" + link  + "&token=" + token + "&host=https://ui.tinybird.co"  } target="_blank" rel="noopener noreferrer">
-            · backoffice
+           client dashboard
           </a>
         </li>
       ))}

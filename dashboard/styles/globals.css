@@ -14,6 +14,21 @@
 /* Reset tremor font-family */
 :root {
   --tr-font-family: 'Inter var' !important;
+  --primary-color: #0055ff;
+  --secondary-color: #ff5500;
+  --accent-color: #00ff55;
+}
+
+body {
+  font-family: 'Inter var', sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  background-color: #fff;
+  color: #333;
+}
+
+a {
+  color: var(--primary-color);
 }
 
 .arrow {
@@ -50,4 +65,42 @@ button[role='tab']:not([data-state='active']) > .arrow {
 .ant-picker-input > input {
   outline: none;
   max-width: 100px;
+}
+
+h1 {
+  font-size: 2em;
+  margin-bottom: 0.5em;
+}
+h2 {
+  font-size: 1.75em;
+  margin-bottom: 0.5em;
+}
+
+ul {
+  list-style-type: none; /* Removes default bullets */
+  padding: 0;
+  margin: 0;
+  /* No changes here, keep it as a regular block container */
+}
+
+li {
+  display: grid;
+  grid-template-columns: 1fr auto; /* Allocate more space to the first link */
+  gap: 10px; /* Space between the two links */
+  align-items: center; /* Aligns links vertically */
+  padding: 8px;
+  border-bottom: 1px solid #eee;
+}
+
+li:last-child {
+  border-bottom: none; /* Remove border for the last item */
+}
+
+li a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+li a:hover {
+  text-decoration: underline;
 }
