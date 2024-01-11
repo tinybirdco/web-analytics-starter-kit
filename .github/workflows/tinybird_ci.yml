@@ -1,0 +1,29 @@
+
+    ##################################################
+    ###   Visit https://github.com/tinybirdco/ci   ###
+    ###   for more details or custom CI/CD         ###
+    ##################################################
+
+    name: Tinybird - CI Workflow
+
+    on:
+      workflow_dispatch:
+      pull_request:
+        branches:
+          - main
+          - master
+        types: [opened, reopened, labeled, unlabeled, synchronize, closed]
+        paths:
+          - '*'
+
+    concurrency: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+
+    jobs:
+        ci:
+          uses: tinybirdco/ci/.github/workflows/ci.yml@main
+          with:
+            tb_deploy: true
+            data_project_dir: .
+          secrets:
+            tb_admin_token: ${{ secrets.TB_ADMIN_TOKEN }}
+            tb_host: http://localhost:8001
