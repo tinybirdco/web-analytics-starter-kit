@@ -1,0 +1,25 @@
+
+    ##################################################
+    ###   Visit https://github.com/tinybirdco/ci   ###
+    ###   for more details or custom CI/CD         ###
+    ##################################################
+
+    name: Tinybird - CD Workflow
+
+    on:
+      workflow_dispatch:
+      push:
+        branches:
+          - main
+          - master
+        paths:
+          - '*'
+    jobs:
+      cd:
+        uses: tinybirdco/ci/.github/workflows/cd.yml@main
+        with:
+          tb_deploy: true
+          data_project_dir: .
+        secrets:
+          tb_admin_token: ${{ secrets.TB_ADMIN_TOKEN }}
+          tb_host: http://localhost:8001
