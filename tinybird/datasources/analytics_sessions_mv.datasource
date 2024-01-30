@@ -1,4 +1,3 @@
-# Data Source created from Pipe 'analytics_sessions'
 
 SCHEMA >
     `client_id` String,

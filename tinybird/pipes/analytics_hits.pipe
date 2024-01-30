@@ -15,12 +15,12 @@ SQL >
       action,
       version,
       coalesce(session_id,'0') as session_id,
-      decodeURLComponent(extractURLParameter(JSONExtractString(payload, 'referrer'), 'client_id')) as client_id,
       JSONExtractString(payload, 'locale') as locale,
       JSONExtractString(payload, 'location') as location,
       JSONExtractString(payload, 'referrer') as referrer,
       JSONExtractString(payload, 'pathname') as pathname,
       JSONExtractString(payload, 'href') as href,
+      decodeURLComponent(extractURLParameter(href, 'client_id')) as client_id,
       lower(JSONExtractString(payload, 'user-agent')) as user_agent
     FROM
       analytics_events
