@@ -52,6 +52,9 @@ SQL >
       analytics_hits
     where
       toDate(timestamp) = {{Date(date_from)}}
+      {% if defined(client_id) %}
+      and client_id = {{client_id}}
+      {% end %}
     group by
       toStartOfHour(timestamp), session_id
     {% else %}
@@ -75,6 +78,9 @@ SQL >
         and date <= {{Date(date_to)}}
       {% else %}
         and date <= today()
+      {% end %}
+      {% if defined(client_id) %}
+        and client_id = {{client_id}}
       {% end %}
     group by
       date, session_id
