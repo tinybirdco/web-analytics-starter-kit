@@ -31,6 +31,10 @@ $ cd web-analytics-starter-kit/dashboard
 $ npm install
 ```
 
+### Setup .env file
+There is a template .env.example file here in the ./dashboard folder.
+Copy it to be .env and populate the NEXT_PUBLIC_TINYBIRD_TRACKER_TOKEN and the NEXT_PUBLIC_TINYBIRD_AUTH_TOKEN with your admin token for the Tinybird workspace to allow read/write from the APIs and event Datasource respectively.
+
 ### Build for Development
 
 Once you have installed the dependencies, run:
@@ -39,7 +43,10 @@ Once you have installed the dependencies, run:
 npm run dev
 ```
 
-You will find the app running at http://localhost:3000
+Note that if you change the .env file contents, you'll need to rebuild the npm project.
+
+You will find the main app running at http://localhost:3000
+You will find the multitenant display at http://localhost:3000/backoffice
 
 ### Build for Production
 
