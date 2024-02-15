@@ -22,6 +22,3 @@ SQL >
 
 TYPE materialized
 DATASOURCE analytics_pages_mv
-ENGINE "AggregatingMergeTree"
-ENGINE_SORTING_KEY "date, device, browser, location, pathname"
-ENGINE_PARTITION_KEY "toYYYYMM(date)"
