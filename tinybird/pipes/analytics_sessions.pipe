@@ -3,20 +3,17 @@ DESCRIPTION >
     Aggregate by session_id and calculate session metrics
 
 SQL >
-    select
-      toDate(timestamp) as date,
-      session_id,
-      anySimpleState(device) as device,
-      anySimpleState(browser) as browser,
-      anySimpleState(location) as location,
-      minSimpleState(timestamp) as first_hit,
-      maxSimpleState(timestamp) as latest_hit,
-      countState() as hits
-    from
-      analytics_hits
-    group by
-      date,
-      session_id
+    SELECT
+        toDate(timestamp) AS date,
+        session_id,
+        anySimpleState(device) AS device,
+        anySimpleState(browser) AS browser,
+        anySimpleState(location) AS location,
+        minSimpleState(timestamp) AS first_hit,
+        maxSimpleState(timestamp) AS latest_hit,
+        countState() AS hits
+    FROM analytics_hits
+    GROUP BY date, session_id
 
-TYPE materialized
+TYPE MATERIALIZED
 DATASOURCE analytics_sessions_mv

@@ -3,25 +3,18 @@ DESCRIPTION >
     Aggregate by referral and calculate session and hits
 
 SQL >
-    with (select domainWithoutWWW(href) from analytics_hits limit 1) as currenct_domain
-    select
-      toDate(timestamp) AS date,
-      device,
-      browser,
-      location,
-      referrer,
-      uniqState(session_id) AS visits,
-      countState() AS hits
-    from
-      analytics_hits
-    where
-      domainWithoutWWW(referrer) <> currenct_domain
-    group by
-      date,
-      device,
-      browser,
-      location,
-      referrer
+    WITH (SELECT domainWithoutWWW(href) FROM analytics_hits LIMIT 1) AS currenct_domain
+    SELECT
+        toDate(timestamp) AS date,
+        device,
+        browser,
+        location,
+        referrer,
+        uniqState(session_id) AS visits,
+        countState() AS hits
+    FROM analytics_hits
+    WHERE domainWithoutWWW(referrer) != currenct_domain
+    GROUP BY date, device, browser, location, referrer
 
-TYPE materialized
+TYPE MATERIALIZED
 DATASOURCE analytics_sources_mv
