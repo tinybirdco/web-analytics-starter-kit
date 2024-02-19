@@ -37,11 +37,11 @@ async function getTopPages(
 }
 
 export default function useTopPages() {
-  const { startDate, endDate } = useDateFilter()
+  const { from, to } = useDateFilter()
   const [sorting] = useParams({
     key: 'top_pages_sorting',
     defaultValue: TopPagesSorting.Visitors,
     values: Object.values(TopPagesSorting),
   })
-  return useQuery([sorting, startDate, endDate, 'topPages'], getTopPages)
+  return useQuery([sorting, from, to, 'topPages'], getTopPages)
 }

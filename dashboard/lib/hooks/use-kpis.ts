@@ -51,12 +51,12 @@ async function getKpis(kpi: KpiType, date_from?: string, date_to?: string) {
 }
 
 export default function useKpis() {
-  const { startDate, endDate } = useDateFilter()
+  const { from, to } = useDateFilter()
   const router = useRouter()
   const { kpi: kpiParam } = router.query
   const kpi = isKpi(kpiParam) ? kpiParam : 'visits'
   const kpiOption = KPI_OPTIONS.find(({ value }) => value === kpi)!
-  const query = useQuery([kpi, startDate, endDate, 'kpis'], getKpis)
+  const query = useQuery([kpi, from, to, 'kpis'], getKpis)
 
   const setKpi = (kpi: KpiType) => {
     const searchParams = new URLSearchParams(window.location.search)

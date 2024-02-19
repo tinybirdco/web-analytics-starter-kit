@@ -1,5 +1,5 @@
 import { Popover } from '@headlessui/react'
-import { DateRangePicker } from '@tremor/react'
+import { DateRangePicker, DateRangePickerItem } from '@tremor/react'
 import moment from 'moment'
 import { QuestionIcon } from './Icons'
 
@@ -53,9 +53,15 @@ export default function DateFilter() {
         <DateRangePicker
           value={dateRangePickerValue}
           onValueChange={onDateRangePickerValueChange}
-          options={dateFilterOptions}
-          enableYearPagination
-        />
+          // options={dateFilterOptions}
+          enableYearNavigation
+        >
+          {dateFilterOptions.map(({ text, value, startDate }) => (
+            <DateRangePickerItem key={text} value={value} from={startDate}>
+              {text}
+            </DateRangePickerItem>
+          ))}
+        </DateRangePicker>
       </div>
     </div>
   )

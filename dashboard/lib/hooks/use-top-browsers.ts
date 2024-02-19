@@ -24,6 +24,6 @@ async function getTopBrowsers(
 }
 
 export default function useTopBrowsers() {
-  const { startDate, endDate } = useDateFilter()
-  return useQuery([startDate, endDate, 'topBrowsers'], getTopBrowsers)
+  const { from, to } = useDateFilter()
+  return useQuery([from, to, 'topBrowsers'], getTopBrowsers)
 }
