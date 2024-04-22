@@ -11,6 +11,6 @@ SCHEMA >
     `payload` String `json:$.payload`
 
 ENGINE MergeTree
-ENGINE_PARTITION_KEY toYYYYMM(timestamp)
+ENGINE_PARTITION_KEY toYear(timestamp)
 ENGINE_SORTING_KEY timestamp
 ENGINE_TTL timestamp + toIntervalDay(60)
