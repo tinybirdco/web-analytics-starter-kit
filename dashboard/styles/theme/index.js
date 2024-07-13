@@ -2,7 +2,7 @@ const colors = {
   current: 'currentColor',
   primary: '#27F795',
   primaryDark: '#27F795',
-  primaryLight: '#B1FAC5',
+  primaryLight: '#EBFEF5',
   secondary: '#25283D',
   secondaryLight: '#A5A7B4',
   success: '#1FCC83',
