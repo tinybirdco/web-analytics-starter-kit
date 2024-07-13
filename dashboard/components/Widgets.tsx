@@ -8,12 +8,13 @@ import {
   PieChart,
   tinybirdBorderColor,
   tinybirdColorPalette,
+  tinybirdFontFamily,
 } from '@tinybirdco/charts'
 import { fetcher, getConfig } from '../lib/api'
 import { useRouter } from 'next/router'
 import useDateFilter from '../lib/hooks/use-date-filter'
 import Loader from './Loader'
-import KpisTabs from './KpisWidget/KpisTabs'
+import KpisTabs from './KpisTabs'
 import useKpis from '../lib/hooks/use-kpis'
 import useKpiTotals from '../lib/hooks/use-kpi-totals'
 
@@ -60,6 +61,8 @@ export default function Widgets() {
         borderColor: tinybirdBorderColor,
         colorPalette: tinybirdColorPalette,
         padding: 24,
+        fontFamily: tinybirdFontFamily,
+        fontSize: 12,
       }}
       fallbacks={{
         loading: <Loader />,
@@ -124,7 +127,7 @@ export default function Widgets() {
             <BarList
               endpoint={topPagesEndpoint}
               index="pathname"
-              categories={['hits', 'visits']}
+              categories={['visits', 'hits']}
               title="Top Pages"
               params={{
                 limit: 8,
@@ -138,7 +141,7 @@ export default function Widgets() {
             <BarList
               endpoint={topLocationsEndpoint}
               index="location"
-              categories={['hits', 'visits']}
+              categories={['visits', 'hits']}
               title="Top Locations"
               params={{
                 limit: 8,
@@ -155,7 +158,7 @@ export default function Widgets() {
               <BarList
                 endpoint={topSourcesEndpoint}
                 index="referrer"
-                categories={['hits', 'visits']}
+                categories={['visits', 'hits']}
                 title="Top Sources"
                 params={{
                   limit: 8,
@@ -170,7 +173,7 @@ export default function Widgets() {
             <DonutChart
               endpoint={topDevicesEndpoint}
               index="device"
-              categories={['hits', 'visits']}
+              categories={['visits', 'hits']}
               title="Top Devices"
               params={{
                 limit: 8,
@@ -189,7 +192,7 @@ export default function Widgets() {
             <PieChart
               endpoint={topBrowsersEndpoint}
               index="browser"
-              categories={['hits', 'visits']}
+              categories={['visits', 'hits']}
               title="Top Browsers"
               params={{
                 limit: 8,
