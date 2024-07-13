@@ -8,7 +8,6 @@ import {
   PieChart,
   tinybirdBorderColor,
   tinybirdColorPalette,
-  tinybirdFontFamily,
 } from '@tinybirdco/charts'
 import { fetcher, getConfig } from '../lib/api'
 import { useRouter } from 'next/router'
@@ -17,6 +16,7 @@ import Loader from './Loader'
 import KpisTabs from './KpisTabs'
 import useKpis from '../lib/hooks/use-kpis'
 import useKpiTotals from '../lib/hooks/use-kpi-totals'
+import { typography } from '../styles/theme'
 
 const enum WidgetHeight {
   XLarge = 588,
@@ -61,7 +61,7 @@ export default function Widgets() {
         borderColor: tinybirdBorderColor,
         colorPalette: tinybirdColorPalette,
         padding: 24,
-        fontFamily: tinybirdFontFamily,
+        fontFamily: typography.fontFamily,
         fontSize: 12,
       }}
       fallbacks={{
