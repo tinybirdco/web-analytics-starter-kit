@@ -6,6 +6,8 @@ import {
   ChartProvider,
   DonutChart,
   PieChart,
+  tinybirdBorderColor,
+  tinybirdColorPalette,
 } from '@tinybirdco/charts'
 import { fetcher, getConfig } from '../lib/api'
 import { useRouter } from 'next/router'
@@ -55,8 +57,8 @@ export default function Widgets() {
       }}
       styles={{
         borderRadius: 8,
-        boxShadow:
-          '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
+        borderColor: tinybirdBorderColor,
+        colorPalette: tinybirdColorPalette,
         padding: 24,
       }}
       fallbacks={{
@@ -75,7 +77,6 @@ export default function Widgets() {
             endpoint={kpisEndpoint}
             index="date"
             categories={[kpi]}
-            colorPalette={['#2675f4']}
             boxShadow="none"
             params={{
               start_date: startDate,
@@ -108,7 +109,6 @@ export default function Widgets() {
               index="t"
               categories={['visits']}
               title="Users in last 30 minutes"
-              colorPalette={['#2675f4']}
               height={WidgetHeight.Small}
               options={{
                 yAxis: { show: false },
@@ -131,7 +131,6 @@ export default function Widgets() {
                 start_date: startDate,
                 end_date: endDate,
               }}
-              colorPalette={['#d4e7fe']}
               height={WidgetHeight.Large}
             />
           </InView>
@@ -146,7 +145,6 @@ export default function Widgets() {
                 start_date: startDate,
                 end_date: endDate,
               }}
-              colorPalette={['#d4e7fe']}
               height={WidgetHeight.Large}
             />
           </InView>
@@ -164,7 +162,6 @@ export default function Widgets() {
                   start_date: startDate,
                   end_date: endDate,
                 }}
-                colorPalette={['#d4e7fe']}
                 height={WidgetHeight.Large}
               />
             </InView>
@@ -180,7 +177,7 @@ export default function Widgets() {
                 start_date: startDate,
                 end_date: endDate,
               }}
-              colorPalette={['#2675f4', '#009be5', '#00aece', '#00aece']}
+              colorPalette={['#27F795', '#F72768', '#F7D427', '#2768F7']}
               height={WidgetHeight.Medium}
               showLegend
               options={{
@@ -199,7 +196,7 @@ export default function Widgets() {
                 start_date: startDate,
                 end_date: endDate,
               }}
-              colorPalette={['#2675f4', '#009be5', '#00aece', '#00aece']}
+              colorPalette={['#27F795', '#F72768', '#F7D427', '#2768F7']}
               height={WidgetHeight.Medium}
               showLegend
               options={{
