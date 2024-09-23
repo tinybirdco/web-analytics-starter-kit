@@ -12,7 +12,6 @@ import {
 import { fetcher, getConfig } from '../lib/api'
 import { useRouter } from 'next/router'
 import useDateFilter from '../lib/hooks/use-date-filter'
-import Loader from './Loader'
 import KpisTabs from './KpisTabs'
 import useKpis from '../lib/hooks/use-kpis'
 import useKpiTotals from '../lib/hooks/use-kpi-totals'
@@ -65,9 +64,6 @@ export default function Widgets() {
         padding: 24,
         fontFamily: typography.fontFamily,
         fontSize: 12,
-      }}
-      fallbacks={{
-        loading: <Loader />,
       }}
     >
       <div className="grid grid-cols-2 gap-5 sm:gap-10 grid-rows-3-auto">
