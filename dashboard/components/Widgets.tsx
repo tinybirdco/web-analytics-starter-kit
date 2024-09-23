@@ -7,7 +7,6 @@ import {
   DonutChart,
   PieChart,
   tinybirdBorderColor,
-  tinybirdColorPalette,
 } from '@tinybirdco/charts'
 import { fetcher, getConfig } from '../lib/api'
 import { useRouter } from 'next/router'
@@ -60,7 +59,7 @@ export default function Widgets() {
       styles={{
         borderRadius: 8,
         borderColor: tinybirdBorderColor,
-        colorPalette: tinybirdColorPalette,
+        colorPalette: ['#27F795', '#F72768', '#F7D427', '#2768F7'],
         padding: 24,
         fontFamily: typography.fontFamily,
         fontSize: 12,
@@ -159,6 +158,9 @@ export default function Widgets() {
                 end_date: endDate,
               }}
               height={WidgetHeight.Large}
+              indexConfig={{
+                renderBarContent: item => item.label || 'Unknown',
+              }}
             />
           </InView>
         </div>
@@ -205,7 +207,6 @@ export default function Widgets() {
                 start_date: startDate,
                 end_date: endDate,
               }}
-              colorPalette={['#27F795', '#F72768', '#F7D427', '#2768F7']}
               height={WidgetHeight.Medium}
               showLegend
               options={{
@@ -224,7 +225,6 @@ export default function Widgets() {
                 start_date: startDate,
                 end_date: endDate,
               }}
-              colorPalette={['#27F795', '#F72768', '#F7D427', '#2768F7']}
               height={WidgetHeight.Medium}
               showLegend
               options={{
