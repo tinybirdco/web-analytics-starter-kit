@@ -17,6 +17,7 @@ import KpisTabs from './KpisTabs'
 import useKpis from '../lib/hooks/use-kpis'
 import useKpiTotals from '../lib/hooks/use-kpi-totals'
 import { typography } from '../styles/theme'
+import useDomain from '../lib/hooks/use-domain'
 
 const enum WidgetHeight {
   XLarge = 588,
@@ -49,6 +50,7 @@ export default function Widgets() {
   const { startDate, endDate } = useDateFilter()
   const { kpi, setKpi } = useKpis()
   const { data: kpiTotals } = useKpiTotals()
+  const { domain } = useDomain()
 
   return (
     <ChartProvider
@@ -135,6 +137,18 @@ export default function Widgets() {
                 end_date: endDate,
               }}
               height={WidgetHeight.Large}
+              indexConfig={{
+                renderBarContent: item => (
+                  <a
+                    className="truncate hover:underline"
+                    href={`https://${domain}${item.label}`}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {item.label}
+                  </a>
+                ),
+              }}
             />
           </InView>
           <InView height={WidgetHeight.Large}>
@@ -166,6 +180,21 @@ export default function Widgets() {
                   end_date: endDate,
                 }}
                 height={WidgetHeight.Large}
+                indexConfig={{
+                  renderBarContent: item =>
+                    item.label ? (
+                      <a
+                        href={`https://${item.label}`}
+                        className="truncate hover:underline"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        {item.label}
+                      </a>
+                    ) : (
+                      'Direct'
+                    ),
+                }}
               />
             </InView>
           </div>
