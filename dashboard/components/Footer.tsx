@@ -11,14 +11,14 @@ export default function Footer() {
           href="https://tinybird.co"
           target="_blank"
           rel="noreferrer"
-          className="text-secondary font-semibold"
+          className="text-[#2D27F7] font-semibold"
         >
           Tinybird
         </a>
       </p>
       {!!token && (
         <a
-          className="underline text-secondary text-sm"
+          className="underline text-[#2D27F7] text-sm"
           href="https://github.com/tinybirdco/web-analytics-starter-kit"
           target="blank"
           rel="noreferrer"
