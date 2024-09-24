@@ -43,13 +43,11 @@ export default function DateFilter() {
           <QuestionIcon className="text-secondaryLight" />
           <div className="sr-only">What is the time zone used?</div>
         </Popover.Button>
-
         <Popover.Panel className="absolute bottom-6 -right-10 bg-secondary text-white text-xs font-light rounded py-1 px-2 z-[2] w-24">
           UTC timezone
         </Popover.Panel>
       </Popover>
-
-      <div className="min-w-[165px]">
+      <div className="min-w-[165px] z-20">
         <DateRangePicker
           value={dateRangePickerValue}
           onValueChange={onDateRangePickerValueChange}

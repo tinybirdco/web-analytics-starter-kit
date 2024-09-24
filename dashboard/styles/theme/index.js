@@ -1,8 +1,8 @@
 const colors = {
   current: 'currentColor',
-  primary: '#0066FF',
-  primaryDark: '#0146AE',
-  primaryLight: '#e5f0ff',
+  primary: '#27F795',
+  primaryDark: '#27F795',
+  primaryLight: '#EBFEF5',
   secondary: '#25283D',
   secondaryLight: '#A5A7B4',
   success: '#1FCC83',

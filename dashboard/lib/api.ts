@@ -8,8 +8,8 @@ import {
 } from './types/api'
 import config from './config'
 
-export function getConfig() {
-  const params = new URLSearchParams(window.location.search)
+export function getConfig(search?: string) {
+  const params = new URLSearchParams(search || window.location.search)
   const token = config.authToken ?? params.get('token')
   const host = config.host ?? params.get('host')
   return {
@@ -43,6 +43,30 @@ export async function client<T>(
   if (!response.ok) {
     throw new QueryError(data?.error ?? 'Something went wrong', response.status)
   }
+
+  return data
+}
+
+export async function fetcher<T>(
+  path: string,
+  params?: RequestInit
+): Promise<ClientResponse<T>> {
+  const { host, token } = getConfig()
+
+  if (!token || !host) throw new Error('Configuration not found')
+
+  const response = await fetch(path, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    ...params,
+  })
+  const data = (await response.json()) as ClientResponse<T>
+
+  if (!response.ok) {
+    throw new QueryError(data?.error ?? 'Something went wrong', response.status)
+  }
+
   return data
 }
 
