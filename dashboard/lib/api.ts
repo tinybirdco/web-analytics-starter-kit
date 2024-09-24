@@ -66,7 +66,7 @@ export async function fetcher<T>(
   if (!response.ok) {
     throw new QueryError(data?.error ?? 'Something went wrong', response.status)
   }
-  console.log(data)
+
   return data
 }
 
