@@ -11,8 +11,8 @@ DESCRIPTION >
 
 SQL >
     %
-    select browser, uniqMerge(visits) as visits, countMerge(hits) as hits
-    from analytics_sources_mv
+    select browser, uniq(session_id) as visits, countMerge(hits) as hits
+    from analytics_sessions_mv
     where
         {% if defined(date_from) %}
             date
