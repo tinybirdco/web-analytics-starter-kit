@@ -1,7 +1,1 @@
-.DS_Store
-.venv
 .tinyb
-.vercel
-node_modules
-dist
-.e
