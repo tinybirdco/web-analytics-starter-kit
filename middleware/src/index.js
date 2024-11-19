@@ -64,9 +64,15 @@
         return null
       }
 
+      let item = null;
+
       try {
-        const item = JSON.parse(serializedItem)
+        item = JSON.parse(serializedItem)
       } catch (error) {
+        return null
+      }
+
+      if(typeof item !== 'object' || item === null) {
         return null
       }
 
