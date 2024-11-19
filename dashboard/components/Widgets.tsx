@@ -79,8 +79,8 @@ export default function Widgets() {
             categories={[kpi]}
             boxShadow="none"
             params={{
-              start_date: startDate,
-              end_date: endDate,
+              date_from: startDate,
+              date_to: endDate,
             }}
             height={WidgetHeight.XLarge}
             options={{
@@ -115,8 +115,8 @@ export default function Widgets() {
                 xAxis: { show: false },
               }}
               params={{
-                start_date: startDate,
-                end_date: endDate,
+                date_from: startDate,
+                date_to: endDate,
               }}
             />
           </InView>
@@ -128,8 +128,8 @@ export default function Widgets() {
               title="Top Pages"
               params={{
                 limit: 8,
-                start_date: startDate,
-                end_date: endDate,
+                date_from: startDate,
+                date_to: endDate,
               }}
               height={WidgetHeight.Large}
               indexConfig={{
@@ -154,8 +154,8 @@ export default function Widgets() {
               title="Top Locations"
               params={{
                 limit: 8,
-                start_date: startDate,
-                end_date: endDate,
+                date_from: startDate,
+                date_to: endDate,
               }}
               height={WidgetHeight.Large}
               indexConfig={{
@@ -174,8 +174,8 @@ export default function Widgets() {
                 title="Top Sources"
                 params={{
                   limit: 8,
-                  start_date: startDate,
-                  end_date: endDate,
+                  date_from: startDate,
+                  date_to: endDate,
                 }}
                 height={WidgetHeight.Large}
                 indexConfig={{
@@ -204,8 +204,8 @@ export default function Widgets() {
               title="Top Devices"
               params={{
                 limit: 8,
-                start_date: startDate,
-                end_date: endDate,
+                date_from: startDate,
+                date_to: endDate,
               }}
               height={WidgetHeight.Medium}
               showLegend
@@ -222,8 +222,8 @@ export default function Widgets() {
               title="Top Browsers"
               params={{
                 limit: 8,
-                start_date: startDate,
-                end_date: endDate,
+                date_from: startDate,
+                date_to: endDate,
               }}
               height={WidgetHeight.Medium}
               showLegend
