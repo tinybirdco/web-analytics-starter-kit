@@ -10,6 +10,9 @@
   "targets": {
     "main": false
   },
+  "engines": {
+    "node": "^22.0.0"
+  },
   "scripts": {
     "start": "parcel",
     "watch": "parcel watch",
