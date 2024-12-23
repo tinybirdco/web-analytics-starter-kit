@@ -37,7 +37,3 @@ To learn more about the Web Analytics Starter Kit, local development and more, c
 
 If you have any questions or need help, please reach out to us on [Slack](https://www.tinybird.co/join-our-slack-community) or [email](mailto:support@tinybird.co).
 
-
-
-
-
