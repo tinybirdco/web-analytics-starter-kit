@@ -18,8 +18,39 @@ Follow the guided process, and your Tinybird workspace is now ready to start rec
 
 ![Data flow](./assets/img/data_flow.png)
 
-<details id='manual-install'> 
-<summary><h4>Manual installation (alternative)</h4></summary>
+### Send events to your data source
+
+Copy the snippet from the banner and paste it within your site `<head>` section:
+
+![Banner showed to copy HTML snippet](./assets/img/banner_snippet.png)
+
+The snippet looks like this:
+
+```html
+<script
+  defer
+  src="https://unpkg.com/@tinybirdco/flock.js"
+  data-token="YOUR_TRACKER_TOKEN"
+></script>
+```
+
+If everything is working correctly, you should start seeing rows in your Data Source as visitors view and interact with your website:
+
+![Incoming events](./assets/img/events-incoming.svg)
+
+### Visualize the metrics on a readymade dashboard
+
+Now you'll see a banner with a link to the dashboard. Click to open it:
+
+![Analytics dashboard preview](./assets/img/banner_dashboard.png)
+
+Alternatively, you can always navigate to https://analytics.tinybird.co/ and paste your `dashboard` token.
+
+You'll find this `dashboard` token already created for you on the Tinybird UI, under **Manage Auth Tokens**.
+
+## Advanced
+
+### CLI installation of the Tinybird project
 
 1. Create a [Tinybird account](https://ui.tinybird.co/signup).
 2. Create a Workspace and go to **Manage Auth tokens** to copy your admin token.
@@ -37,54 +68,25 @@ cd tinybird
 
 6. Push the project using `tb push`.
 
-</details>
+### Hosting your own dashboard on Vercel
 
-### Send events to your data source
+If you want to customize & host your own dashboard, you can easily deploy the project to Vercel using the button below:
 
-Copy the snippet from the banner and paste it within your site `<head>` section:
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Ftinybirdco%2Fweb-analytics-starter-kit&project-name=tinybird-web-analytics-starter-kit&repository-name=tinybird-web-analytics-starter-kit&demo-title=Tinybird%20Web%20Analytics&demo-description=A%20privacy-first%20Web%20Analytics%20project%20built%20with%20Tinybird&demo-url=https%3A%2F%2Fanalytics.tinybird.co%2F&demo-image=https%3A%2F%2Fanalytics.tinybird.co%2Fbanner.png&root-directory=dashboard&integration-ids=oac_uoH2YyxhaS1H6UYvtuRbRbDY)
 
-![Banner showed to copy HTML snippet](./assets/img/banner_snippet.png)
 
-If everything is working correctly, you should start seeing rows in your Data Source as visitors view and interact with your website:
+### Additional script parameters
 
-![Incoming events](./assets/img/events-incoming.svg)
-
-<details id='manual-install'> 
-<summary><h4>More details on the snippet</h4></summary>
-
-The banner generates a snippet like this one, including the tracking script:
-
-```html
-<script
-  defer
-  src="https://unpkg.com/@tinybirdco/flock.js"
-  data-token="YOUR_TRACKER_TOKEN"
-></script>
-```
-
-Script parameters:
+These parameters can be used with the example tracker snippet:
 
 | Parameter         | Mandatory | Description                                                                                                                                                                                       |
 | ----------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `data-token`      | Yes       | Your `tracker` token. It's already created for you, you can find it on the Tinybird UI under "Manage Auth Tokens"                                                                                 |
 | `data-proxy`      | No        | Your domain URL to proxy the request, if you follow the optional steps for "GDPR Best Practices"                                                                                                  |
 | `data-host`       | No        | Tinybird host URL. Ddefaults to `https://api.tinybird.co/`, but could be `https://api.us-east.tinybird.co` or a dedicated cluster. The banner already generates the snippet with the proper host. |
-| `data-datasource` | No        | If you iterate the landing data source, or you just want to ingest the event in a different one, you can specify the landing data source name.                                                    |
+| `data-datasource` | No        | If you iterate the landing data source, or you just want to ingest the event in a different one, you can specify the landing data source name. 
 
-</details>
-
-### Visualize the metrics on a readymade dashboard
-
-Now you'll see a banner with a link to the dashboard. Click to open it:
-
-![Analytics dashboard preview](./assets/img/banner_dashboard.png)
-
-Alternatively, you can always navigate to https://analytics.tinybird.co/ and paste your `dashboard` token.
-
-You'll find this `dashboard` token already created for you on the Tinybird UI, under **Manage Auth Tokens**.
-
-<details>
-<summary><h2>Custom events</h2></summary>
+### Implementing custom events
 
 The script also provides you with a function to send custom events. You can simply add this to your application at any point:
 
@@ -97,12 +99,7 @@ Tinybird.trackEvent('add_to_cart', {
 
 You can also fork the dashboard project in this repository and create custom components for your new events. It's a Next.js project, so you can deploy it easily on [Vercel](https://vercel.com/).
 
-> _Custom Ecommerce events examples coming soon!_
-
-</details>
-
-<details>
-<summary><h2>Custom attributes (optional)</h2></summary>
+### Implementing custom attributes
 
 You can include custom attributes in the import library snippet. Attributes name must have **tb\_** prefix. Every attribute included with this requirement would be saved in the payload column of your analytics_events datasource and will be included in every event. For example:
 
@@ -115,14 +112,6 @@ You can include custom attributes in the import library snippet. Attributes name
 ```
 
 Would append customer_id:CUSTOMER_ID to the rest of variables saved in payload column.
-
-</details>
-
-## Deploying the dashboard to Vercel
-
-If you want to customize & host your own dashboard, you can easily deploy the project to Vercel using the button below:
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Ftinybirdco%2Fweb-analytics-starter-kit&project-name=tinybird-web-analytics-starter-kit&repository-name=tinybird-web-analytics-starter-kit&demo-title=Tinybird%20Web%20Analytics&demo-description=A%20privacy-first%20Web%20Analytics%20project%20built%20with%20Tinybird&demo-url=https%3A%2F%2Fanalytics.tinybird.co%2F&demo-image=https%3A%2F%2Fanalytics.tinybird.co%2Fbanner.png&root-directory=dashboard&integration-ids=oac_uoH2YyxhaS1H6UYvtuRbRbDY)
 
 ## GDPR
 
