@@ -1,6 +1,6 @@
 import { Popover } from '@headlessui/react'
 import { DateRangePicker } from '@tremor/react'
-import moment from 'moment'
+import { subDays } from 'date-fns'
 import { QuestionIcon } from './Icons'
 
 import {
@@ -14,22 +14,22 @@ const dateFilterOptions: DateRangePickerOption[] = [
   {
     text: 'Yesterday',
     value: DateFilterType.Yesterday,
-    startDate: moment().subtract(1, 'days').toDate(),
+    startDate: subDays(new Date(), 1),
   },
   {
     text: '7 days',
     value: DateFilterType.Last7Days,
-    startDate: moment().subtract(7, 'days').toDate(),
+    startDate: subDays(new Date(), 7),
   },
   {
     text: '30 days',
     value: DateFilterType.Last30Days,
-    startDate: moment().subtract(30, 'days').toDate(),
+    startDate: subDays(new Date(), 30),
   },
   {
     text: '12 months',
     value: DateFilterType.Last12Months,
-    startDate: moment().subtract(12, 'months').toDate(),
+    startDate: subDays(new Date(), 365),
   },
 ]
 
