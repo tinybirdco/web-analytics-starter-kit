@@ -119,4 +119,4 @@ Tinybird is GDPR compliant as a platform, but it is your responsibility to follo
 
 ---
 
-Need help?: [Community Slack](https://www.tinybird.co/join-our-slack-community) &bull; [Tinybird Docs](https://docs.tinybird.co/) &bull;
+Need help?: [Community Slack](https://www.tinybird.co/join-our-slack-community) &bull; [Tinybird Docs](https://docs.tinybird.co/)
