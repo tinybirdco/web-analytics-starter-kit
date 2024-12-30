@@ -1,28 +1,22 @@
-<p>
-  <a href="https://www.tinybird.co/join-our-slack-community"><img alt="Slack Status" src="https://img.shields.io/badge/slack-chat-1FCC83?style=flat&logo=slack"></a>
-</p>
+# Web Analytics template for Tinybird
 
-# Tinybird Web Analytics Starter Kit
+Build your own web analytics platform using [Tinybird](https://www.tinybird.co/)'s Events API and Endpoints. Built with privacy and speed as top priorities, this template lets you get real-time metrics in a pre-built dashboard in just a few minutes without any knowledge about Tinybird. Our [free accounts](https://www.tinybird.co/pricing) serve up to 1000 requests per day and unlimited processed GB, more than enough to get started.
 
-Build your own web analytics platform using [Tinybird](https://www.tinybird.co/)'s Events API and Endpoints. Built with privacy and speed as top priorities, this Starter Kit lets you get real-time metrics in a pre-built dashboard in just a few minutes without any knowledge about Tinybird. Our [free accounts](https://www.tinybird.co/pricing) serve up to 1000 requests per day and unlimited processed GB, more than enough to get started.
-
-<!-- You can look at the [Web Analytics Starter Kit](https://www.tinybird.co/starter-kits) site to get a better glimpse of the final result.  -->
-
-Once you've finished the basic setup, expand your analytics with custom events tailored to your specific use cases (eCommerce, marketing, etc.), keeping the same real-time performance. If you need to be GDPR compliant, check out the [GDPR best practices section](#gdpr).
+After you've finished the basic setup, expand your analytics with custom events tailored to your specific use cases (eCommerce, marketing, etc.), keeping the same real-time performance. If you need to be GDPR compliant, check out the [GDPR best practices section](#gdpr).
 
 ![Tinybird Web Analytics Dashboard](./assets/img/repo-banner.png)
 
-## 1. Set up the data project
+## Get started
 
-Click this button to deploy the data project to Tinybird 👇
+### Set up the data project
 
-[![Deploy to Tinybird](https://cdn.tinybird.co/static/images/Tinybird-Deploy-Button.svg)](https://ui.tinybird.co/workspaces/new?name=web_analytics&starter_kit=web-analytics-starter-kit)
+To deploy this template on Tinybird, click the following button:
 
-Follow the guided process, and your Tinybird workspace is now ready to start receiving events. All your Data Sources, [Materialized Views](https://www.tinybird.co/guide/materialized-views) (to make the queries blazing fast), and API Endpoints should be installed and ready. If you go to the Data Flow tab in your browser you should see something like this:
+[![Deploy to Tinybird](https://cdn.tinybird.co/static/images/Tinybird-Deploy-Button.svg)](https://app.tinybird.co/?starter_kit=https%3A%2F%2Fgithub.com%2Ftinybirdco%2Fweb-analytics-starter-kit%2Ftinybird)
+
+Follow the guided process, and your Tinybird workspace is now ready to start receiving events. All your Data Sources, [Materialized Views](https://www.tinybird.co/guide/materialized-views), and API Endpoints should be installed and ready. If you go to the **Data Flow** tab, you should see something like this:
 
 ![Data flow](./assets/img/data_flow.png)
-
-<!-- maybe add some explanations on top of the flow? -->
 
 <details id='manual-install'> 
 <summary><h4>Manual installation (alternative)</h4></summary>
@@ -45,17 +39,15 @@ cd tinybird
 
 </details>
 
-## 2. Send events to your data source
+### Send events to your data source
 
-Copy the snippet from the banner, and paste it on your site `<head>`:
+Copy the snippet from the banner and paste it within your site `<head>` section:
 
 ![Banner showed to copy HTML snippet](./assets/img/banner_snippet.png)
 
-If everything is working correctly, you should start seeing rows in your Data Source as visitors view and interact with your website
+If everything is working correctly, you should start seeing rows in your Data Source as visitors view and interact with your website:
 
 ![Incoming events](./assets/img/events-incoming.svg)
-
-And you're done! 🙌
 
 <details id='manual-install'> 
 <summary><h4>More details on the snippet</h4></summary>
@@ -81,7 +73,7 @@ Script parameters:
 
 </details>
 
-## 3. Visualize the metrics on a readymade dashboard
+### Visualize the metrics on a readymade dashboard
 
 Now you'll see a banner with a link to the dashboard. Click to open it:
 
@@ -89,7 +81,7 @@ Now you'll see a banner with a link to the dashboard. Click to open it:
 
 Alternatively, you can always navigate to https://analytics.tinybird.co/ and paste your `dashboard` token.
 
-You'll find this `dashboard` token already created for you on the Tinybird UI, under "Manage Auth Tokens".
+You'll find this `dashboard` token already created for you on the Tinybird UI, under **Manage Auth Tokens**.
 
 <details>
 <summary><h2>Custom events (optional)</h2></summary>
