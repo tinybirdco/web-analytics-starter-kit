@@ -2,7 +2,7 @@
 
 Build your own web analytics platform using [Tinybird](https://www.tinybird.co/)'s Events API and Endpoints. Built with privacy and speed as top priorities, this template lets you get real-time metrics in a pre-built dashboard in just a few minutes without any knowledge about Tinybird. Our [free accounts](https://www.tinybird.co/pricing) serve up to 1000 requests per day and unlimited processed GB, more than enough to get started.
 
-After you've finished the basic setup, expand your analytics with custom events tailored to your specific use cases (eCommerce, marketing, etc.), keeping the same real-time performance. If you need to be GDPR compliant, check out the [GDPR best practices section](#gdpr).
+After you've finished the basic setup, expand your analytics with custom events tailored to your specific use cases (eCommerce, marketing, etc.), keeping the same real-time performance.
 
 ![Tinybird Web Analytics Dashboard](./assets/img/repo-banner.png)
 
@@ -84,9 +84,7 @@ Alternatively, you can always navigate to https://analytics.tinybird.co/ and pas
 You'll find this `dashboard` token already created for you on the Tinybird UI, under **Manage Auth Tokens**.
 
 <details>
-<summary><h2>Custom events (optional)</h2></summary>
-
-> **Warning**<br> > **GDPR**: Don't track any personal (PII), ids, codes, or any other information that may lead to identify an individual (not even fingerprinting). Track only the essential events when needed, and use aggregated metrics.
+<summary><h2>Custom events</h2></summary>
 
 The script also provides you with a function to send custom events. You can simply add this to your application at any point:
 
@@ -120,75 +118,16 @@ Would append customer_id:CUSTOMER_ID to the rest of variables saved in payload c
 
 </details>
 
-<details id='gdpr'> 
-<summary><h2>GDPR best practices (optional)</h2></summary>
-
-> **Warning**<br> > **GDPR**: These are some tips to follow the GDPR guidelines, but compliance is not guaranteed. Follow these instructions and assess with your legal team. For more details on how to implement a privacy-first tracker for compliance, [read this](https://www.tinybird.co/blog-posts/privacy-first-google-analytics-alternative).
-
-Requirements:
-
-- Create your Tinybird Workspace in **EU** region.
-- Don't track any personal (PII), ids, codes, or any other information that may lead to identify an individual (not even fingerprinting).
-- Track only the essential events when needed.
-- Use aggregated metrics, never at individual level (session).
-- Your visitors should be able to opt out at ANY time.
-
-### Instructions to make it a first-party solution
-
-To make this a first-party solution end-to-end, you'll need to send the events to the data pipeline using your own domain. You'll own the data, and Tinybird won't analyze it in any way.
-
-You will need to set up:
-
-- A tracking script delivery under <!-- this seems incomplete? -->
-- A proxy to Tinybird Events API
-
-<!-- add an option to test with a data generator? -->
-
-1. Deploy the [middleware](./middleware/) to Vercel.
-
-   [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Ftinybirdco%2Fweb-analytics-starter-kit%2Ftree%2Fmain%2Fmiddleware&env=TINYBIRD_TOKEN&envDescription=Tinybird%20token%20needed%20for%20ingestion&project-name=web-analytics)
-
-2. Fill in the `TINYBIRD_TOKEN` environment variable with the ingestion token you created in the basic setup.
-
-3. Add a subdomain to your site, for example `events.example.com`. Most ad-blockers won't block a subdomain on your root domain, but just to be sure, avoid `analytics.example.com`, `tracking.example.com` or similar so anti-trackers don't block your requests.
-
-4. Update the snippet from the basic setup to this, using your configured subdomain:
-
-```html
-<script
-  defer
-  src="https://events.example.com/index.js"
-  data-proxy="https://events.example.com"
-></script>
-```
-
-</details>
-
-<details id='next'> 
-<summary><h2>What's next?</h2></summary>
-
-- **Need more inspiration?** Check out our upcoming [live coding session](https://www.tinybird.co/live-coding-sessions/google-analytics-free).
-- **The big picture:** [How an eCommerce giant replaced Google Analytics for privacy and scale](https://www.tinybird.co/blog-posts/ecommerce-google-analytics-alternative)
-</details>
-
 ## Deploying the dashboard to Vercel
 
 If you want to customize & host your own dashboard, you can easily deploy the project to Vercel using the button below:
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Ftinybirdco%2Fweb-analytics-starter-kit&project-name=tinybird-web-analytics-starter-kit&repository-name=tinybird-web-analytics-starter-kit&demo-title=Tinybird%20Web%20Analytics&demo-description=A%20privacy-first%20Web%20Analytics%20project%20built%20with%20Tinybird&demo-url=https%3A%2F%2Fanalytics.tinybird.co%2F&demo-image=https%3A%2F%2Fanalytics.tinybird.co%2Fbanner.png&root-directory=dashboard&integration-ids=oac_uoH2YyxhaS1H6UYvtuRbRbDY)
 
-## Authors
+## GDPR
 
-- [Rafa Moreno](https://github.com/rmorehig)
-- [Raquel Yuste](https://github.com/raqyuste)
-- [Alasdair Brown](https://github.com/sdairs)
-- [Kike Alonso](https://github.com/kukukaka)
-- [Cameron Archer](https://github.com/tb-peregrine)
-- [Javier Álvarez](https://github.com/xavijam)
-- [Sergio Álvarez](https://github.com/saleiva)
-- [Jorge Gomez](https://github.com/jorgesancha)
-- [Alejandro Martin](https://github.com/alejandromav)
+Tinybird is GDPR compliant as a platform, but it is your responsibility to follow GDPR's rules on data collection and consent when implementing your web analytics.
 
 ---
 
-Need help?: [Community Slack](https://www.tinybird.co/join-our-slack-community) &bull; [Tinybird Docs](https://docs.tinybird.co/) &bull; [Email](mailto:kike@tinybird.co)
+Need help?: [Community Slack](https://www.tinybird.co/join-our-slack-community) &bull; [Tinybird Docs](https://docs.tinybird.co/) &bull;
