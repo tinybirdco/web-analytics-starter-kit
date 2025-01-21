@@ -195,6 +195,8 @@
     payload = Object.assign({}, JSON.parse(payload), globalAttributes)
     payload = JSON.stringify(payload)
 
+    const session_id = _getSessionId() || _uuidv4()
+
     const request = new XMLHttpRequest()
     request.open('POST', url, true)
     request.setRequestHeader('Content-Type', 'application/json')
@@ -203,7 +205,7 @@
         timestamp: new Date().toISOString(),
         action: name,
         version: '1',
-        session_id: _getSessionId(),
+        session_id,
         payload,
       })
     )
