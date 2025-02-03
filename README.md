@@ -50,6 +50,10 @@ You'll find this `dashboard` token already created for you on the Tinybird UI, u
 
 ## Advanced
 
+### Local development and mock data
+
+See the [tinybird](./tinybird/README.md) and [dashboard](./dashboard/README.md) READMEs.
+
 ### CLI installation of the Tinybird project
 
 1. Create a [Tinybird account](https://ui.tinybird.co/signup).
