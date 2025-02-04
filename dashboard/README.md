@@ -41,6 +41,17 @@ npm run dev
 
 You will find the app running at http://localhost:3000
 
+Copy the .env.example file and rename it to .env.
+
+```
+NEXT_PUBLIC_TINYBIRD_DASHBOARD_URL=http://localhost:3000
+NEXT_PUBLIC_TINYBIRD_TRACKER_TOKEN=<YOUR_TINYBIRD_TRACKER_TOKEN>
+NEXT_PUBLIC_TINYBIRD_AUTH_TOKEN=<YOUR_TINYBIRD_AUTH_TOKEN>
+NEXT_PUBLIC_TINYBIRD_HOST=<YOUR_TINYBIRD_HOST>
+```
+
+To develop locally, start [Tinybird Local](https://www.tinybird.co/docs/cli/local-container) and use `http://localhost` as NEXT_PUBLIC_TINYBIRD_HOST.
+
 ### Build for Production
 
 ```bash

@@ -21,3 +21,7 @@ Copy the snippet and paste it within your site `<head>` section:
 ```
 
 Use the `data-host` attribute to set your Tinybird host URL. Defaults to `https://api.tinybird.co/`.
+
+## Local development and mock data
+
+See the [Tinybird](https://github.com/tinybirdco/web-analytics-starter-kit/blob/main/tinybird/README.md) and [dashboard](https://github.com/tinybirdco/web-analytics-starter-kit/blob/main/dashboard/README.md) READMEs.
