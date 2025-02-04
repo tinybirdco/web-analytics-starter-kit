@@ -56,3 +56,5 @@ SQL >
             else 'Unknown'
         END as browser
     FROM parsed_hits
+
+TYPE endpoint
