@@ -5,7 +5,7 @@ TOKEN "tracker" APPEND
 
 SCHEMA >
     `timestamp` DateTime `json:$.timestamp`,
-    `session_id` String `json:$.session_id`,
+    `session_id` Nullable(String) `json:$.session_id`,
     `action` LowCardinality(String) `json:$.action`,
     `version` LowCardinality(String) `json:$.version`,
     `payload` String `json:$.payload`

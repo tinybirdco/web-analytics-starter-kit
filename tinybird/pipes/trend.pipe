@@ -30,3 +30,4 @@ DESCRIPTION >
 
 SQL >
     select a.t, b.visits from timeseries a left join hits b on a.t = b.t order by a.t
+TYPE endpoint
