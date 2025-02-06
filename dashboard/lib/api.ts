@@ -9,9 +9,15 @@ import {
 import config from './config'
 
 export function getConfig(search?: string) {
-  const params = new URLSearchParams(search || window.location.search)
-  const token = config.authToken ?? params.get('token')
-  const host = config.host ?? params.get('host')
+  // Check if we're in the browser
+  const isBrowser = typeof window !== 'undefined'
+  
+  // Use provided search param, or window.location.search if in browser, or empty string if on server
+  const searchParams = new URLSearchParams(search || (isBrowser ? window.location.search : ''))
+  
+  const token = config.authToken ?? searchParams.get('token')
+  const host = config.host ?? searchParams.get('host')
+  
   return {
     token,
     host,

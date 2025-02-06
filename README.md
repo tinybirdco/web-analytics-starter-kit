@@ -50,6 +50,10 @@ You'll find this `dashboard` token already created for you on the Tinybird UI, u
 
 ## Advanced
 
+### Local development and mock data
+
+See the [tinybird](./tinybird/README.md) and [dashboard](./dashboard/README.md) READMEs.
+
 ### CLI installation of the Tinybird project
 
 1. Create a [Tinybird account](https://ui.tinybird.co/signup).
@@ -72,7 +76,7 @@ cd tinybird
 
 If you want to customize & host your own dashboard, you can easily deploy the project to Vercel using the button below:
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Ftinybirdco%2Fweb-analytics-starter-kit&project-name=tinybird-web-analytics-starter-kit&repository-name=tinybird-web-analytics-starter-kit&demo-title=Tinybird%20Web%20Analytics&demo-description=A%20privacy-first%20Web%20Analytics%20project%20built%20with%20Tinybird&demo-url=https%3A%2F%2Fanalytics.tinybird.co%2F&demo-image=https%3A%2F%2Fanalytics.tinybird.co%2Fbanner.png&root-directory=dashboard&integration-ids=oac_uoH2YyxhaS1H6UYvtuRbRbDY)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Ftinybirdco%2Fweb-analytics-starter-kit&project-name=tinybird-web-analytics-starter-kit&repository-name=tinybird-web-analytics-starter-kit&demo-title=Tinybird%20Web%20Analytics&demo-description=A%20privacy-first%20Web%20Analytics%20project%20built%20with%20Tinybird&demo-url=https%3A%2F%2Fanalytics.tinybird.co%2F&demo-image=//github.com/tinybirdco/web-analytics-starter-kit/blob/main/dashboard/public/banner.png?raw=true&root-directory=dashboard&integration-ids=oac_uoH2YyxhaS1H6UYvtuRbRbDY)
 
 
 ### Additional script parameters
