@@ -40,3 +40,29 @@ Note:
 Typically, in big projects, we split the .pipe files across two folders: /pipes and /endpoints
 - `/pipes` where we store the pipes ending in a datasource, that is, [materialized views](https://guides.tinybird.co/guide/materialized-views)
 - `/endpoints` for the pipes that end in API endpoints. 
+
+## Local development
+
+Start [Tinybird Local](https://www.tinybird.co/docs/cli/local-container), push the project with `tb push -f` and use `http://localhost` as NEXT_PUBLIC_TINYBIRD_HOST and the admin token in the [dashboard](../dashboard/README.md).
+
+## Mock data
+
+Install [mockingbird](https://github.com/tinybirdco/mockingbird):
+
+```
+npm install @tinybirdco/mockingbird-cli
+```
+
+Run:
+
+```
+TB_ENDPOINT=http://localhost mockingbird-cli tinybird \
+--schema "schema.json" \
+--datasource "analytics_events" \
+--token $TB_LOCAL_TOKEN \
+--endpoint "custom" \
+--eps 1000 \
+--limit 200000000
+```
+
+Where TB_LOCAL_TOKEN is the admin token in the [dashboard](../dashboard/README.md).
