@@ -1,4 +1,4 @@
-import { rest } from 'msw'
+import { http } from 'msw'
 
 export const data = {
   meta: [
@@ -43,7 +43,13 @@ export const data = {
 
 // Define handlers that catch the corresponding requests and returns the mock data.
 export const handlers = [
-  rest.get('https://analytics-api.com/v0/pipes/trend.json', (_, res, ctx) => {
-    return res(ctx.status(200), ctx.json(data))
+  http.get('https://analytics-api.com/v0/pipes/trend.json', ({ request, params, cookies }) => {
+    return new Response(
+      JSON.stringify(data),
+      {
+        headers: { 'Content-Type': 'application/json' },
+        status: 200,
+      }
+    )
   }),
 ]
