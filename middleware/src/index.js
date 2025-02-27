@@ -9,6 +9,7 @@
   }
   let STORAGE_METHOD = storageMethods.cookie
   let globalAttributes = {}
+  let stringifyPayload = true
 
   let proxy, token, host, domain
   if (document.currentScript) {
@@ -20,6 +21,7 @@
       document.currentScript.getAttribute('data-datasource') || DATASOURCE
     STORAGE_METHOD =
       document.currentScript.getAttribute('data-storage') || STORAGE_METHOD
+    stringifyPayload = document.currentScript.getAttribute('data-stringify-payload') !== 'false'
     for (const attr of document.currentScript.attributes) {
       if (attr.name.startsWith('tb_')) {
         globalAttributes[attr.name.slice(3)] = attr.value
@@ -191,9 +193,16 @@
       url = `https://api.tinybird.co/v0/events?name=${DATASOURCE}&token=${token}`
     }
 
-    payload = _maskSuspiciousAttributes(payload)
-    payload = Object.assign({}, JSON.parse(payload), globalAttributes)
-    payload = JSON.stringify(payload)
+    let processedPayload
+    if (stringifyPayload) {
+      processedPayload = _maskSuspiciousAttributes(payload)
+      processedPayload = Object.assign({}, JSON.parse(processedPayload), globalAttributes)
+      processedPayload = JSON.stringify(processedPayload)
+    } else {
+      processedPayload = Object.assign({}, payload, globalAttributes)
+      const maskedStr = _maskSuspiciousAttributes(processedPayload)
+      processedPayload = JSON.parse(maskedStr)
+    }
 
     const session_id = _getSessionId() || _uuidv4()
 
@@ -206,7 +215,7 @@
         action: name,
         version: '1',
         session_id,
-        payload,
+        payload: processedPayload,
       })
     )
   }
