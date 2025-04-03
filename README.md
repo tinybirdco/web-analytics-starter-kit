@@ -10,9 +10,13 @@ After you've finished the basic setup, expand your analytics with custom events 
 
 ### Set up the data project
 
-To deploy this template on Tinybird, click the following button:
+To deploy this template on Tinybird:
 
-[![Deploy to Tinybird](https://cdn.tinybird.co/static/images/Tinybird-Deploy-Button.svg)](https://app.tinybird.co/?starter_kit=https%3A%2F%2Fgithub.com%2Ftinybirdco%2Fweb-analytics-starter-kit%2Ftinybird)
+```bash
+curl -sSL https://tinybird.co | bash
+tb login
+tb --cloud deploy --template https://github.com/tinybirdco/web-analytics-starter-kit/tree/main/tinybird
+```
 
 Follow the guided process, and your Tinybird workspace is now ready to start receiving events. All your Data Sources, [Materialized Views](https://www.tinybird.co/guide/materialized-views), and API Endpoints should be installed and ready. If you go to the **Data Flow** tab, you should see something like this:
 
@@ -56,8 +60,8 @@ See the [tinybird](./tinybird/README.md) and [dashboard](./dashboard/README.md) 
 
 ### CLI installation of the Tinybird project
 
-1. Create a [Tinybird account](https://ui.tinybird.co/signup).
-2. Create a Workspace and go to **Manage Auth tokens** to copy your admin token.
+1. Install the Tinybird CLI using `curl https://tinybird.co | bash`
+2. Create a [Tinybird](https://tinybird.co) account and a workspace by running `tb login`
 3. Clone this repository:
 
 ```bash
@@ -66,11 +70,7 @@ cd web-analytics-starter-kit
 cd tinybird
 ```
 
-4. Install the Tinybird CLI using `pip install tinybird-cli`. [Detailed instructions here](https://docs.tinybird.co/cli.html#how-to-install).
-
-5. Authenticate on the CLI using `tb auth` and paste the token you just copied.
-
-6. Push the project using `tb push`.
+4. Deploy the project using `tb --cloud deploy`.
 
 ### Hosting your own dashboard on Vercel
 
