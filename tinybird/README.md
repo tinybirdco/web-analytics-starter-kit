@@ -43,26 +43,17 @@ Typically, in big projects, we split the .pipe files across two folders: /pipes 
 
 ## Local development
 
-Start [Tinybird Local](https://www.tinybird.co/docs/cli/local-container), push the project with `tb push -f` and use `http://localhost` as NEXT_PUBLIC_TINYBIRD_HOST and the admin token in the [dashboard](../dashboard/README.md).
+```bash
+# install the tinybird CLI
+curl https://tinybird.co | sh
 
-## Mock data
+tb local start
 
-Install [mockingbird](https://github.com/tinybirdco/mockingbird):
+# select or create a new workspace
+tb login
 
-```
-npm install @tinybirdco/mockingbird-cli
-```
-
-Run:
-
-```
-TB_ENDPOINT=http://localhost mockingbird-cli tinybird \
---schema "schema.json" \
---datasource "analytics_events" \
---token $TB_LOCAL_TOKEN \
---endpoint "custom" \
---eps 1000 \
---limit 200000000
+tb dev
+tb token ls  # copy the local admin token
 ```
 
-Where TB_LOCAL_TOKEN is the admin token in the [dashboard](../dashboard/README.md).
+Use `http://localhost:7181` as NEXT_PUBLIC_TINYBIRD_HOST and the admin token in the [dashboard](../dashboard/README.md).
