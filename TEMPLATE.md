@@ -11,7 +11,7 @@ Fork the GitHub repository and deploy the data project to Tinybird.
 tb login
 
 # deploy the template
-tb --cloud deploy https://github.com/tinybirdco/web-analytics-starter-kit/tree/main/tinybird
+tb --cloud deploy --template https://github.com/tinybirdco/web-analytics-starter-kit/tree/main/tinybird
 
 # copy the dashboard token
 tb --cloud token copy dashboard
