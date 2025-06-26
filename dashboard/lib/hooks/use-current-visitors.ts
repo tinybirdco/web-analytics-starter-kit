@@ -1,11 +1,17 @@
 import useSWR from 'swr'
-import { querySQL } from '../api'
+import { querySQL, queryPipe, getConfig } from '../api'
 
 async function getCurrentVisitors(): Promise<number> {
-  const { data } = await querySQL<{ visits: number }>(
-    `SELECT uniq(session_id) AS visits FROM analytics_hits
-      WHERE timestamp >= (now() - interval 5 minute) FORMAT JSON`
-  )
+  const { token } = getConfig();
+  let data;
+  if (token && token.startsWith('p.ey')) {
+    ({ data } = await querySQL<{ visits: number }>(
+      `SELECT uniq(session_id) AS visits FROM analytics_hits
+        WHERE timestamp >= (now() - interval 5 minute) FORMAT JSON`
+    ));
+  } else {
+    ({ data } = await queryPipe<{ visits: number }>('current_visitors'));
+  }
   const [{ visits }] = data
   return visits
 }
