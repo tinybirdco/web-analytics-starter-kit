@@ -2,34 +2,31 @@ import { FormEvent, useState } from 'react'
 import { useRouter } from 'next/router'
 import { SelectBox, SelectBoxItem, TextInput, Button } from '@tremor/react'
 
-import { HostType } from '../../lib/types/credentials'
-import { OptionType } from '../../lib/types/options'
+const regionMap: Record<string, string> = {
+  "gcp-europe-west2": "https://api.europe-west2.gcp.tinybird.co",
+  "eu_shared": "https://api.tinybird.co",
+  "us_east": "https://api.us-east.tinybird.co",
+  "gcp-northamerica-northeast2": "https://api.northamerica-northeast2.gcp.tinybird.co",
+  "us-east-aws": "https://api.us-east.aws.tinybird.co",
+  "aws-us-west-2": "https://api.us-west-2.aws.tinybird.co",
+  "aws-eu-central-1": "https://api.eu-central-1.aws.tinybird.co",
+  "aws-eu-west-1": "https://api.eu-west-1.aws.tinybird.co",
+  "localhost": "http://127.0.0.1:8001",
+  "local": "http://localhost:7181"
+}
 
-const hostOptions: OptionType<HostType>[] = [
-  { text: HostType.eu_shared, value: HostType.eu_shared },
-  { text: HostType.us_east, value: HostType.us_east },
-  { text: HostType.aws_us_east, value: HostType.aws_us_east },
-  { text: HostType.aws_us_west_2, value: HostType.aws_us_west_2 },
-  { text: HostType.aws_eu_central_1, value: HostType.aws_eu_central_1 },
-  { text: HostType.aws_eu_west_1, value: HostType.aws_eu_west_1 },
-  { text: HostType.gcp_europe_west2, value: HostType.gcp_europe_west2 },
-  { text: HostType.gcp_europe_west3, value: HostType.gcp_europe_west3 },
-  { text: HostType.gcp_us_east4, value: HostType.gcp_us_east4 },
-  { text: HostType.gcp_northamerica_northeast2, value: HostType.gcp_northamerica_northeast2 },
-  { text: HostType.other, value: HostType.other },
-]
+const regionValues = Object.values(regionMap)
 
 export default function CredentialsForm() {
   const router = useRouter()
-  const [hostType, setHostType] = useState<HostType>(hostOptions[0].value)
+  const [hostUrl, setHostUrl] = useState(regionValues[0])
   const [hostName, setHostName] = useState('')
 
-  // Helper to decode JWT and extract host
+  // Helper to decode JWT and extract host key
   const extractHostFromToken = (token: string): string | undefined => {
     try {
       const payload = token.split('.')[1]
       if (!payload) return undefined
-      // Add padding if needed
       const base64 = payload.replace(/-/g, '+').replace(/_/g, '/') + '==='.slice((payload.length + 3) % 4)
       const json = atob(base64)
       const data = JSON.parse(json)
@@ -41,18 +38,15 @@ export default function CredentialsForm() {
 
   const handleTokenChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const token = e.target.value
-    const host = extractHostFromToken(token)
-    if (host) {
-      const found = hostOptions.find(opt => opt.value === host)
-      if (found) {
-        setHostType(host as HostType)
-        setHostName('')
-      } else {
-        setHostType(HostType.other)
-        setHostName(host)
-      }
+    const hostKey = extractHostFromToken(token)
+    if (hostKey && regionMap[hostKey]) {
+      setHostUrl(regionMap[hostKey])
+      setHostName('')
+    } else if (hostKey) {
+      setHostUrl('other')
+      setHostName(hostKey)
     } else {
-      setHostType(HostType.other)
+      setHostUrl('other')
       setHostName('')
     }
   }
@@ -63,13 +57,12 @@ export default function CredentialsForm() {
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-
     const form = event.currentTarget
     const formData = new FormData(form)
     const credentials = Object.fromEntries(formData) as Record<string, string>
     const { token } = credentials
-    let host = hostType === HostType.other ? hostName : hostType
-    if (!token || (hostType === HostType.other && !hostName)) return
+    let host = hostUrl === 'other' ? hostName : hostUrl
+    if (!token || (hostUrl === 'other' && !hostName)) return
     const params = new URLSearchParams({ token, host })
     router.push({ pathname: router.pathname, search: params.toString() })
   }
@@ -87,30 +80,34 @@ export default function CredentialsForm() {
           </label>
           <TextInput
             name="token"
-            placeholder="p.eyJ3kdsfk2395IjogImMzZTMwNDIxLTYwNzctNGZhMS1iMjY1LWQwM2JhZDIzZGRlOCIsICJpZCI6ICIwYmUzNTgzNi0zODAyLTQwMmUtOTUxZi0zOWFm"
+            placeholder="Paste your 'dashboard' token"
             onChange={handleTokenChange}
           />
-          <p className="text-xs text-secondaryLight">
-            Copy the token named dashboard generated with your web-analytics
-            project.
-          </p>
+          <a
+            href="https://cloud.tinybird.co/tokens"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs text-secondaryLight underline mt-1 inline-block"
+          >
+            Get your dashboard token
+          </a>
         </div>
         <div className="flex items-end gap-10">
           <div className="flex-1">
             <label className="block text-sm font-normal text-neutral-64 mb-1">
               Host
             </label>
-            <SelectBox
-              value={hostType}
-              onValueChange={value => setHostType(value as HostType)}
-            >
-              {hostOptions.map(({ text, value }) => (
-                <SelectBoxItem key={value} text={text} value={value} />
-              ))}
+            <SelectBox value={hostUrl} onValueChange={value => setHostUrl(value)}>
+              {[
+                ...regionValues.map((value) => (
+                  <SelectBoxItem key={value} text={value} value={value} />
+                )),
+                <SelectBoxItem key="other" text="Other" value="other" />
+              ]}
             </SelectBox>
           </div>
           <div className="flex-1">
-            {hostType === HostType.other && (
+            {hostUrl === 'other' && (
               <>
                 <label className="block text-sm font-normal text-neutral-64 mb-1">
                   Host name
