@@ -75,8 +75,9 @@ Script parameters:
 | Parameter         | Mandatory | Description                                                                                                                                                                                       |
 | ----------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `data-token`      | Yes       | Your `tracker` token. It's already created for you, you can find it on the Tinybird UI under "Manage Auth Tokens"                                                                                 |
-| `data-proxy`      | No        | Your domain URL to proxy the request, if you follow the optional steps for "GDPR Best Practices"                                                                                                  |
-| `data-host`       | No        | Tinybird host URL. Ddefaults to `https://api.tinybird.co/`, but could be `https://api.us-east.tinybird.co` or a dedicated cluster. The banner already generates the snippet with the proper host. |
+| `data-proxy`      | No        | Your domain URL to proxy the request, if you follow the optional steps for "GDPR Best Practices". Cannot be used together with `data-proxy-url`.                                                  |
+| `data-proxy-url`  | No        | A complete proxy URL endpoint for the tracking request. Use this when you need to specify a custom tracking endpoint beyond just the domain. Cannot be used together with `data-proxy`.             |
+| `data-host`       | No        | Tinybird host URL. Defaults to `https://api.tinybird.co/`, but could be `https://api.us-east.tinybird.co` or a dedicated cluster. The banner already generates the snippet with the proper host. |
 | `data-datasource` | No        | If you iterate the landing data source, or you just want to ingest the event in a different one, you can specify the landing data source name.                                                    |
 
 </details>
@@ -160,8 +161,9 @@ You will need to set up:
 
 3. Add a subdomain to your site, for example `events.example.com`. Most ad-blockers won't block a subdomain on your root domain, but just to be sure, avoid `analytics.example.com`, `tracking.example.com` or similar so anti-trackers don't block your requests.
 
-4. Update the snippet from the basic setup to this, using your configured subdomain:
+4. Update the snippet from the basic setup to this, using your configured subdomain. You have two options:
 
+Option A: Using `data-proxy` (for standard path):
 ```html
 <script
   defer
@@ -169,6 +171,17 @@ You will need to set up:
   data-proxy="https://events.example.com"
 ></script>
 ```
+
+Option B: Using `data-proxy-url` (for custom endpoint path):
+```html
+<script
+  defer
+  src="https://events.example.com/index.js"
+  data-proxy-url="https://events.example.com/custom/tracking/endpoint"
+></script>
+```
+
+**Important:** Use either `data-proxy` OR `data-proxy-url`, but not both. Using both attributes simultaneously will cause an error.
 
 </details>
 
