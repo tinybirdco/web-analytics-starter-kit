@@ -4,13 +4,20 @@
     let DATASOURCE = 'analytics_events';
     let globalAttributes = {};
 
-    let proxy, token, host, domain;
+    let proxy, proxyUrl, token, host, domain;
     if (document.currentScript) {
         host = document.currentScript.getAttribute('data-host');
         proxy = document.currentScript.getAttribute('data-proxy');
+        proxyUrl = document.currentScript.getAttribute('data-proxy-url');
         token = document.currentScript.getAttribute('data-token');
         domain = document.currentScript.getAttribute('data-domain');
         DATASOURCE = document.currentScript.getAttribute('data-datasource') || DATASOURCE;
+        
+        // Check if both proxy and proxyUrl are specified
+        if (proxy && proxyUrl) {
+            console.error('Error: Both data-proxy and data-proxy-url are specified. Please use only one of them.');
+            throw new Error('Both data-proxy and data-proxy-url are specified. Please use only one of them.');
+        }
        
         for (const attr of  document.currentScript.attributes) {
            if( attr.name.startsWith('tb_')) {
@@ -93,7 +100,11 @@
         let url;
 
         // Use public Tinybird url if no custom endpoint is provided
-        if (proxy) {
+        if (proxyUrl) {
+            // Use the full proxy URL as provided
+            url = proxyUrl;
+        } else if (proxy) {
+            // Construct the proxy URL from the proxy domain
             url = `${proxy}/api/tracking`;
         } else if (host) {
             host = host.replaceAll(/\/+$/gm, '');
