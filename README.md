@@ -86,8 +86,9 @@ These parameters can be used with the example tracker snippet:
 | Parameter         | Mandatory | Description                                                                                                                                                                                       |
 | ----------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `data-token`      | Yes       | Your `tracker` token. It's already created for you, you can find it on the Tinybird UI under "Manage Auth Tokens"                                                                                 |
-| `data-proxy`      | No        | Your domain URL to proxy the request, if you follow the optional steps for "GDPR Best Practices"                                                                                                  |
-| `data-host`       | No        | Tinybird host URL. Ddefaults to `https://api.tinybird.co/`, but could be `https://api.us-east.tinybird.co` or a dedicated cluster. The banner already generates the snippet with the proper host. |
+| `data-proxy`      | No        | Your domain URL to proxy the request, if you follow the optional steps for "GDPR Best Practices". Cannot be used together with `data-proxy-url`.                                                  |
+| `data-proxy-url`  | No        | A complete proxy URL endpoint for the tracking request. Use this when you need to specify a custom tracking endpoint beyond just the domain. Cannot be used together with `data-proxy`.             |
+| `data-host`       | No        | Tinybird host URL. Defaults to `https://api.tinybird.co/`, but could be `https://api.us-east.tinybird.co` or a dedicated cluster. The banner already generates the snippet with the proper host.  |
 | `data-datasource` | No        | If you iterate the landing data source, or you just want to ingest the event in a different one, you can specify the landing data source name. 
 
 ### Implementing custom events
