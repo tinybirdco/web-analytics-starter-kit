@@ -1,3 +1,5 @@
+'use client'
+
 /* eslint-disable @next/next/no-img-element */
 import CurrentVisitors from './CurrentVisitors'
 import DateFilter from './DateFilter'

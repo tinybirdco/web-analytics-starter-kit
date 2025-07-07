@@ -1,5 +1,7 @@
+'use client'
+
 import { FormEvent, useState } from 'react'
-import { useRouter } from 'next/router'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { SelectBox, SelectBoxItem, TextInput, Button } from '@tremor/react'
 
 const regionMap: Record<string, string> = {
@@ -64,7 +66,7 @@ export default function CredentialsForm() {
     let host = hostUrl === 'other' ? hostName : hostUrl
     if (!token || (hostUrl === 'other' && !hostName)) return
     const params = new URLSearchParams({ token, host })
-    router.push({ pathname: router.pathname, search: params.toString() })
+    router.push(`?${params.toString()}`)
   }
 
   return (
