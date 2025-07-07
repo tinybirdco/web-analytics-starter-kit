@@ -1,0 +1,15 @@
+.content {
+  z-index: 50;
+  overflow: hidden;
+  border-radius: 4px;
+  background-color: var(--background-dark-color);
+  box-shadow: 0 3px 7px rgb(0 0 0 / 13%), 0 0.6px 2px rgb(0 0 0 / 10%);
+  padding: 4px 8px;
+  font: var(--font-caption);
+  color: var(--text-inverse-color);
+}
+
+.content.light {
+  background-color: var(--background-color);
+  color: var(--text-color);
+}

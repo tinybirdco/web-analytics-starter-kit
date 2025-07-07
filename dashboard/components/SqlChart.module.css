@@ -1,0 +1,12 @@
+.sqlChartCard {
+  min-width: 240px;
+  flex: 1;
+  border-radius: 4px;
+  padding: 16px;
+  border: 1px solid var(--border-02-color);
+  transition: border-color 0.2s ease-in-out;
+}
+
+.sqlChartCard.clickable:hover {
+  border-color: var(--border-03-color);
+}
