@@ -1,4 +1,6 @@
-import { useRouter } from 'next/router'
+'use client'
+
+import { useRouter, useSearchParams } from 'next/navigation'
 
 import { Button } from '@tremor/react'
 import { useAnalytics } from './Provider'
@@ -7,16 +9,14 @@ import { colors } from '../styles/theme'
 
 export default function ErrorModal() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const { error, setError } = useAnalytics()
 
   const handleClose = () => {
     setError(null)
-    router.push('/', {
-      query: {
-        ...router.query,
-        token: null,
-      },
-    })
+    const newSearchParams = new URLSearchParams(searchParams?.toString() || '')
+    newSearchParams.delete('token')
+    router.push(`?${newSearchParams.toString()}`)
   }
 
   return (

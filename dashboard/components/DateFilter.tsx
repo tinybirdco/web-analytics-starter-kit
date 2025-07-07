@@ -1,3 +1,5 @@
+'use client'
+
 import { Popover } from '@headlessui/react'
 import { DateRangePicker } from '@tremor/react'
 import { subDays } from 'date-fns'
