@@ -1,3 +1,5 @@
+'use client'
+
 import useCurrentVisitors from '../lib/hooks/use-current-visitors'
 
 export default function CurrentVisitors() {

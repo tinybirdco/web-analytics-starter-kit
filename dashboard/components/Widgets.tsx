@@ -1,3 +1,5 @@
+'use client'
+
 import InView from './InView'
 import {
   AreaChart,
@@ -9,7 +11,7 @@ import {
   tinybirdBorderColor,
 } from '@tinybirdco/charts'
 import { fetcher, getConfig } from '../lib/api'
-import { useRouter } from 'next/router'
+import { useSearchParams } from 'next/navigation'
 import useDateFilter from '../lib/hooks/use-date-filter'
 import KpisTabs from './KpisTabs'
 import useKpis from '../lib/hooks/use-kpis'
@@ -25,9 +27,9 @@ const enum WidgetHeight {
 }
 
 export default function Widgets() {
-  const { query } = useRouter()
+  const searchParams = useSearchParams()
   const { host, token } = getConfig(
-    typeof query === 'string' ? query : undefined
+    searchParams?.toString() || ''
   )
   function buildEndointUrl(host: string, endpoint: string) {
     const apiUrl =

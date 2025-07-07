@@ -1,4 +1,6 @@
-import { useRouter } from 'next/router'
+'use client'
+
+import { useSearchParams, useRouter } from 'next/navigation'
 import { format } from 'date-fns'
 
 import { queryPipe } from '../api'
@@ -50,22 +52,17 @@ async function getKpis(kpi: KpiType, date_from?: string, date_to?: string) {
 
 export default function useKpis() {
   const { startDate, endDate } = useDateFilter()
+  const searchParams = useSearchParams()
   const router = useRouter()
-  const { kpi: kpiParam } = router.query
-  const kpi = isKpi(kpiParam) ? kpiParam : 'visits'
+  const kpiParam = searchParams?.get('kpi')
+  const kpi: KpiType = isKpi(kpiParam || undefined) ? kpiParam as KpiType : 'visits'
   const kpiOption = KPI_OPTIONS.find(({ value }) => value === kpi)!
   const query = useQuery([kpi, startDate, endDate, 'kpis'], getKpis)
 
   const setKpi = (kpi: KpiType) => {
-    const searchParams = new URLSearchParams(window.location.search)
-    searchParams.set('kpi', kpi)
-    router.push(
-      {
-        query: searchParams.toString(),
-      },
-      undefined,
-      { scroll: false }
-    )
+    const newSearchParams = new URLSearchParams(searchParams?.toString() || '')
+    newSearchParams.set('kpi', kpi)
+    router.push(`?${newSearchParams?.toString() || ''}`, { scroll: false })
   }
 
   return {
