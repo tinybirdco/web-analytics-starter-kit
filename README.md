@@ -88,7 +88,7 @@ Track web vitals like this:
 ></script>
 ```
 
-You'll start receiving events with `web-vital` action, the payload  looks like this:
+You'll start receiving events with `web_vital` action, the payload  looks like this:
 
 ```
 {"name":"LCP","value":68,"delta":68,"id":"v3-1752067824029-4726354841567","pathname":"/","href":"http://localhost:8081/"}
