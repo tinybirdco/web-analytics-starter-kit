@@ -24,7 +24,8 @@
     "url": "https://github.com/tinybirdco/web-analytics-starter-kit"
   },
   "dependencies": {
-    "node-fetch": "^2.6.6"
+    "node-fetch": "^2.6.6",
+    "web-vitals": "^5.0.3"
   },
   "keywords": [
     "tinybird",
