@@ -98,7 +98,7 @@ You'll start receiving events with `web_vital` action, the payload  looks like t
 {"name":"CLS","value":0,"delta":0,"id":"v3-1752067821037-6535975895510","pathname":"/","href":"http://localhost:8081/"}
 ```
 
-These are the different metrics tracked:
+These are the different metrics tracked and their meaning:
 
 | Metric | What it Measures           | Your Value | Good Value   | Status     |
 |--------|---------------------------|------------|--------------|------------|
