@@ -13,17 +13,17 @@
 │   ├── top_locations.pipe
 │   ├── top_pages.pipe
 │   └── top_sources.pipe
-├── pipes
+├── materializations
 │   ├── analytics_pages.pipe
 │   ├── analytics_sessions.pipe
 │   └── analytics_sources.pipe
 ```
 
 In the `/datasources` folder:
-- analytics_events.datasource: 
+- analytics_events.datasource: Contains events from the `tracker` script (flock.js). Each event has a different `action` (e.g. `page_hit`, `add_to_cart`, `web_vital`) and payload
 
 In the `/endpoints` folder:
-- analytics_hits: Parse page_hit events and publish them, so they can be used in multiple use cases.
+- analytics_hits: Parse `page_hit` events, extract attributes from `payload` and publish them, so they can be used in multiple use cases.
 - kpis: Summary including general KPIs per date
 - top_browsers: Browser level metrics
 - top_devices: Device level metrics
@@ -31,15 +31,10 @@ In the `/endpoints` folder:
 - top_pages: Path and browser level metrics
 - top_sources: Referral and browser level metrics
 
-In the `/pipes` folder, including materialized views:
+In the `/materializations` folder, including materialized views:
 - analytics_pages: Aggregate by pathname and calculate session and hits
 - analytics_sessions: Aggregate by session_id and calculate session metrics
 - analytics_sources: Aggregate by referral and calculate session and hits
-
-Note:
-Typically, in big projects, we split the .pipe files across two folders: /pipes and /endpoints
-- `/pipes` where we store the pipes ending in a datasource, that is, [materialized views](https://guides.tinybird.co/guide/materialized-views)
-- `/endpoints` for the pipes that end in API endpoints. 
 
 ## Local development
 
@@ -57,3 +52,8 @@ tb token ls  # copy the local admin token
 ```
 
 Use `http://localhost:7181` as NEXT_PUBLIC_TINYBIRD_HOST and the admin token in the [dashboard](../dashboard/README.md).
+
+
+## Cloud deployment
+
+After validating your changes use `tb --cloud deploy`

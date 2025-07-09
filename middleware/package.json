@@ -1,6 +1,6 @@
 {
   "name": "@tinybirdco/flock.js",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "main": "dist/index.js",
   "description": "Tinybird web analytics tracking script",
   "author": "Tinybird team",
@@ -9,9 +9,6 @@
   ],
   "targets": {
     "main": false
-  },
-  "engines": {
-    "node": "^22.0.0"
   },
   "scripts": {
     "start": "parcel",
@@ -27,7 +24,8 @@
     "url": "https://github.com/tinybirdco/web-analytics-starter-kit"
   },
   "dependencies": {
-    "node-fetch": "^2.6.6"
+    "node-fetch": "^2.6.6",
+    "web-vitals": "^5.0.3"
   },
   "keywords": [
     "tinybird",
