@@ -17,6 +17,12 @@
   font-weight: 600;
 }
 
+.displaymedium {
+  font-size: 32px;
+  line-height: 44px;
+  font-weight: 600;
+}
+
 .heading {
   font-size: 20px;
   line-height: 28px;

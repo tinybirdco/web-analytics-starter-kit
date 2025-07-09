@@ -1,0 +1,153 @@
+.input {
+  display: flex;
+  align-items: center;
+  height: 40px;
+  width: 100%;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  background-color: var(--neutral-00-color);
+  transition: color 200ms ease;
+  padding: 12px;
+  font-size: 16px;
+  outline: none;
+  background: var(--neutral-00-color);
+  border: 1px solid var(--border-02-color);
+  border-radius: 4px;
+  font: var(--font-body);
+  width: 100%;
+  outline: 1px solid transparent;
+  outline-offset: -2px;
+}
+
+.input::file-selector-button {
+  border: 0;
+  background-color: transparent;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+.input::placeholder {
+  color: var(--text-01-color);
+}
+
+.input:hover:not(:disabled) {
+  outline: 2px solid var(--border-03-color);
+}
+
+.input:focus-visible {
+  outline: none;
+}
+
+.input:focus-within {
+  outline: 2px solid var(--border-03-color);
+}
+
+.input:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* InputOTP Styles */
+.inputOtpContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.inputOtpContainer:has([disabled]) {
+  opacity: 0.5;
+}
+
+.inputOtp {
+  transition: all 200ms ease;
+}
+
+.inputOtp:disabled {
+  cursor: not-allowed;
+}
+
+.inputOtpGroup {
+  display: flex;
+  align-items: center;
+}
+
+.inputOtpSlot {
+  position: relative;
+  display: flex;
+  height: 36px;
+  width: 36px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-02-color);
+  font-size: 14px;
+  transition: all 200ms ease;
+  outline: 1px solid transparent;
+  outline-offset: -2px;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  background-color: var(--neutral-00-color);
+}
+
+.inputOtpSlot:first-child {
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+}
+
+.inputOtpSlot:last-child {
+  border-top-right-radius: 6px;
+  border-bottom-right-radius: 6px;
+}
+
+.inputOtpSlot:not(:first-child) {
+  border-left: none;
+}
+
+.inputOtpSlot:hover:not([disabled]) {
+  outline: 2px solid var(--border-03-color);
+}
+
+.inputOtpSlot[data-active='true'] {
+  z-index: 10;
+  outline: 2px solid var(--border-03-color);
+}
+
+.inputOtpSlot[aria-invalid='true'] {
+  border-color: var(--error-color);
+}
+
+.inputOtpSlot[data-active='true'][aria-invalid='true'] {
+  outline-color: var(--error-color);
+}
+
+.inputOtpCaretContainer {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.inputOtpCaret {
+  height: 16px;
+  width: 1px;
+  background-color: var(--text-color);
+  animation: caretBlink 1s infinite;
+}
+
+@keyframes caretBlink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  51%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@media (min-width: 768px) {
+  .input {
+    font-size: 14px;
+  }
+}

@@ -75,6 +75,7 @@ export function SqlChart({
   const limits = Array.isArray(limit) ? limit : limit ? [limit] : []
 
   const baseStyle: CSSProperties = {
+    backgroundColor: '#fff',
     height,
     ...style,
   }
