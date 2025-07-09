@@ -34,6 +34,17 @@ Get your `tracker` token from https://cloud.tinybird.co/tokens
 
 If everything is working correctly, you should start receiving `page_hit` events as visitors view and interact with your website.
 
+### Track custom events
+
+The script also provides you with a function to track custom events. Add this to your application at any point:
+
+```js
+Tinybird.trackEvent('add_to_cart', {
+  partnumber: 'A1708 (EMC 3164)',
+  quantity: 1,
+})
+```
+
 ### Additional tracker parameters
 
 These parameters can be used with the tracker snippet:
@@ -46,17 +57,6 @@ These parameters can be used with the tracker snippet:
 | `data-host`       | No        | Tinybird host URL. Defaults to `https://api.tinybird.co/`, but could be `https://api.us-east.tinybird.co` or a dedicated cluster. The banner already generates the snippet with the proper host.  |
 | `data-datasource` | No        | If you iterate the landing data source, or you just want to ingest the event in a different one, you can specify the landing data source name. 
 | `web-vitals`      | No        | Tracks web vitals using the [web-vitals](https://www.npmjs.com/package/web-vitals) library 
-
-### Track custom events
-
-The script also provides you with a function to track custom events. Add this to your application at any point:
-
-```js
-Tinybird.trackEvent('add_to_cart', {
-  partnumber: 'A1708 (EMC 3164)',
-  quantity: 1,
-})
-```
 
 ### Implementing custom attributes
 
