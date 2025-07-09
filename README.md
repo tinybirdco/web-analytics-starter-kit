@@ -92,7 +92,6 @@ You'll start receiving events with `web-vital` action, the payload  looks like t
 
 ```
 {"name":"LCP","value":68,"delta":68,"id":"v3-1752067824029-4726354841567","pathname":"/","href":"http://localhost:8081/"}
-{"name":"FID","value":3.100000023841858,"delta":3.100000023841858,"id":"v3-1752067824029-2214271132921","pathname":"/","href":"http://localhost:8081/"}
 {"name":"TTFB","value":41.10000002384186,"delta":41.10000002384186,"id":"v3-1752067821037-7353415626830","pathname":"/","href":"http://localhost:8081/"}
 {"name":"FCP","value":120,"delta":120,"id":"v3-1752067821037-7485331818919","pathname":"/","href":"http://localhost:8081/"}
 {"name":"INP","value":0,"delta":0,"id":"v3-1752067821037-7066346355405","pathname":"/","href":"http://localhost:8081/"}
@@ -104,7 +103,6 @@ These are the different metrics tracked:
 | Metric | What it Measures           | Your Value | Good Value   | Status     |
 |--------|---------------------------|------------|--------------|------------|
 | LCP    | Load performance          | 68 ms      | < 2500 ms    | Excellent  |
-| FID    | First input delay         | 3.1 ms     | < 100 ms     | Excellent  |
 | TTFB   | Server responsiveness     | 41.1 ms    | < 500 ms     | Excellent  |
 | FCP    | First contentful paint    | 120 ms     | < 1800 ms    | Excellent  |
 | INP    | Interaction responsiveness| 0 ms       | < 200 ms     | No data    |

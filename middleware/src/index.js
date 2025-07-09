@@ -299,7 +299,6 @@
       });
     }
     webVitals.onCLS(sendMetric);
-    webVitals.onFID(sendMetric);
     webVitals.onFCP(sendMetric);
     webVitals.onLCP(sendMetric);
     if (webVitals.onINP) webVitals.onINP(sendMetric);
