@@ -5,6 +5,7 @@ export type PipeTableColumn = {
   label: string
   key: string
   align?: 'left' | 'right' | 'center'
+  render?: (row: Record<string, any>, value: any, rowIndex: number) => React.ReactNode
 }
 
 export function PipeTable({
@@ -46,9 +47,11 @@ export function PipeTable({
                     className="py-1 pr-4"
                     style={{ textAlign: col.align || 'left' }}
                   >
-                    {typeof value === 'number'
-                      ? formatNumber(value)
-                      : value || '(none)'}
+                    {col.render
+                      ? col.render(row, value, i)
+                      : typeof value === 'number'
+                        ? formatNumber(value)
+                        : value || '(none)'}
                   </td>
                 )
               })}

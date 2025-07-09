@@ -10,6 +10,7 @@ export type TextVariant =
   | 'displaysmall'
   | 'displayxsmall'
   | 'displaysmall'
+  | 'displaymedium'
   | 'heading'
   | 'body'
   | 'bodysemibold'

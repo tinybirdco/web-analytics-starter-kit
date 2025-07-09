@@ -1,0 +1,48 @@
+.progressBarWrapper {
+  display: flex;
+  align-items: center;
+  height: 1.25em;
+  min-width: 48px;
+  margin-right: 8px;
+}
+
+.progressBarBg {
+  background: #e5e7eb;
+  border-radius: 4px;
+  width: 40px;
+  height: 6px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progressBarFill {
+  background: #1a2aff;
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.2s;
+}
+
+.combined {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.delta {
+  font-size: 0.95em;
+  margin-left: 4px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.deltaPositive {
+  color: #16a34a;
+}
+
+.deltaNegative {
+  color: #dc2626;
+}
+
+.deltaNeutral {
+  color: #6b7280;
+} 
