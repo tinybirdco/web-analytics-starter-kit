@@ -1,7 +1,15 @@
-import { SqlChart } from '@/components/SqlChart'
-import { Stack } from '@/components/Stack'
+import { SqlChart } from '@/components/ui/SqlChart'
+import { Stack } from '@/components/ui/Stack'
 import { useEndpoint } from '@/lib/hooks/use-endpoint'
 import { PipeTable } from '@/components/PipeTable'
+import {
+  TableCellText,
+  TableCellBold,
+  TableCellMono,
+  TableCellProgress,
+  TableCellDelta,
+  TableCellCombined,
+} from '@/components/table/TableCells'
 
 export const Widgets = () => {
   const { data, error, isLoading } =
@@ -12,10 +20,16 @@ export const Widgets = () => {
       'top_sources'
     )
 
-    const { data: topDevices } =
+  const { data: topDevices } =
     useEndpoint<{ referrer: string; visits: number; hits: number }[]>(
       'top_devices'
     )
+
+  // Demo: calculate max and deltas for progress and delta columns
+  const maxVisitors = topSources?.reduce((max, row) => Math.max(max, row.visits), 0) || 1
+  const maxViews = topSources?.reduce((max, row) => Math.max(max, row.hits), 0) || 1
+  // For demo, fake deltas
+  const getDelta = (row: any) => (row.referrer === 'google.com' ? -2 : row.referrer === '(none)' ? -2 : 6)
 
   return (
     <div>
@@ -46,9 +60,34 @@ export const Widgets = () => {
           title="Top sources"
           data={topSources?.slice(0, 10) || []}
           columns={[
-            { label: 'Path', key: 'referrer' },
-            { label: 'Visitors', key: 'visits', align: 'right' },
-            { label: 'Views', key: 'hits', align: 'right' },
+            {
+              label: 'Path',
+              key: 'referrer',
+              render: (row) => <TableCellText>{row.referrer}</TableCellText>,
+            },
+            {
+              label: 'Visitors',
+              key: 'visits',
+              align: 'right',
+              render: (row) => (
+                <TableCellCombined>
+                  <TableCellProgress value={row.visits} max={maxVisitors} />
+                  <TableCellMono>{row.visits.toLocaleString()}</TableCellMono>
+                  <TableCellDelta delta={getDelta(row)} />
+                </TableCellCombined>
+              ),
+            },
+            {
+              label: 'Views',
+              key: 'hits',
+              align: 'right',
+              render: (row) => (
+                <TableCellCombined>
+                  <TableCellMono>{row.hits.toLocaleString()}</TableCellMono>
+                  <TableCellDelta delta={getDelta(row)} />
+                </TableCellCombined>
+              ),
+            },
           ]}
         />
 
