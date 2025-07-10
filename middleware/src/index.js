@@ -33,6 +33,9 @@
       if (attr.name.startsWith('tb_')) {
         globalAttributes[attr.name.slice(3)] = attr.value
       }
+      if (attr.name.startsWith('data-tb_')) {
+        globalAttributes[attr.name.slice(8)] = attr.value
+      }
     }
   }
 

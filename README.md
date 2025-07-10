@@ -60,7 +60,7 @@ These parameters can be used with the tracker snippet:
 
 ### Implementing custom attributes
 
- Attributes name must have **tb\_** prefix. Every attribute included with this requirement would be saved in the payload column of your `analytics_events` datasource and will be included in every event. 
+ Attributes name must have **data-tb\_** prefix. Every attribute included with this requirement would be saved in the payload column of your `analytics_events` datasource and will be included in every event. 
  
  For example:
 
@@ -68,7 +68,7 @@ These parameters can be used with the tracker snippet:
 <script
   src="https://unpkg.com/@tinybirdco/flock.js"
   data-token="TOKEN-ID"
-  tb_customer_id="CUSTOMER_ID"
+  data-tb_customer_id="CUSTOMER_ID"
 ></script>
 ```
 
