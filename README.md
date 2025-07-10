@@ -68,7 +68,7 @@ These parameters can be used with the tracker snippet:
 <script
   src="https://unpkg.com/@tinybirdco/flock.js"
   data-token="TOKEN-ID"
-  data-tb_customer_id="CUSTOMER_ID"
+  data-tb-customer-id="CUSTOMER_ID"
 ></script>
 ```
 

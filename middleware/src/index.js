@@ -31,10 +31,10 @@
     stringifyPayload = document.currentScript.getAttribute('data-stringify-payload') !== 'false'
     for (const attr of document.currentScript.attributes) {
       if (attr.name.startsWith('tb_')) {
-        globalAttributes[attr.name.slice(3)] = attr.value
+        globalAttributes[attr.name.slice(3).replace(/-/g, '_')] = attr.value
       }
-      if (attr.name.startsWith('data-tb_')) {
-        globalAttributes[attr.name.slice(8)] = attr.value
+      if (attr.name.startsWith('data-tb-')) {
+        globalAttributes[attr.name.slice(8).replace(/-/g, '_')] = attr.value
       }
     }
   }
