@@ -1,35 +1,35 @@
 DESCRIPTION >
-	Returns current web vitals metrics (LCP, TTFB, FCP, INP, CLS) with average values over the last 24 hours, calculated scores, and detailed metric descriptions with units and scoring ranges.
+	Returns current web vitals metrics (LCP, TTFB, FCP, INP, CLS) with average values over a configurable time period (defaults to 1 day), calculated scores, and detailed metric descriptions with units and scoring ranges.
 
 TOKEN "dashboard" READ
-TOKEN "dashboard_test" read
 
 NODE daily_vitals
 DESCRIPTION >
-    Get web vital metrics aggregated over the last 24 hours with averages
+    Get web vital metrics aggregated over the specified time period with averages
 
 SQL >
 
+    %
     SELECT
         JSONExtractString(payload, 'name') as metric_name,
         avg(JSONExtractFloat(payload, 'value')) as avg_value,
         avg(JSONExtractFloat(payload, 'delta')) as avg_delta,
-        count() as measurements,
-        min(timestamp) as first_measurement,
-        max(timestamp) as last_measurement
+        count() as measurements
     FROM analytics_events
     WHERE action = 'web_vital'
         AND JSONExtractString(payload, 'name') IN ('LCP', 'TTFB', 'FCP', 'INP', 'CLS')
-        AND timestamp >= now() - interval 24 hour
+        AND timestamp >= now() - interval {{Int32(days, 1, description="Number of days to analyze (defaults to 1 day)")}} day
+        AND (JSONExtractString(payload, 'domain') = '' OR JSONExtractString(payload, 'domain') = 'tinybird.co')
     GROUP BY metric_name
     HAVING measurements >= 1
 
 NODE endpoint
 DESCRIPTION >
-    Calculate scores based on 24-hour averages and return metrics with detailed information
+    Calculate scores based on time period averages and return metrics with detailed information
 
 SQL >
 
+    %
     SELECT
         metric_name,
         round(avg_value, 2) as avg_value,
@@ -92,9 +92,7 @@ SQL >
             metric_name = 'INP', 'Excellent: ≤200ms, Good: ≤500ms, Poor: >500ms',
             metric_name = 'CLS', 'Excellent: ≤0.1, Good: ≤0.25, Poor: >0.25',
             'Unknown thresholds'
-        ) as thresholds,
-        formatDateTime(first_measurement, '%Y-%m-%d %H:%i:%s') as time_range_start,
-        formatDateTime(last_measurement, '%Y-%m-%d %H:%i:%s') as time_range_end
+        ) as thresholds
     FROM daily_vitals
     ORDER BY metric_name
 

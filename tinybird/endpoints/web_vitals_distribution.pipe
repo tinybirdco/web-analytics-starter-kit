@@ -2,7 +2,6 @@ DESCRIPTION >
 	Returns web vitals performance distribution across excellent, good, and poor ranges with average values and percentage of measurements in each category. Shows how measurements are distributed across performance thresholds for each Core Web Vitals metric over the last 24 hours.
 
 TOKEN "dashboard" READ
-TOKEN "dashboard_test" READ
 
 NODE metric_categorization
 DESCRIPTION >

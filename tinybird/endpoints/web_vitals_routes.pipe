@@ -2,7 +2,6 @@ DESCRIPTION >
 	Returns top 10 routes with web vitals scores, sortable by best/worst performance. Includes detailed metric descriptions, units, and scoring ranges. Accepts sort_order parameter ('asc' for best scores, 'desc' for worst scores).
 
 TOKEN "dashboard" read
-TOKEN "dashboard_test" read
 
 NODE route_vitals
 DESCRIPTION >
