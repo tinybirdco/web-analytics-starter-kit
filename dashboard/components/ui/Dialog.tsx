@@ -33,7 +33,7 @@ const DialogContent = React.forwardRef<
 >(({ className, children, ...props }, ref) => {
   return (
     <DialogPortal>
-      <DialogOverlay className="!backdrop-blur-sm" />
+      <DialogOverlay className="!backdrop-blur-sm !bg-white !bg-opacity-50" />
       <DialogPrimitive.Content
         ref={ref}
         className={`${styles.content} ${className || ''}`}

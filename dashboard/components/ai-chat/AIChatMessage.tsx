@@ -39,9 +39,9 @@ export function AIChatMessage({ message, messageIndex }: AIChatMessageProps) {
               return (
                 <div
                   key={partIndex}
-                  className="whitespace-pre-wrap text-blue-900"
+                  className="tiptap px-4"
                 >
-                  {part.text}
+                  <Markdown>{part.text}</Markdown>
                 </div>
               )
             }
@@ -65,7 +65,7 @@ export function AIChatMessage({ message, messageIndex }: AIChatMessageProps) {
           {resultParts.map((part: any, partIndex: number) => {
             if (part.type === 'text') {
               return (
-                <div key={partIndex} className="whitespace-pre-wrap tiptap">
+                <div key={partIndex} className="tiptap px-4">
                   <Markdown>{part.text}</Markdown>
                 </div>
               )
