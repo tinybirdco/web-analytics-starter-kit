@@ -1,5 +1,5 @@
 DESCRIPTION >
-	Returns web vitals performance distribution across excellent, good, and poor ranges with average values and percentage of measurements in each category. Shows how measurements are distributed across performance thresholds for each Core Web Vitals metric over the last 24 hours.
+	Returns web vitals performance distribution across excellent, good, and poor ranges with average values and percentage of measurements in each category. Shows how measurements are distributed across performance thresholds for each Core Web Vitals metric over a configurable time period (defaults to 1 day) with optional domain filtering.
 
 TOKEN "dashboard" READ
 
@@ -9,6 +9,7 @@ DESCRIPTION >
 
 SQL >
 
+    %
     SELECT
         JSONExtractString(payload, 'name') as metric_name,
         JSONExtractFloat(payload, 'value') as value,
@@ -48,7 +49,10 @@ SQL >
     FROM analytics_events
     WHERE action = 'web_vital'
         AND JSONExtractString(payload, 'name') IN ('LCP', 'TTFB', 'FCP', 'INP', 'CLS')
-        AND timestamp >= now() - interval 24 hour
+        AND timestamp >= now() - interval {{Int32(days, 1, description="Number of days to analyze (defaults to 1 day)")}} day
+        {% if defined(domain) %}
+        AND JSONExtractString(payload, 'domain') = {{ String(domain, description="Domain to filter web vitals for") }}
+        {% end %}
 
 NODE endpoint
 DESCRIPTION >
