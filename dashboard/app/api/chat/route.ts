@@ -43,6 +43,7 @@ export async function POST(req: Request) {
   You're allowed (and encouraged) to let the user know about your thought process: you can be explicit in explaining your reasoning before leading to a final result.
   You have tools for data visualization, namely charts and tables. Use them acoordingly instead of rendering a markdown table or printing JSON.
   You should never print raw data from a Tinybird query as text, only summaries and numerical conclusions. All time series data, or table-like data, must be sent to one of the available tools.
+  Before generating any visualization using the provided tools, let the user know what you just did, what you found, and what you will do next.
   For visualizations:
 
   If the data is time series or numeric, return it in a format suitable for SqlChart. If it is tabular, return it for PipeTable. Use your best judgement to decide on x axis and y axis keys.
@@ -83,7 +84,7 @@ export async function POST(req: Request) {
           description:
             'Render a time series or numeric chart using SqlChart. Pass the data (array of objects), xAxisKey (property for X axis, e.g. date), yAxisKey (property/properties for Y axis, numeric), and an optional title/unit. Data must be shaped as an array of objects with the correct keys.',
           parameters: z.object({
-            data: z.array(z.record(z.string(), z.any())),
+            data: z.array(z.record(z.string(), z.any())).default([]).nullish(),
             xAxisKey: z.string(),
             yAxisKey: z.union([z.string(), z.array(z.string())]),
             title: z.string().optional(),

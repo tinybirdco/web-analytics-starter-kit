@@ -16,7 +16,6 @@ import {
   Dialog,
   DialogTrigger,
   DialogContent,
-  DialogOverlay,
 } from '@/components/ui/Dialog'
 
 export default function DashboardPage() {

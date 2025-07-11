@@ -62,6 +62,10 @@ export function AIChatToolCall({ part, partIndex, isResult = false }: AIChatTool
             data={result.data}
             columns={result.columns}
             title={result.title}
+            style={{
+              padding: 0,
+              border: 0,
+            }}
           />
         </div>
       )
