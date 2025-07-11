@@ -1,32 +1,83 @@
 DESCRIPTION >
-	Returns top 10 routes with web vitals scores, sortable by best/worst performance. Includes detailed metric descriptions, units, and scoring ranges. Accepts sort_order parameter ('asc' for best scores, 'desc' for worst scores).
+	Returns routes with web vitals scores, sortable by best/worst performance. Supports both route-based analysis (first part of pathname) and full pathname analysis. Includes detailed metric descriptions, units, and scoring ranges. Accepts sort_order parameter ('asc' for best scores, 'desc' for worst scores), days parameter for time range (defaults to 1 day), optional domain filter, analysis_type parameter ('routes' for route-based, 'pathnames' for full pathnames), optional route filter for both analysis types, and skip/limit parameters for pagination (defaults to limit 10).
 
 TOKEN "dashboard" read
 
 NODE route_vitals
 DESCRIPTION >
-    Calculate average web vitals metrics per route with scores and detailed information
+    Calculate average web vitals metrics per route or pathname with scores and detailed information
 
 SQL >
 
     %
-    WITH route_metrics AS (
+    WITH processed_paths AS (
         SELECT
-            JSONExtractString(payload, 'pathname') as pathname,
+            {% if defined(analysis_type) and analysis_type == 'pathnames' %}
+                JSONExtractString(payload, 'pathname') as path_key,
+                JSONExtractString(payload, 'pathname') as full_pathname,
+                -- Extract route (first part) for filtering
+                if(
+                    JSONExtractString(payload, 'pathname') = '/',
+                    '/',
+                    splitByChar('/', JSONExtractString(payload, 'pathname'))[2] 
+                ) as route_part
+            {% else %}
+                -- Default: route-based analysis
+                if(
+                    JSONExtractString(payload, 'pathname') = '/',
+                    '/',
+                    splitByChar('/', JSONExtractString(payload, 'pathname'))[2] 
+                ) as path_key,
+                JSONExtractString(payload, 'pathname') as full_pathname,
+                if(
+                    JSONExtractString(payload, 'pathname') = '/',
+                    '/',
+                    splitByChar('/', JSONExtractString(payload, 'pathname'))[2] 
+                ) as route_part
+            {% end %},
             JSONExtractString(payload, 'name') as metric_name,
-            avg(JSONExtractFloat(payload, 'value')) as avg_value,
-            count() as measurements
+            JSONExtractFloat(payload, 'value') as value
         FROM analytics_events
         WHERE action = 'web_vital'
             AND JSONExtractString(payload, 'name') IN ('LCP', 'TTFB', 'FCP', 'INP', 'CLS')
-            AND timestamp >= now() - interval 24 hour
+            AND timestamp >= now() - interval {{Int32(days, 1, description="Number of days to analyze (defaults to 1 day)")}} day
             AND JSONExtractString(payload, 'pathname') != ''
-        GROUP BY pathname, metric_name
+            {% if defined(domain) %}
+            AND JSONExtractString(payload, 'domain') = {{ String(domain, description="Domain to filter web vitals for") }}
+            {% end %}
+            {% if defined(route) %}
+            AND if(
+                JSONExtractString(payload, 'pathname') = '/',
+                '/' = {{ String(route, description="Route to filter by (works for both routes and pathnames analysis)") }},
+                splitByChar('/', JSONExtractString(payload, 'pathname'))[2] = {{ String(route, description="Route to filter by (works for both routes and pathnames analysis)") }}
+            )
+            {% end %}
+    ),
+    route_metrics AS (
+        SELECT
+            path_key,
+            {% if defined(analysis_type) and analysis_type == 'pathnames' %}
+                full_pathname,
+                route_part,
+            {% end %}
+            metric_name,
+            avg(value) as avg_value,
+            count() as measurements
+        FROM processed_paths
+        WHERE path_key != ''
+        GROUP BY path_key, metric_name
+            {% if defined(analysis_type) and analysis_type == 'pathnames' %}
+            , full_pathname, route_part
+            {% end %}
         HAVING measurements >= 3
     ),
     route_scores AS (
         SELECT
-            pathname,
+            path_key,
+            {% if defined(analysis_type) and analysis_type == 'pathnames' %}
+                full_pathname,
+                route_part,
+            {% end %}
             metric_name,
             avg_value,
             multiIf(
@@ -50,7 +101,11 @@ SQL >
     ),
     route_summary AS (
         SELECT
-            pathname,
+            path_key,
+            {% if defined(analysis_type) and analysis_type == 'pathnames' %}
+                full_pathname,
+                route_part,
+            {% end %}
             round(avg(score), 2) as overall_score,
             round(avgIf(avg_value, metric_name = 'LCP'), 2) as lcp_avg,
             round(avgIf(avg_value, metric_name = 'TTFB'), 2) as ttfb_avg,
@@ -64,11 +119,18 @@ SQL >
             round(avgIf(score, metric_name = 'CLS'), 0) as cls_score,
             count(DISTINCT metric_name) as metrics_count
         FROM route_scores
-        GROUP BY pathname
+        GROUP BY path_key
+            {% if defined(analysis_type) and analysis_type == 'pathnames' %}
+            , full_pathname, route_part
+            {% end %}
         HAVING metrics_count >= 3
     )
     SELECT
-        pathname,
+        path_key as {% if defined(analysis_type) and analysis_type == 'pathnames' %}pathname{% else %}route{% end %},
+        {% if defined(analysis_type) and analysis_type == 'pathnames' %}
+            full_pathname,
+            route_part,
+        {% end %}
         overall_score,
         lcp_avg,
         ttfb_avg,
@@ -81,15 +143,26 @@ SQL >
         inp_score,
         cls_score,
         'LCP=ms, TTFB=ms, FCP=ms, INP=ms, CLS=score' as metric_units,
-        'LCP: Largest Contentful Paint (loading); TTFB: Time to First Byte (server); FCP: First Contentful Paint (rendering); INP: Interaction to Next Paint (interactivity); CLS: Cumulative Layout Shift (stability)' as metric_descriptions,
-        'Excellent=100, Good=75, Poor=25 | LCP: ≤2500/≤4000/>4000ms | TTFB: ≤500/≤1000/>1000ms | FCP: ≤1800/≤3000/>3000ms | INP: ≤200/≤500/>500ms | CLS: ≤0.1/≤0.25/>0.25' as scoring_thresholds
+        {% if defined(analysis_type) and analysis_type == 'pathnames' %}
+            'pathnames' as analysis_type
+        {% else %}
+            'routes' as analysis_type
+        {% end %}
     FROM route_summary
     ORDER BY 
         {% if defined(sort_order) and sort_order == 'desc' %}
-            overall_score DESC
+            overall_score DESC,
+            lcp_score DESC,
+            fcp_score DESC,
+            ttfb_score DESC,
+            {% if defined(analysis_type) and analysis_type == 'pathnames' %}pathname{% else %}route{% end %} ASC
         {% else %}
-            overall_score ASC
+            overall_score ASC,
+            lcp_score ASC,
+            fcp_score ASC,
+            ttfb_score ASC,
+            {% if defined(analysis_type) and analysis_type == 'pathnames' %}pathname{% else %}route{% end %} ASC
         {% end %}
-    LIMIT 10
+    LIMIT {{ Int32(skip, 0) }}, {{ Int32(limit, 10) }}
 
 TYPE endpoint
