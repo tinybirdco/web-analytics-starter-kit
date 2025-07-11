@@ -1,6 +1,6 @@
 'use client'
 
-import { Suspense } from 'react'
+import { Suspense, useState } from 'react'
 /* eslint-disable @next/next/no-img-element */
 import Script from 'next/script'
 import useAuth from '../lib/hooks/use-auth'
@@ -11,12 +11,13 @@ import { useTimeRange } from '@/lib/hooks/use-time-range'
 import CredentialsDialog from '@/components/CredentialsDialog'
 import { cn } from '@/lib/utils'
 import { Text } from '@/components/ui/Text'
-import { useChat } from "@ai-sdk/react"
-import { useRef } from "react"
-import { Button } from "@/components/ui/Button"
-import { Textarea } from '@/components/ui/Textarea'
-import { SqlChart } from '@/components/ui/SqlChart'
-import { PipeTable } from '@/components/PipeTable'
+import { AIChatProvider, AIChatContainer } from '@/components/ai-chat'
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogOverlay,
+} from '@/components/ui/Dialog'
 
 export default function DashboardPage() {
   const { isAuthenticated, isTokenValid } = useAuth()
@@ -25,21 +26,7 @@ export default function DashboardPage() {
     setValue: setTimeRangeValue,
     options: timeRanges,
   } = useTimeRange()
-
-  const { messages, input, handleInputChange, handleSubmit, status, isLoading, error } = useChat({
-    maxSteps: 5
-  })
-  const messagesEndRef = useRef<HTMLDivElement>(null)
-
-  // Scroll to bottom when messages change
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-  }
-
-  const onSubmit = (e: React.FormEvent) => {
-    handleSubmit(e)
-    setTimeout(scrollToBottom, 100)
-  }
+  const [open, setOpen] = useState(false)
 
   return (
     <Suspense>
@@ -51,96 +38,39 @@ export default function DashboardPage() {
             data-token={config.trackerToken}
           />
         )}
+
         <header className="bg-[var(--background-01-color)] p-6 border-b border-[var(--border-01-color)] pb-[408px] -mb-[380px]">
           <img src="/icon.svg" alt="" width={24} height={24} />
         </header>
-
-        {/* AI Chat Form */}
-        <div className="container mx-auto max-w-2xl px-4 py-6">
-          <form onSubmit={onSubmit} className="flex flex-col gap-2 mb-6">
-            <label htmlFor="ai-chat-input" className="font-medium mb-1">Ask a question about your analytics data</label>
-            <Textarea
-              id="ai-chat-input"
-              placeholder="e.g. What are the top pages by bounce rate last week?"
-              className="min-h-[60px] w-full resize-none"
-              value={input}
-              onChange={handleInputChange}
-              disabled={isLoading}
-            />
-            <div className="flex justify-end">
-              <Button type="submit" disabled={!input.trim() || isLoading}>
-                {isLoading ? "Thinking..." : "Ask"}
-              </Button>
-            </div>
-            {error && <div className="text-red-500 text-sm">{error.message}</div>}
-          </form>
-          <div className="space-y-2 mb-4">
-            {messages.map((message) => (
-              <div key={message.id} className={`flex w-full ${message.role === "user" ? "justify-end" : "justify-start"}`}>
-                <div className={`max-w-[80%] rounded-lg px-4 py-2 ${message.role === "user" ? "bg-blue-100 text-blue-900" : "bg-gray-100"}`}>
-                  {message.parts.map((part, i) => {
-                    if (part.type === "text") {
-                      return <div key={`${message.id}-${i}`} className="whitespace-pre-wrap">{part.text}</div>
-                    }
-                    if (part.type === "tool-invocation" && part.toolInvocation.state === "result") {
-                      const toolName = part.toolInvocation.toolName
-                      const result = part.toolInvocation.result
-                      if (toolName === "renderSqlChart") {
-                        return (
-                          <div key={`${message.id}-${i}`} className="my-2">
-                            <SqlChart
-                              data={result.data}
-                              error={undefined}
-                              isLoading={false}
-                              xAxisKey={result.xAxisKey}
-                              yAxisKey={result.yAxisKey}
-                              title={result.title}
-                              unit={result.unit}
-                            />
-                          </div>
-                        )
-                      }
-                      if (toolName === "renderPipeTable") {
-                        return (
-                          <div key={`${message.id}-${i}`} className="my-2">
-                            <PipeTable
-                              data={result.data}
-                              columns={result.columns}
-                              title={result.title}
-                            />
-                          </div>
-                        )
-                      }
-                      // fallback for unknown tool
-                      return (
-                        <div key={`${message.id}-${i}`} className="my-2 text-xs">
-                          <div className="font-bold">Tool result:</div>
-                          <pre className="mt-1 overflow-auto text-xs">{JSON.stringify(result, null, 2)}</pre>
-                        </div>
-                      )
-                    }
-                    return null
-                  })}
-                </div>
-              </div>
-            ))}
-            <div ref={messagesEndRef} />
-          </div>
-        </div>
-        {/* End AI Chat Form */}
-
         <div className="px-4">
           <main className="container mx-auto space-y-10">
             <div className="grid grid-cols-6 gap-3">
-              {new Array(6).fill(0).map((_, i) => (
+              {/* AI Chat Modal */}
+              <Dialog open={open} onOpenChange={setOpen}>
+                <DialogTrigger asChild>
+                  <button
+                    className={cn(
+                      'aspect-square rounded-lg bg-[var(--text-blue-color)]',
+                      'focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--text-blue-color)]',
+                      'w-full h-full'
+                    )}
+                    aria-label="Open AI Chat"
+                  />
+                </DialogTrigger>
+                {/* Empty DialogContent to keep overlay, but not use the content box */}
+                <DialogContent className="!bg-transparent !shadow-none !border-none !p-0">
+                  <AIChatProvider>
+                    <AIChatContainer />
+                  </AIChatProvider>
+                </DialogContent>
+              </Dialog>
+              {/* End AI Chat Modal */}
+
+              {/* The rest remain as before */}
+              {new Array(5).fill(0).map((_, i) => (
                 <div
                   key={`ai-ph_${i}`}
-                  className={cn(
-                    'aspect-square rounded-lg',
-                    i === 0
-                      ? 'bg-[var(--text-blue-color)]'
-                      : 'border border-[var(--border-02-color)] bg-white'
-                  )}
+                  className="border border-[var(--border-02-color)] bg-white"
                 />
               ))}
             </div>
