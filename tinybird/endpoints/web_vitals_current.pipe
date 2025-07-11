@@ -19,7 +19,9 @@ SQL >
     WHERE action = 'web_vital'
         AND JSONExtractString(payload, 'name') IN ('LCP', 'TTFB', 'FCP', 'INP', 'CLS')
         AND timestamp >= now() - interval {{Int32(days, 1, description="Number of days to analyze (defaults to 1 day)")}} day
-        AND (JSONExtractString(payload, 'domain') = '' OR JSONExtractString(payload, 'domain') = 'tinybird.co')
+        {% if defined(domain) %}
+        AND JSONExtractString(payload, 'domain') = {{ String(domain, description="Domain to filter web vitals for") }}
+        {% end %}
     GROUP BY metric_name
     HAVING measurements >= 1
 
