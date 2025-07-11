@@ -1,0 +1,101 @@
+DESCRIPTION >
+	Returns current web vitals metrics (LCP, TTFB, FCP, INP, CLS) with average values over the last 24 hours, calculated scores, and detailed metric descriptions with units and scoring ranges.
+
+TOKEN "dashboard" READ
+TOKEN "dashboard_test" read
+
+NODE daily_vitals
+DESCRIPTION >
+    Get web vital metrics aggregated over the last 24 hours with averages
+
+SQL >
+
+    SELECT
+        JSONExtractString(payload, 'name') as metric_name,
+        avg(JSONExtractFloat(payload, 'value')) as avg_value,
+        avg(JSONExtractFloat(payload, 'delta')) as avg_delta,
+        count() as measurements,
+        min(timestamp) as first_measurement,
+        max(timestamp) as last_measurement
+    FROM analytics_events
+    WHERE action = 'web_vital'
+        AND JSONExtractString(payload, 'name') IN ('LCP', 'TTFB', 'FCP', 'INP', 'CLS')
+        AND timestamp >= now() - interval 24 hour
+    GROUP BY metric_name
+    HAVING measurements >= 1
+
+NODE endpoint
+DESCRIPTION >
+    Calculate scores based on 24-hour averages and return metrics with detailed information
+
+SQL >
+
+    SELECT
+        metric_name,
+        round(avg_value, 2) as avg_value,
+        round(avg_delta, 2) as avg_delta,
+        measurements,
+        multiIf(
+            metric_name = 'LCP' AND avg_value <= 2500, 100,
+            metric_name = 'LCP' AND avg_value <= 4000, 75,
+            metric_name = 'LCP', 25,
+            metric_name = 'TTFB' AND avg_value <= 500, 100,
+            metric_name = 'TTFB' AND avg_value <= 1000, 75,
+            metric_name = 'TTFB', 25,
+            metric_name = 'FCP' AND avg_value <= 1800, 100,
+            metric_name = 'FCP' AND avg_value <= 3000, 75,
+            metric_name = 'FCP', 25,
+            metric_name = 'INP' AND avg_value <= 200, 100,
+            metric_name = 'INP' AND avg_value <= 500, 75,
+            metric_name = 'INP', 25,
+            metric_name = 'CLS' AND avg_value <= 0.1, 100,
+            metric_name = 'CLS' AND avg_value <= 0.25, 75,
+            25
+        ) as score,
+        multiIf(
+            metric_name = 'LCP' AND avg_value <= 2500, 'Excellent',
+            metric_name = 'LCP' AND avg_value <= 4000, 'Good',
+            metric_name = 'LCP', 'Poor',
+            metric_name = 'TTFB' AND avg_value <= 500, 'Excellent',
+            metric_name = 'TTFB' AND avg_value <= 1000, 'Good',
+            metric_name = 'TTFB', 'Poor',
+            metric_name = 'FCP' AND avg_value <= 1800, 'Excellent',
+            metric_name = 'FCP' AND avg_value <= 3000, 'Good',
+            metric_name = 'FCP', 'Poor',
+            metric_name = 'INP' AND avg_value <= 200, 'Excellent',
+            metric_name = 'INP' AND avg_value <= 500, 'Good',
+            metric_name = 'INP', 'Poor',
+            metric_name = 'CLS' AND avg_value <= 0.1, 'Excellent',
+            metric_name = 'CLS' AND avg_value <= 0.25, 'Good',
+            'Poor'
+        ) as status,
+        multiIf(
+            metric_name = 'LCP', 'ms',
+            metric_name = 'TTFB', 'ms', 
+            metric_name = 'FCP', 'ms',
+            metric_name = 'INP', 'ms',
+            metric_name = 'CLS', 'score',
+            'unknown'
+        ) as units,
+        multiIf(
+            metric_name = 'LCP', 'Largest Contentful Paint - measures loading performance of the largest content element',
+            metric_name = 'TTFB', 'Time to First Byte - measures server response time and network latency',
+            metric_name = 'FCP', 'First Contentful Paint - measures time until first content appears on screen',
+            metric_name = 'INP', 'Interaction to Next Paint - measures responsiveness to user interactions',
+            metric_name = 'CLS', 'Cumulative Layout Shift - measures visual stability and unexpected layout shifts',
+            'Unknown metric'
+        ) as description,
+        multiIf(
+            metric_name = 'LCP', 'Excellent: ≤2500ms, Good: ≤4000ms, Poor: >4000ms',
+            metric_name = 'TTFB', 'Excellent: ≤500ms, Good: ≤1000ms, Poor: >1000ms',
+            metric_name = 'FCP', 'Excellent: ≤1800ms, Good: ≤3000ms, Poor: >3000ms',
+            metric_name = 'INP', 'Excellent: ≤200ms, Good: ≤500ms, Poor: >500ms',
+            metric_name = 'CLS', 'Excellent: ≤0.1, Good: ≤0.25, Poor: >0.25',
+            'Unknown thresholds'
+        ) as thresholds,
+        formatDateTime(first_measurement, '%Y-%m-%d %H:%i:%s') as time_range_start,
+        formatDateTime(last_measurement, '%Y-%m-%d %H:%i:%s') as time_range_end
+    FROM daily_vitals
+    ORDER BY metric_name
+
+TYPE endpoint
