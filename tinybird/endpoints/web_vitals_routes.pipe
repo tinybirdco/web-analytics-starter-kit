@@ -1,0 +1,96 @@
+DESCRIPTION >
+	Returns top 10 routes with web vitals scores, sortable by best/worst performance. Includes detailed metric descriptions, units, and scoring ranges. Accepts sort_order parameter ('asc' for best scores, 'desc' for worst scores).
+
+TOKEN "dashboard" read
+TOKEN "dashboard_test" read
+
+NODE route_vitals
+DESCRIPTION >
+    Calculate average web vitals metrics per route with scores and detailed information
+
+SQL >
+
+    %
+    WITH route_metrics AS (
+        SELECT
+            JSONExtractString(payload, 'pathname') as pathname,
+            JSONExtractString(payload, 'name') as metric_name,
+            avg(JSONExtractFloat(payload, 'value')) as avg_value,
+            count() as measurements
+        FROM analytics_events
+        WHERE action = 'web_vital'
+            AND JSONExtractString(payload, 'name') IN ('LCP', 'TTFB', 'FCP', 'INP', 'CLS')
+            AND timestamp >= now() - interval 24 hour
+            AND JSONExtractString(payload, 'pathname') != ''
+        GROUP BY pathname, metric_name
+        HAVING measurements >= 3
+    ),
+    route_scores AS (
+        SELECT
+            pathname,
+            metric_name,
+            avg_value,
+            multiIf(
+                metric_name = 'LCP' AND avg_value <= 2500, 100,
+                metric_name = 'LCP' AND avg_value <= 4000, 75,
+                metric_name = 'LCP', 25,
+                metric_name = 'TTFB' AND avg_value <= 500, 100,
+                metric_name = 'TTFB' AND avg_value <= 1000, 75,
+                metric_name = 'TTFB', 25,
+                metric_name = 'FCP' AND avg_value <= 1800, 100,
+                metric_name = 'FCP' AND avg_value <= 3000, 75,
+                metric_name = 'FCP', 25,
+                metric_name = 'INP' AND avg_value <= 200, 100,
+                metric_name = 'INP' AND avg_value <= 500, 75,
+                metric_name = 'INP', 25,
+                metric_name = 'CLS' AND avg_value <= 0.1, 100,
+                metric_name = 'CLS' AND avg_value <= 0.25, 75,
+                25
+            ) as score
+        FROM route_metrics
+    ),
+    route_summary AS (
+        SELECT
+            pathname,
+            round(avg(score), 2) as overall_score,
+            round(avgIf(avg_value, metric_name = 'LCP'), 2) as lcp_avg,
+            round(avgIf(avg_value, metric_name = 'TTFB'), 2) as ttfb_avg,
+            round(avgIf(avg_value, metric_name = 'FCP'), 2) as fcp_avg,
+            round(avgIf(avg_value, metric_name = 'INP'), 2) as inp_avg,
+            round(avgIf(avg_value, metric_name = 'CLS'), 4) as cls_avg,
+            round(avgIf(score, metric_name = 'LCP'), 0) as lcp_score,
+            round(avgIf(score, metric_name = 'TTFB'), 0) as ttfb_score,
+            round(avgIf(score, metric_name = 'FCP'), 0) as fcp_score,
+            round(avgIf(score, metric_name = 'INP'), 0) as inp_score,
+            round(avgIf(score, metric_name = 'CLS'), 0) as cls_score,
+            count(DISTINCT metric_name) as metrics_count
+        FROM route_scores
+        GROUP BY pathname
+        HAVING metrics_count >= 3
+    )
+    SELECT
+        pathname,
+        overall_score,
+        lcp_avg,
+        ttfb_avg,
+        fcp_avg,
+        inp_avg,
+        cls_avg,
+        lcp_score,
+        ttfb_score,
+        fcp_score,
+        inp_score,
+        cls_score,
+        'LCP=ms, TTFB=ms, FCP=ms, INP=ms, CLS=score' as metric_units,
+        'LCP: Largest Contentful Paint (loading); TTFB: Time to First Byte (server); FCP: First Contentful Paint (rendering); INP: Interaction to Next Paint (interactivity); CLS: Cumulative Layout Shift (stability)' as metric_descriptions,
+        'Excellent=100, Good=75, Poor=25 | LCP: ≤2500/≤4000/>4000ms | TTFB: ≤500/≤1000/>1000ms | FCP: ≤1800/≤3000/>3000ms | INP: ≤200/≤500/>500ms | CLS: ≤0.1/≤0.25/>0.25' as scoring_thresholds
+    FROM route_summary
+    ORDER BY 
+        {% if defined(sort_order) and sort_order == 'desc' %}
+            overall_score DESC
+        {% else %}
+            overall_score ASC
+        {% end %}
+    LIMIT 10
+
+TYPE endpoint
