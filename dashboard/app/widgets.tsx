@@ -10,6 +10,7 @@ import {
   TableCellDelta,
   TableCellCombined,
 } from '@/components/table/TableCells'
+import { Card } from '@/components/ui/Card'
 
 export const Widgets = () => {
   const { data, error, isLoading } =

@@ -1,7 +1,7 @@
 import React from 'react'
 import { cn } from '@/lib/utils'
 
-export function Card({ children, className, blueBorder = false, isLoading = false, ...props }: React.HTMLAttributes<HTMLDivElement> & { blueBorder?: boolean }) {
+export function Card({ children, className, blueBorder = false, isLoading = false, ...props }: React.HTMLAttributes<HTMLDivElement> & { blueBorder?: boolean, isLoading?: boolean }) {
   return (
     <div
       className={cn(
