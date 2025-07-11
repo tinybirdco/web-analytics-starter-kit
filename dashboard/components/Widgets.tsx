@@ -16,6 +16,7 @@ import useKpis from '../lib/hooks/use-kpis'
 import useKpiTotals from '../lib/hooks/use-kpi-totals'
 import { typography } from '../styles/theme'
 import useDomain from '../lib/hooks/use-domain'
+import WebVitals from './WebVitals'
 
 const enum WidgetHeight {
   XLarge = 588,
@@ -233,6 +234,11 @@ export default function Widgets() {
             />
           </InView>
         </div>
+      </div>
+      
+      {/* Web Vitals Section */}
+      <div className="mt-10">
+        <WebVitals />
       </div>
     </ChartProvider>
   )

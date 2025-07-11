@@ -26,7 +26,7 @@
   "dependencies": {
     "@headlessui/react": "^1.6.6",
     "@tinybirdco/charts": "^0.2.1",
-    "@tremor/react": "^2.0.2",
+    "@tremor/react": "^2.11.0",
     "date-fns": "^4.1.0",
     "next": "14.2.21",
     "react": "18.2.0",
