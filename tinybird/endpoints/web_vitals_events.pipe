@@ -1,0 +1,112 @@
+DESCRIPTION >
+    Parsed `web_vital` events, implementing metric extraction and domain/pathname parsing logic.
+
+TOKEN "dashboard" READ
+
+NODE parsed_vitals
+DESCRIPTION >
+    Parse raw web_vital events and extract metric data
+
+SQL >
+    SELECT
+        timestamp,
+        action,
+        version,
+        coalesce(session_id, '0') as session_id,
+        JSONExtractString(payload, 'name') as metric_name,
+        JSONExtractFloat(payload, 'value') as value,
+        JSONExtractFloat(payload, 'delta') as delta,
+        JSONExtractString(payload, 'pathname') as pathname,
+        JSONExtractString(payload, 'domain') as domain,
+        JSONExtractString(payload, 'href') as href
+    FROM analytics_events
+    WHERE action = 'web_vital'
+        AND JSONExtractString(payload, 'name') IN ('LCP', 'TTFB', 'FCP', 'INP', 'CLS')
+        AND JSONExtractString(payload, 'pathname') != ''
+
+NODE endpoint
+DESCRIPTION >
+    Clean and enrich web vitals data with computed fields
+
+SQL >
+    SELECT
+        timestamp,
+        action,
+        version,
+        session_id,
+        metric_name,
+        value,
+        delta,
+        pathname,
+        domain,
+        href,
+        -- Extract route (first part of pathname)
+        if(
+            pathname = '/',
+            '/',
+            splitByChar('/', pathname)[2] 
+        ) as route,
+        -- Calculate performance category for each metric
+        CASE 
+            WHEN metric_name = 'LCP' THEN
+                CASE 
+                    WHEN value <= 2500 THEN 'excellent'
+                    WHEN value <= 4000 THEN 'good'
+                    ELSE 'poor'
+                END
+            WHEN metric_name = 'TTFB' THEN
+                CASE 
+                    WHEN value <= 500 THEN 'excellent'
+                    WHEN value <= 1000 THEN 'good'
+                    ELSE 'poor'
+                END
+            WHEN metric_name = 'FCP' THEN
+                CASE 
+                    WHEN value <= 1800 THEN 'excellent'
+                    WHEN value <= 3000 THEN 'good'
+                    ELSE 'poor'
+                END
+            WHEN metric_name = 'INP' THEN
+                CASE 
+                    WHEN value <= 200 THEN 'excellent'
+                    WHEN value <= 500 THEN 'good'
+                    ELSE 'poor'
+                END
+            WHEN metric_name = 'CLS' THEN
+                CASE 
+                    WHEN value <= 0.1 THEN 'excellent'
+                    WHEN value <= 0.25 THEN 'good'
+                    ELSE 'poor'
+                END
+            ELSE 'unknown'
+        END as performance_category,
+        -- Calculate performance score for each metric
+        multiIf(
+            metric_name = 'LCP' AND value <= 2500, 100,
+            metric_name = 'LCP' AND value <= 4000, 75,
+            metric_name = 'LCP', 25,
+            metric_name = 'TTFB' AND value <= 500, 100,
+            metric_name = 'TTFB' AND value <= 1000, 75,
+            metric_name = 'TTFB', 25,
+            metric_name = 'FCP' AND value <= 1800, 100,
+            metric_name = 'FCP' AND value <= 3000, 75,
+            metric_name = 'FCP', 25,
+            metric_name = 'INP' AND value <= 200, 100,
+            metric_name = 'INP' AND value <= 500, 75,
+            metric_name = 'INP', 25,
+            metric_name = 'CLS' AND value <= 0.1, 100,
+            metric_name = 'CLS' AND value <= 0.25, 75,
+            25
+        ) as score,
+        -- Add metric units
+        multiIf(
+            metric_name = 'LCP', 'ms',
+            metric_name = 'TTFB', 'ms', 
+            metric_name = 'FCP', 'ms',
+            metric_name = 'INP', 'ms',
+            metric_name = 'CLS', 'score',
+            'unknown'
+        ) as units
+    FROM parsed_vitals
+
+TYPE endpoint

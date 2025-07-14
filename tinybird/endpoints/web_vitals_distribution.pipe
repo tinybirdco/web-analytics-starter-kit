@@ -3,56 +3,25 @@ DESCRIPTION >
 
 TOKEN "dashboard" READ
 
-NODE metric_categorization
+NODE filtered_vitals
 DESCRIPTION >
-    Categorize each web vital measurement into excellent, good, or poor ranges
+    Filter web vitals data for the specified time period and domain
 
 SQL >
 
     %
     SELECT
-        JSONExtractString(payload, 'name') as metric_name,
-        JSONExtractFloat(payload, 'value') as value,
-        CASE 
-            WHEN JSONExtractString(payload, 'name') = 'LCP' THEN
-                CASE 
-                    WHEN JSONExtractFloat(payload, 'value') <= 2500 THEN 'excellent'
-                    WHEN JSONExtractFloat(payload, 'value') <= 4000 THEN 'good'
-                    ELSE 'poor'
-                END
-            WHEN JSONExtractString(payload, 'name') = 'TTFB' THEN
-                CASE 
-                    WHEN JSONExtractFloat(payload, 'value') <= 500 THEN 'excellent'
-                    WHEN JSONExtractFloat(payload, 'value') <= 1000 THEN 'good'
-                    ELSE 'poor'
-                END
-            WHEN JSONExtractString(payload, 'name') = 'FCP' THEN
-                CASE 
-                    WHEN JSONExtractFloat(payload, 'value') <= 1800 THEN 'excellent'
-                    WHEN JSONExtractFloat(payload, 'value') <= 3000 THEN 'good'
-                    ELSE 'poor'
-                END
-            WHEN JSONExtractString(payload, 'name') = 'INP' THEN
-                CASE 
-                    WHEN JSONExtractFloat(payload, 'value') <= 200 THEN 'excellent'
-                    WHEN JSONExtractFloat(payload, 'value') <= 500 THEN 'good'
-                    ELSE 'poor'
-                END
-            WHEN JSONExtractString(payload, 'name') = 'CLS' THEN
-                CASE 
-                    WHEN JSONExtractFloat(payload, 'value') <= 0.1 THEN 'excellent'
-                    WHEN JSONExtractFloat(payload, 'value') <= 0.25 THEN 'good'
-                    ELSE 'poor'
-                END
-            ELSE 'unknown'
-        END as performance_category
-    FROM analytics_events
-    WHERE action = 'web_vital'
-        AND JSONExtractString(payload, 'name') IN ('LCP', 'TTFB', 'FCP', 'INP', 'CLS')
-        AND timestamp >= now() - interval {{Int32(days, 1, description="Number of days to analyze (defaults to 1 day)")}} day
+        metric_name,
+        value,
+        performance_category,
+        score,
+        units
+    FROM web_vitals_events
+    WHERE timestamp >= now() - interval {{Int32(days, 1, description="Number of days to analyze (defaults to 1 day)")}} day
         {% if defined(domain) %}
-        AND JSONExtractString(payload, 'domain') = {{ String(domain, description="Domain to filter web vitals for") }}
+        AND domain = {{ String(domain, description="Domain to filter web vitals for") }}
         {% end %}
+        AND performance_category != 'unknown'
 
 NODE endpoint
 DESCRIPTION >
@@ -65,9 +34,10 @@ SQL >
             metric_name,
             performance_category,
             round(avg(value), 2) as avg_value,
-            count() as measurement_count
-        FROM metric_categorization
-        WHERE performance_category != 'unknown'
+            count() as measurement_count,
+            any(score) as score,
+            any(units) as units
+        FROM filtered_vitals
         GROUP BY metric_name, performance_category
     ),
     metric_totals AS (
@@ -84,20 +54,8 @@ SQL >
         cs.measurement_count,
         round((cs.measurement_count * 100.0) / mt.total_measurements, 1) as percentage,
         mt.total_measurements,
-        multiIf(
-            cs.performance_category = 'excellent', 100,
-            cs.performance_category = 'good', 75,
-            cs.performance_category = 'poor', 25,
-            0
-        ) as score,
-        multiIf(
-            cs.metric_name = 'LCP', 'ms',
-            cs.metric_name = 'TTFB', 'ms', 
-            cs.metric_name = 'FCP', 'ms',
-            cs.metric_name = 'INP', 'ms',
-            cs.metric_name = 'CLS', 'score',
-            'unknown'
-        ) as units,
+        cs.score,
+        cs.units,
         multiIf(
             cs.metric_name = 'LCP', 'Excellent: ≤2500ms, Good: ≤4000ms, Poor: >4000ms',
             cs.metric_name = 'TTFB', 'Excellent: ≤500ms, Good: ≤1000ms, Poor: >1000ms',
