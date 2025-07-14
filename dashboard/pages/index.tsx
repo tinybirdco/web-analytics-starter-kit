@@ -22,7 +22,7 @@ export default function DashboardPage() {
         />
       )}
       <Meta />
-      <div className="h-12 bg-primary text-sm leading-5 text-secondary flex items-center justify-center gap-2">
+      {/* <div className="h-12 bg-primary text-sm leading-5 text-secondary flex items-center justify-center gap-2">
         📊{' '}
         <div>
           <span className="font-semibold">Tinybird Charts</span>: Create
@@ -34,7 +34,7 @@ export default function DashboardPage() {
             Learn more
           </a>
         </div>
-      </div>
+      </div> */}
       <div className="min-h-screen px-5 py-5 text-sm leading-5 bg-body sm:px-10 text-secondary">
         <div className="mx-auto max-w-7xl">
           <div className="space-y-6 sm:space-y-10">
