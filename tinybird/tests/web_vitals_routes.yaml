@@ -1,0 +1,12 @@
+
+- name: routes_analysis_worst_performers
+  description: Show worst performing routes from the last 100 days with a limit of
+    10 results
+  parameters: days=100&analysis_type=routes&limit=10&sort_order=desc
+  expected_result: ''
+
+- name: pathnames_analysis_blog_route
+  description: Show worst performing pathnames within the blog route from the last
+    100 days with a limit of 3 results
+  parameters: days=100&analysis_type=pathnames&route=blog&limit=3&sort_order=desc
+  expected_result: ''

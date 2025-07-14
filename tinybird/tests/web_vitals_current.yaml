@@ -1,0 +1,5 @@
+
+- name: web_vitals_example_domain_100_days
+  description: Test web vitals metrics for example.com over the last 100 days
+  parameters: domain=example.com&days=100
+  expected_result: ''
