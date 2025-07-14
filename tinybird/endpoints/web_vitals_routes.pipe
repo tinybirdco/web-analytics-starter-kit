@@ -3,128 +3,152 @@ DESCRIPTION >
 
 TOKEN "dashboard" read
 
-NODE route_vitals
+NODE processed_paths
 DESCRIPTION >
-    Calculate average web vitals metrics per route or pathname with scores and detailed information
+    Extract and normalize pathname/route data with filtering and basic processing
 
 SQL >
 
     %
-    WITH processed_paths AS (
-        SELECT
-            {% if defined(analysis_type) and analysis_type == 'pathnames' %}
-                JSONExtractString(payload, 'pathname') as path_key,
-                JSONExtractString(payload, 'pathname') as full_pathname,
-                -- Extract route (first part) for filtering
-                if(
-                    JSONExtractString(payload, 'pathname') = '/',
-                    '/',
-                    splitByChar('/', JSONExtractString(payload, 'pathname'))[2] 
-                ) as route_part
-            {% else %}
-                -- Default: route-based analysis
-                if(
-                    JSONExtractString(payload, 'pathname') = '/',
-                    '/',
-                    splitByChar('/', JSONExtractString(payload, 'pathname'))[2] 
-                ) as path_key,
-                JSONExtractString(payload, 'pathname') as full_pathname,
-                if(
-                    JSONExtractString(payload, 'pathname') = '/',
-                    '/',
-                    splitByChar('/', JSONExtractString(payload, 'pathname'))[2] 
-                ) as route_part
-            {% end %},
-            JSONExtractString(payload, 'name') as metric_name,
-            JSONExtractFloat(payload, 'value') as value
-        FROM analytics_events
-        WHERE action = 'web_vital'
-            AND JSONExtractString(payload, 'name') IN ('LCP', 'TTFB', 'FCP', 'INP', 'CLS')
-            AND timestamp >= now() - interval {{Int32(days, 1, description="Number of days to analyze (defaults to 1 day)")}} day
-            AND JSONExtractString(payload, 'pathname') != ''
-            {% if defined(domain) %}
-            AND JSONExtractString(payload, 'domain') = {{ String(domain, description="Domain to filter web vitals for") }}
-            {% end %}
-            {% if defined(route) %}
-            AND if(
+    SELECT
+        {% if defined(analysis_type) and analysis_type == 'pathnames' %}
+            JSONExtractString(payload, 'pathname') as path_key,
+            JSONExtractString(payload, 'pathname') as full_pathname,
+            -- Extract route (first part) for filtering
+            if(
                 JSONExtractString(payload, 'pathname') = '/',
-                '/' = {{ String(route, description="Route to filter by (works for both routes and pathnames analysis)") }},
-                splitByChar('/', JSONExtractString(payload, 'pathname'))[2] = {{ String(route, description="Route to filter by (works for both routes and pathnames analysis)") }}
-            )
-            {% end %}
-    ),
-    route_metrics AS (
-        SELECT
-            path_key,
-            {% if defined(analysis_type) and analysis_type == 'pathnames' %}
-                full_pathname,
-                route_part,
-            {% end %}
-            metric_name,
-            avg(value) as avg_value,
-            count() as measurements
-        FROM processed_paths
-        WHERE path_key != ''
-        GROUP BY path_key, metric_name
-            {% if defined(analysis_type) and analysis_type == 'pathnames' %}
-            , full_pathname, route_part
-            {% end %}
-        HAVING measurements >= 3
-    ),
-    route_scores AS (
-        SELECT
-            path_key,
-            {% if defined(analysis_type) and analysis_type == 'pathnames' %}
-                full_pathname,
-                route_part,
-            {% end %}
-            metric_name,
-            avg_value,
-            multiIf(
-                metric_name = 'LCP' AND avg_value <= 2500, 100,
-                metric_name = 'LCP' AND avg_value <= 4000, 75,
-                metric_name = 'LCP', 25,
-                metric_name = 'TTFB' AND avg_value <= 500, 100,
-                metric_name = 'TTFB' AND avg_value <= 1000, 75,
-                metric_name = 'TTFB', 25,
-                metric_name = 'FCP' AND avg_value <= 1800, 100,
-                metric_name = 'FCP' AND avg_value <= 3000, 75,
-                metric_name = 'FCP', 25,
-                metric_name = 'INP' AND avg_value <= 200, 100,
-                metric_name = 'INP' AND avg_value <= 500, 75,
-                metric_name = 'INP', 25,
-                metric_name = 'CLS' AND avg_value <= 0.1, 100,
-                metric_name = 'CLS' AND avg_value <= 0.25, 75,
-                25
-            ) as score
-        FROM route_metrics
-    ),
-    route_summary AS (
-        SELECT
-            path_key,
-            {% if defined(analysis_type) and analysis_type == 'pathnames' %}
-                full_pathname,
-                route_part,
-            {% end %}
-            round(avg(score), 2) as overall_score,
-            round(avgIf(avg_value, metric_name = 'LCP'), 2) as lcp_avg,
-            round(avgIf(avg_value, metric_name = 'TTFB'), 2) as ttfb_avg,
-            round(avgIf(avg_value, metric_name = 'FCP'), 2) as fcp_avg,
-            round(avgIf(avg_value, metric_name = 'INP'), 2) as inp_avg,
-            round(avgIf(avg_value, metric_name = 'CLS'), 4) as cls_avg,
-            round(avgIf(score, metric_name = 'LCP'), 0) as lcp_score,
-            round(avgIf(score, metric_name = 'TTFB'), 0) as ttfb_score,
-            round(avgIf(score, metric_name = 'FCP'), 0) as fcp_score,
-            round(avgIf(score, metric_name = 'INP'), 0) as inp_score,
-            round(avgIf(score, metric_name = 'CLS'), 0) as cls_score,
-            count(DISTINCT metric_name) as metrics_count
-        FROM route_scores
-        GROUP BY path_key
-            {% if defined(analysis_type) and analysis_type == 'pathnames' %}
-            , full_pathname, route_part
-            {% end %}
-        HAVING metrics_count >= 3
-    )
+                '/',
+                splitByChar('/', JSONExtractString(payload, 'pathname'))[2] 
+            ) as route_part
+        {% else %}
+            -- Default: route-based analysis
+            if(
+                JSONExtractString(payload, 'pathname') = '/',
+                '/',
+                splitByChar('/', JSONExtractString(payload, 'pathname'))[2] 
+            ) as path_key,
+            JSONExtractString(payload, 'pathname') as full_pathname,
+            if(
+                JSONExtractString(payload, 'pathname') = '/',
+                '/',
+                splitByChar('/', JSONExtractString(payload, 'pathname'))[2] 
+            ) as route_part
+        {% end %},
+        JSONExtractString(payload, 'name') as metric_name,
+        JSONExtractFloat(payload, 'value') as value
+    FROM analytics_events
+    WHERE action = 'web_vital'
+        AND JSONExtractString(payload, 'name') IN ('LCP', 'TTFB', 'FCP', 'INP', 'CLS')
+        AND timestamp >= now() - interval {{Int32(days, 1, description="Number of days to analyze (defaults to 1 day)")}} day
+        AND JSONExtractString(payload, 'pathname') != ''
+        {% if defined(domain) %}
+        AND JSONExtractString(payload, 'domain') = {{ String(domain, description="Domain to filter web vitals for") }}
+        {% end %}
+        {% if defined(route) %}
+        AND if(
+            JSONExtractString(payload, 'pathname') = '/',
+            '/' = {{ String(route, description="Route to filter by (works for both routes and pathnames analysis)") }},
+            splitByChar('/', JSONExtractString(payload, 'pathname'))[2] = {{ String(route, description="Route to filter by (works for both routes and pathnames analysis)") }}
+        )
+        {% end %}
+
+NODE route_metrics
+DESCRIPTION >
+    Calculate average metrics per route/pathname with measurement counts
+
+SQL >
+
+    %
+    SELECT
+        path_key,
+        {% if defined(analysis_type) and analysis_type == 'pathnames' %}
+            full_pathname,
+            route_part,
+        {% end %}
+        metric_name,
+        avg(value) as avg_value,
+        count() as measurements
+    FROM processed_paths
+    WHERE path_key != ''
+    GROUP BY path_key, metric_name
+        {% if defined(analysis_type) and analysis_type == 'pathnames' %}
+        , full_pathname, route_part
+        {% end %}
+    HAVING measurements >= 3
+
+NODE route_scores
+DESCRIPTION >
+    Calculate performance scores for each metric based on web vitals thresholds
+
+SQL >
+
+    %
+    SELECT
+        path_key,
+        {% if defined(analysis_type) and analysis_type == 'pathnames' %}
+            full_pathname,
+            route_part,
+        {% end %}
+        metric_name,
+        avg_value,
+        multiIf(
+            metric_name = 'LCP' AND avg_value <= 2500, 100,
+            metric_name = 'LCP' AND avg_value <= 4000, 75,
+            metric_name = 'LCP', 25,
+            metric_name = 'TTFB' AND avg_value <= 500, 100,
+            metric_name = 'TTFB' AND avg_value <= 1000, 75,
+            metric_name = 'TTFB', 25,
+            metric_name = 'FCP' AND avg_value <= 1800, 100,
+            metric_name = 'FCP' AND avg_value <= 3000, 75,
+            metric_name = 'FCP', 25,
+            metric_name = 'INP' AND avg_value <= 200, 100,
+            metric_name = 'INP' AND avg_value <= 500, 75,
+            metric_name = 'INP', 25,
+            metric_name = 'CLS' AND avg_value <= 0.1, 100,
+            metric_name = 'CLS' AND avg_value <= 0.25, 75,
+            25
+        ) as score
+    FROM route_metrics
+
+NODE route_summary
+DESCRIPTION >
+    Aggregate all metrics and scores per route to create final summary
+
+SQL >
+
+    %
+    SELECT
+        path_key,
+        {% if defined(analysis_type) and analysis_type == 'pathnames' %}
+            full_pathname,
+            route_part,
+        {% end %}
+        round(avg(score), 2) as overall_score,
+        round(avgIf(avg_value, metric_name = 'LCP'), 2) as lcp_avg,
+        round(avgIf(avg_value, metric_name = 'TTFB'), 2) as ttfb_avg,
+        round(avgIf(avg_value, metric_name = 'FCP'), 2) as fcp_avg,
+        round(avgIf(avg_value, metric_name = 'INP'), 2) as inp_avg,
+        round(avgIf(avg_value, metric_name = 'CLS'), 4) as cls_avg,
+        round(avgIf(score, metric_name = 'LCP'), 0) as lcp_score,
+        round(avgIf(score, metric_name = 'TTFB'), 0) as ttfb_score,
+        round(avgIf(score, metric_name = 'FCP'), 0) as fcp_score,
+        round(avgIf(score, metric_name = 'INP'), 0) as inp_score,
+        round(avgIf(score, metric_name = 'CLS'), 0) as cls_score,
+        count(DISTINCT metric_name) as metrics_count
+    FROM route_scores
+    GROUP BY path_key
+        {% if defined(analysis_type) and analysis_type == 'pathnames' %}
+        , full_pathname, route_part
+        {% end %}
+    -- HAVING metrics_count >= 3
+
+NODE endpoint
+DESCRIPTION >
+    Final sorting and formatting with pagination
+
+SQL >
+
+    %
     SELECT
         path_key as {% if defined(analysis_type) and analysis_type == 'pathnames' %}pathname{% else %}route{% end %},
         {% if defined(analysis_type) and analysis_type == 'pathnames' %}
