@@ -5,7 +5,6 @@ on:
   push:
     branches:
       - main
-      - master
 
 concurrency: ${{ github.workflow }}-${{ github.event.ref }}
 
@@ -16,6 +15,9 @@ env:
 jobs:
   cd:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: './tinybird'
     steps:
       - uses: actions/checkout@v3
       - name: Install Tinybird CLI
