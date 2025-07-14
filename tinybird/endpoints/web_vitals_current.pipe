@@ -11,16 +11,14 @@ SQL >
 
     %
     SELECT
-        JSONExtractString(payload, 'name') as metric_name,
-        avg(JSONExtractFloat(payload, 'value')) as avg_value,
-        avg(JSONExtractFloat(payload, 'delta')) as avg_delta,
+        metric_name,
+        avg(value) as avg_value,
+        avg(delta) as avg_delta,
         count() as measurements
-    FROM analytics_events
-    WHERE action = 'web_vital'
-        AND JSONExtractString(payload, 'name') IN ('LCP', 'TTFB', 'FCP', 'INP', 'CLS')
-        AND timestamp >= now() - interval {{Int32(days, 1, description="Number of days to analyze (defaults to 1 day)")}} day
+    FROM web_vitals_events
+    WHERE timestamp >= now() - interval {{Int32(days, 1, description="Number of days to analyze (defaults to 1 day)")}} day
         {% if defined(domain) %}
-        AND JSONExtractString(payload, 'domain') = {{ String(domain, description="Domain to filter web vitals for") }}
+        AND domain = {{ String(domain, description="Domain to filter web vitals for") }}
         {% end %}
     GROUP BY metric_name
     HAVING measurements >= 1
