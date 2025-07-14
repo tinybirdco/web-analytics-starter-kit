@@ -15,7 +15,9 @@ SQL >
         value,
         performance_category,
         score,
-        units
+        units,
+        description,
+        thresholds_text
     FROM web_vitals_events
     WHERE timestamp >= now() - interval {{Int32(days, 1, description="Number of days to analyze (defaults to 1 day)")}} day
         {% if defined(domain) %}
@@ -36,7 +38,9 @@ SQL >
             round(avg(value), 2) as avg_value,
             count() as measurement_count,
             any(score) as score,
-            any(units) as units
+            any(units) as units,
+            any(description) as description,
+            any(thresholds_text) as thresholds
         FROM filtered_vitals
         GROUP BY metric_name, performance_category
     ),
@@ -56,22 +60,8 @@ SQL >
         mt.total_measurements,
         cs.score,
         cs.units,
-        multiIf(
-            cs.metric_name = 'LCP', 'Excellent: ≤2500ms, Good: ≤4000ms, Poor: >4000ms',
-            cs.metric_name = 'TTFB', 'Excellent: ≤500ms, Good: ≤1000ms, Poor: >1000ms',
-            cs.metric_name = 'FCP', 'Excellent: ≤1800ms, Good: ≤3000ms, Poor: >3000ms',
-            cs.metric_name = 'INP', 'Excellent: ≤200ms, Good: ≤500ms, Poor: >500ms',
-            cs.metric_name = 'CLS', 'Excellent: ≤0.1, Good: ≤0.25, Poor: >0.25',
-            'Unknown thresholds'
-        ) as thresholds,
-        multiIf(
-            cs.metric_name = 'LCP', 'Largest Contentful Paint - measures loading performance',
-            cs.metric_name = 'TTFB', 'Time to First Byte - measures server response time',
-            cs.metric_name = 'FCP', 'First Contentful Paint - measures rendering performance',
-            cs.metric_name = 'INP', 'Interaction to Next Paint - measures interactivity',
-            cs.metric_name = 'CLS', 'Cumulative Layout Shift - measures visual stability',
-            'Unknown metric'
-        ) as description
+        cs.thresholds,
+        cs.description
     FROM category_stats cs
     JOIN metric_totals mt ON cs.metric_name = mt.metric_name
     ORDER BY 

@@ -1,3 +1,4 @@
+
 - name: demo_site_100_days
   description: Test web vitals distribution for demo.site over 100 days
   parameters: domain=demo.site&days=100
@@ -5,4 +6,4 @@
     ,\"avg_value\":1171,\"measurement_count\":289,\"percentage\":100,\"total_measurements\"\
     :289,\"score\":100,\"units\":\"ms\",\"thresholds\":\"Excellent: \u22642500ms,\
     \ Good: \u22644000ms, Poor: >4000ms\",\"description\":\"Largest Contentful Paint\
-    \ - measures loading performance\"}\n"
+    \ - measures loading performance of the largest content element\"}\n"
