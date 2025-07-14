@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 - name: demo_site_100_days
   description: Test web vitals distribution for demo.site over 100 days
@@ -7,3 +8,11 @@
     :289,\"score\":100,\"units\":\"ms\",\"thresholds\":\"Excellent: \u22642500ms,\
     \ Good: \u22644000ms, Poor: >4000ms\",\"description\":\"Largest Contentful Paint\
     \ - measures loading performance of the largest content element\"}\n"
+||||||| parent of fde5c1e (feat: initial commit of Tinybird analytics starter kit)
+=======
+
+- name: example_domain_100_days
+  description: Test web vitals distribution for example.com over 100 days
+  parameters: domain=example.com&days=100
+  expected_result: ''
+>>>>>>> fde5c1e (feat: initial commit of Tinybird analytics starter kit)

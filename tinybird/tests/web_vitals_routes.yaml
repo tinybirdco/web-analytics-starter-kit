@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 - name: routes_analysis_worst_performers
   description: Show worst performing routes from the last 100 days with a limit of
@@ -12,3 +13,18 @@
   parameters: days=100&analysis_type=pathnames&route=product&limit=3&sort_order=desc
   expected_result: |
     {"pathname":"\/product","full_pathname":"\/product","route_part":"product","overall_score":100,"lcp_avg":1171,"ttfb_avg":null,"fcp_avg":null,"inp_avg":null,"cls_avg":null,"lcp_score":100,"ttfb_score":null,"fcp_score":null,"inp_score":null,"cls_score":null,"metric_units":"LCP=ms, TTFB=ms, FCP=ms, INP=ms, CLS=score","analysis_type":"pathnames"}
+||||||| parent of fde5c1e (feat: initial commit of Tinybird analytics starter kit)
+=======
+
+- name: routes_analysis_worst_performers
+  description: Show worst performing routes from the last 100 days with a limit of
+    10 results
+  parameters: days=100&analysis_type=routes&limit=10&sort_order=desc
+  expected_result: ''
+
+- name: pathnames_analysis_blog_route
+  description: Show worst performing pathnames within the blog route from the last
+    100 days with a limit of 3 results
+  parameters: days=100&analysis_type=pathnames&route=blog&limit=3&sort_order=desc
+  expected_result: ''
+>>>>>>> fde5c1e (feat: initial commit of Tinybird analytics starter kit)
