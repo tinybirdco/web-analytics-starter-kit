@@ -1,7 +1,41 @@
 DESCRIPTION >
-    Parsed `web_vital` events, implementing metric extraction and domain/pathname parsing logic.
+    Parsed `web_vital` events with metadata lookup, implementing metric extraction and domain/pathname parsing logic.
 
 TOKEN "dashboard" READ
+
+NODE web_vitals_metadata
+DESCRIPTION >
+    Static metadata lookup table for web vitals metrics with thresholds, units, and descriptions
+
+SQL >
+    SELECT
+        metric_name,
+        excellent_threshold,
+        good_threshold,
+        units,
+        description,
+        thresholds_text
+    FROM (
+        SELECT 'LCP' as metric_name, 2500 as excellent_threshold, 4000 as good_threshold, 'ms' as units, 
+               'Largest Contentful Paint - measures loading performance of the largest content element' as description,
+               'Excellent: ≤2500ms, Good: ≤4000ms, Poor: >4000ms' as thresholds_text
+        UNION ALL
+        SELECT 'TTFB' as metric_name, 500 as excellent_threshold, 1000 as good_threshold, 'ms' as units,
+               'Time to First Byte - measures server response time and network latency' as description,
+               'Excellent: ≤500ms, Good: ≤1000ms, Poor: >1000ms' as thresholds_text
+        UNION ALL
+        SELECT 'FCP' as metric_name, 1800 as excellent_threshold, 3000 as good_threshold, 'ms' as units,
+               'First Contentful Paint - measures time until first content appears on screen' as description,
+               'Excellent: ≤1800ms, Good: ≤3000ms, Poor: >3000ms' as thresholds_text
+        UNION ALL
+        SELECT 'INP' as metric_name, 200 as excellent_threshold, 500 as good_threshold, 'ms' as units,
+               'Interaction to Next Paint - measures responsiveness to user interactions' as description,
+               'Excellent: ≤200ms, Good: ≤500ms, Poor: >500ms' as thresholds_text
+        UNION ALL
+        SELECT 'CLS' as metric_name, 0.1 as excellent_threshold, 0.25 as good_threshold, 'score' as units,
+               'Cumulative Layout Shift - measures visual stability and unexpected layout shifts' as description,
+               'Excellent: ≤0.1, Good: ≤0.25, Poor: >0.25' as thresholds_text
+    )
 
 NODE parsed_vitals
 DESCRIPTION >
@@ -26,87 +60,49 @@ SQL >
 
 NODE endpoint
 DESCRIPTION >
-    Clean and enrich web vitals data with computed fields
+    Clean and enrich web vitals data with computed fields and metadata
 
 SQL >
     SELECT
-        timestamp,
-        action,
-        version,
-        session_id,
-        metric_name,
-        value,
-        delta,
-        pathname,
-        domain,
-        href,
+        pv.timestamp,
+        pv.action,
+        pv.version,
+        pv.session_id,
+        pv.metric_name,
+        pv.value,
+        pv.delta,
+        pv.pathname,
+        pv.domain,
+        pv.href,
         -- Extract route (first part of pathname)
         if(
-            pathname = '/',
+            pv.pathname = '/',
             '/',
-            splitByChar('/', pathname)[2] 
+            splitByChar('/', pv.pathname)[2] 
         ) as route,
-        -- Calculate performance category for each metric
+        -- Calculate performance category using metadata
         CASE 
-            WHEN metric_name = 'LCP' THEN
-                CASE 
-                    WHEN value <= 2500 THEN 'excellent'
-                    WHEN value <= 4000 THEN 'good'
-                    ELSE 'poor'
-                END
-            WHEN metric_name = 'TTFB' THEN
-                CASE 
-                    WHEN value <= 500 THEN 'excellent'
-                    WHEN value <= 1000 THEN 'good'
-                    ELSE 'poor'
-                END
-            WHEN metric_name = 'FCP' THEN
-                CASE 
-                    WHEN value <= 1800 THEN 'excellent'
-                    WHEN value <= 3000 THEN 'good'
-                    ELSE 'poor'
-                END
-            WHEN metric_name = 'INP' THEN
-                CASE 
-                    WHEN value <= 200 THEN 'excellent'
-                    WHEN value <= 500 THEN 'good'
-                    ELSE 'poor'
-                END
-            WHEN metric_name = 'CLS' THEN
-                CASE 
-                    WHEN value <= 0.1 THEN 'excellent'
-                    WHEN value <= 0.25 THEN 'good'
-                    ELSE 'poor'
-                END
-            ELSE 'unknown'
+            WHEN pv.value <= md.excellent_threshold THEN 'excellent'
+            WHEN pv.value <= md.good_threshold THEN 'good'
+            ELSE 'poor'
         END as performance_category,
-        -- Calculate performance score for each metric
-        multiIf(
-            metric_name = 'LCP' AND value <= 2500, 100,
-            metric_name = 'LCP' AND value <= 4000, 75,
-            metric_name = 'LCP', 25,
-            metric_name = 'TTFB' AND value <= 500, 100,
-            metric_name = 'TTFB' AND value <= 1000, 75,
-            metric_name = 'TTFB', 25,
-            metric_name = 'FCP' AND value <= 1800, 100,
-            metric_name = 'FCP' AND value <= 3000, 75,
-            metric_name = 'FCP', 25,
-            metric_name = 'INP' AND value <= 200, 100,
-            metric_name = 'INP' AND value <= 500, 75,
-            metric_name = 'INP', 25,
-            metric_name = 'CLS' AND value <= 0.1, 100,
-            metric_name = 'CLS' AND value <= 0.25, 75,
-            25
-        ) as score,
-        -- Add metric units
-        multiIf(
-            metric_name = 'LCP', 'ms',
-            metric_name = 'TTFB', 'ms', 
-            metric_name = 'FCP', 'ms',
-            metric_name = 'INP', 'ms',
-            metric_name = 'CLS', 'score',
-            'unknown'
-        ) as units
-    FROM parsed_vitals
+        -- Calculate performance score using metadata
+        CASE 
+            WHEN pv.value <= md.excellent_threshold THEN 100
+            WHEN pv.value <= md.good_threshold THEN 75
+            ELSE 25
+        END as score,
+        -- Include metadata fields
+        md.units,
+        md.description,
+        md.thresholds_text,
+        -- Calculate status using metadata
+        CASE 
+            WHEN pv.value <= md.excellent_threshold THEN 'Excellent'
+            WHEN pv.value <= md.good_threshold THEN 'Good'
+            ELSE 'Poor'
+        END as status
+    FROM parsed_vitals pv
+    INNER JOIN web_vitals_metadata md ON pv.metric_name = md.metric_name
 
 TYPE endpoint

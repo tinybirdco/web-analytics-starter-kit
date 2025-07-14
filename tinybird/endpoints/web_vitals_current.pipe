@@ -5,7 +5,7 @@ TOKEN "dashboard" READ
 
 NODE daily_vitals
 DESCRIPTION >
-    Get web vital metrics aggregated over the specified time period with averages
+    Get web vital metrics aggregated over the specified time period with averages and metadata
 
 SQL >
 
@@ -14,7 +14,10 @@ SQL >
         metric_name,
         avg(value) as avg_value,
         avg(delta) as avg_delta,
-        count() as measurements
+        count() as measurements,
+        any(units) as units,
+        any(description) as description,
+        any(thresholds_text) as thresholds_text
     FROM web_vitals_events
     WHERE timestamp >= now() - interval {{Int32(days, 1, description="Number of days to analyze (defaults to 1 day)")}} day
         {% if defined(domain) %}
@@ -25,74 +28,45 @@ SQL >
 
 NODE endpoint
 DESCRIPTION >
-    Calculate scores based on time period averages and return metrics with detailed information
+    Calculate scores and status using built-in metadata from web_vitals_events
 
 SQL >
-
-    %
     SELECT
         metric_name,
         round(avg_value, 2) as avg_value,
         round(avg_delta, 2) as avg_delta,
         measurements,
-        multiIf(
-            metric_name = 'LCP' AND avg_value <= 2500, 100,
-            metric_name = 'LCP' AND avg_value <= 4000, 75,
-            metric_name = 'LCP', 25,
-            metric_name = 'TTFB' AND avg_value <= 500, 100,
-            metric_name = 'TTFB' AND avg_value <= 1000, 75,
-            metric_name = 'TTFB', 25,
-            metric_name = 'FCP' AND avg_value <= 1800, 100,
-            metric_name = 'FCP' AND avg_value <= 3000, 75,
-            metric_name = 'FCP', 25,
-            metric_name = 'INP' AND avg_value <= 200, 100,
-            metric_name = 'INP' AND avg_value <= 500, 75,
-            metric_name = 'INP', 25,
-            metric_name = 'CLS' AND avg_value <= 0.1, 100,
-            metric_name = 'CLS' AND avg_value <= 0.25, 75,
-            25
-        ) as score,
-        multiIf(
-            metric_name = 'LCP' AND avg_value <= 2500, 'Excellent',
-            metric_name = 'LCP' AND avg_value <= 4000, 'Good',
-            metric_name = 'LCP', 'Poor',
-            metric_name = 'TTFB' AND avg_value <= 500, 'Excellent',
-            metric_name = 'TTFB' AND avg_value <= 1000, 'Good',
-            metric_name = 'TTFB', 'Poor',
-            metric_name = 'FCP' AND avg_value <= 1800, 'Excellent',
-            metric_name = 'FCP' AND avg_value <= 3000, 'Good',
-            metric_name = 'FCP', 'Poor',
-            metric_name = 'INP' AND avg_value <= 200, 'Excellent',
-            metric_name = 'INP' AND avg_value <= 500, 'Good',
-            metric_name = 'INP', 'Poor',
-            metric_name = 'CLS' AND avg_value <= 0.1, 'Excellent',
-            metric_name = 'CLS' AND avg_value <= 0.25, 'Good',
-            'Poor'
-        ) as status,
-        multiIf(
-            metric_name = 'LCP', 'ms',
-            metric_name = 'TTFB', 'ms', 
-            metric_name = 'FCP', 'ms',
-            metric_name = 'INP', 'ms',
-            metric_name = 'CLS', 'score',
-            'unknown'
-        ) as units,
-        multiIf(
-            metric_name = 'LCP', 'Largest Contentful Paint - measures loading performance of the largest content element',
-            metric_name = 'TTFB', 'Time to First Byte - measures server response time and network latency',
-            metric_name = 'FCP', 'First Contentful Paint - measures time until first content appears on screen',
-            metric_name = 'INP', 'Interaction to Next Paint - measures responsiveness to user interactions',
-            metric_name = 'CLS', 'Cumulative Layout Shift - measures visual stability and unexpected layout shifts',
-            'Unknown metric'
-        ) as description,
-        multiIf(
-            metric_name = 'LCP', 'Excellent: ≤2500ms, Good: ≤4000ms, Poor: >4000ms',
-            metric_name = 'TTFB', 'Excellent: ≤500ms, Good: ≤1000ms, Poor: >1000ms',
-            metric_name = 'FCP', 'Excellent: ≤1800ms, Good: ≤3000ms, Poor: >3000ms',
-            metric_name = 'INP', 'Excellent: ≤200ms, Good: ≤500ms, Poor: >500ms',
-            metric_name = 'CLS', 'Excellent: ≤0.1, Good: ≤0.25, Poor: >0.25',
-            'Unknown thresholds'
-        ) as thresholds
+        -- Calculate score based on thresholds (using same logic as web_vitals_events)
+        CASE 
+            WHEN metric_name = 'LCP' AND avg_value <= 2500 THEN 100
+            WHEN metric_name = 'LCP' AND avg_value <= 4000 THEN 75
+            WHEN metric_name = 'TTFB' AND avg_value <= 500 THEN 100
+            WHEN metric_name = 'TTFB' AND avg_value <= 1000 THEN 75
+            WHEN metric_name = 'FCP' AND avg_value <= 1800 THEN 100
+            WHEN metric_name = 'FCP' AND avg_value <= 3000 THEN 75
+            WHEN metric_name = 'INP' AND avg_value <= 200 THEN 100
+            WHEN metric_name = 'INP' AND avg_value <= 500 THEN 75
+            WHEN metric_name = 'CLS' AND avg_value <= 0.1 THEN 100
+            WHEN metric_name = 'CLS' AND avg_value <= 0.25 THEN 75
+            ELSE 25
+        END as score,
+        -- Calculate status based on thresholds
+        CASE 
+            WHEN metric_name = 'LCP' AND avg_value <= 2500 THEN 'Excellent'
+            WHEN metric_name = 'LCP' AND avg_value <= 4000 THEN 'Good'
+            WHEN metric_name = 'TTFB' AND avg_value <= 500 THEN 'Excellent'
+            WHEN metric_name = 'TTFB' AND avg_value <= 1000 THEN 'Good'
+            WHEN metric_name = 'FCP' AND avg_value <= 1800 THEN 'Excellent'
+            WHEN metric_name = 'FCP' AND avg_value <= 3000 THEN 'Good'
+            WHEN metric_name = 'INP' AND avg_value <= 200 THEN 'Excellent'
+            WHEN metric_name = 'INP' AND avg_value <= 500 THEN 'Good'
+            WHEN metric_name = 'CLS' AND avg_value <= 0.1 THEN 'Excellent'
+            WHEN metric_name = 'CLS' AND avg_value <= 0.25 THEN 'Good'
+            ELSE 'Poor'
+        END as status,
+        units,
+        description,
+        thresholds_text as thresholds
     FROM daily_vitals
     ORDER BY metric_name
 
