@@ -287,25 +287,30 @@
 
   if (webVitals) {
     function sendMetric(metric) {
-      const { country, locale } = getCountryAndLocale();
-      _sendEvent('web_vital', {
-        name: metric.name,
-        value: metric.value,
-        delta: metric.delta,
-        id: metric.id,
-        pathname: window.location.pathname,
-        href: window.location.href,
-        'user-agent': window.navigator.userAgent,
-        locale,
-        location: country,
-        referrer: document.referrer,
-      });
+      try {
+        const { country, locale } = getCountryAndLocale();
+        _sendEvent('web_vital', {
+          name: metric.name,
+          value: metric.value,
+          delta: metric.delta,
+          id: metric.id,
+          pathname: window.location.pathname,
+          href: window.location.href,
+          'user-agent': window.navigator.userAgent,
+          locale,
+          location: country,
+          referrer: document.referrer,
+        });
+      } catch (error) {
+        console.error('Error sending web vital:', error);
+      }
     }
-    webVitals.onCLS(sendMetric);
-    webVitals.onFCP(sendMetric);
-    webVitals.onLCP(sendMetric);
-    if (webVitals.onINP) webVitals.onINP(sendMetric);
-    webVitals.onTTFB(sendMetric);
+
+    if(webVitals.onCLS) webVitals.onCLS(sendMetric);
+    if(webVitals.onFCP) webVitals.onFCP(sendMetric);
+    if(webVitals.onLCP) webVitals.onLCP(sendMetric);
+    if(webVitals.onTTFB) webVitals.onTTFB(sendMetric);
+    if(webVitals.onINP) webVitals.onINP(sendMetric);
   }
 
   // Client
