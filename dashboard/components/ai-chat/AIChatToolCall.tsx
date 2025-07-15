@@ -72,13 +72,13 @@ export function AIChatToolCall({ part, partIndex, isResult = false }: AIChatTool
     }
 
     return (
-      <div className="my-2 text-xs flex items-center gap-x-2.5">
+      <div className="my-2 text-xs flex items-center gap-x-2.5 py-0.5">
         {state !== 'result' ? (
           <Loader />
         ) : (
           <CheckIcon />
         )}
-        <Text>{getToolLabel(toolName)}</Text>
+        <Text variant="body" color="01">{getToolLabel(toolName)}</Text>
       </div>
     )
   }
