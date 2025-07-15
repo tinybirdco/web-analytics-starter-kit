@@ -496,8 +496,9 @@ video {
 .tiptap h5,
 .tiptap h6 {
   line-height: 1.1;
-  margin-top: 2.5rem;
+  margin-top: 1.5rem;
   text-wrap: pretty;
+  font-weight: 600;
 }
 
 .tiptap h1,
@@ -516,6 +517,7 @@ video {
 
 .tiptap h3 {
   font-size: 1.1rem;
+  margin-bottom: 0.25rem;
 }
 
 .tiptap h4,
@@ -529,7 +531,8 @@ video {
   border-radius: 4px;
   color: var(--text-color);
   font: var(--font-code);
-  padding: 0.25em 0.3em;
+  line-height: 100%;
+  padding: 0.1em 0.3em;
 }
 
 .tiptap pre {
@@ -537,6 +540,7 @@ video {
   border-radius: 0.5rem;
   color: var(--text-01-color);
   font-family: var(--font-family-mono);
+  border: 1px solid var(--border-01-color);
   margin: 1.5rem 0;
   padding: 0.75rem 1rem;
 }
@@ -672,11 +676,4 @@ video {
 
 .CustomScrollArea::-webkit-scrollbar-thumb:hover {
   background: var(--neutral-40-color);
-}
-
-@supports (scrollbar-color: white white) {
-  .CustomScrollArea {
-    scrollbar-width: thin;
-    scrollbar-color: var(--neutral-24-color) transparent;
-  }
 }

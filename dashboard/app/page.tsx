@@ -12,11 +12,8 @@ import CredentialsDialog from '@/components/CredentialsDialog'
 import { cn } from '@/lib/utils'
 import { Text } from '@/components/ui/Text'
 import { AIChatProvider, AIChatContainer } from '@/components/ai-chat'
-import {
-  Dialog,
-  DialogTrigger,
-  DialogContent,
-} from '@/components/ui/Dialog'
+import { Dialog, DialogTrigger, DialogContent } from '@/components/ui/Dialog'
+import { AskAiIcon, FormatIcon } from '@/components/ui/Icons'
 
 export default function DashboardPage() {
   const { isAuthenticated, isTokenValid } = useAuth()
@@ -42,36 +39,48 @@ export default function DashboardPage() {
           <img src="/icon.svg" alt="" width={24} height={24} />
         </header>
         <div className="px-4">
-          <main className="container mx-auto space-y-10">
-            <div className="grid grid-cols-6 gap-3">
-              {/* AI Chat Modal */}
-              <Dialog open={open} onOpenChange={setOpen}>
-                <DialogTrigger asChild>
-                  <button
-                    className={cn(
-                      'aspect-square rounded-lg bg-[var(--text-blue-color)]',
-                      'focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--text-blue-color)]',
-                      'w-full h-full'
-                    )}
-                    aria-label="Open AI Chat"
-                  />
-                </DialogTrigger>
-                {/* Empty DialogContent to keep overlay, but not use the content box */}
-                <DialogContent className="!bg-transparent !shadow-none !border-none !p-0">
-                  <AIChatProvider>
-                    <AIChatContainer />
-                  </AIChatProvider>
-                </DialogContent>
-              </Dialog>
-              {/* End AI Chat Modal */}
+          <main className="max-w-screen-xl mx-auto space-y-10">
+            <div className="w-full overflow-x-auto">
+              <div className="grid grid-flow-col auto-cols-[minmax(10rem,_1fr)] gap-4">
+                {/* AI Chat Modal */}
+                <Dialog open={open} onOpenChange={setOpen}>
+                  <DialogTrigger asChild>
+                    <button
+                      className={cn(
+                        'aspect-square min-w-40 min-h-40 rounded-lg bg-[var(--text-blue-color)]',
+                        'hover:opacity-90 transition-opacity duration-100',
+                        'flex flex-col justify-between p-5 items-start'
+                      )}
+                      aria-label="Open AI Chat"
+                    >
+                      <AskAiIcon size={32} color="white" />
+                      <div className="space-y-px flex flex-col">
+                        <Text variant="displayxsmall" color="inverse">
+                          Ask AI
+                        </Text>
+                        <Text variant="body" color="inverse">
+                          Ask your data anything
+                        </Text>
+                      </div>
+                    </button>
+                  </DialogTrigger>
+                  {/* Empty DialogContent to keep overlay, but not use the content box */}
+                  <DialogContent className="!bg-transparent !shadow-none !border-none !p-0">
+                    <AIChatProvider>
+                      <AIChatContainer className="max-h-screen max-w-2xl overflow-y-scroll" />
+                    </AIChatProvider>
+                  </DialogContent>
+                </Dialog>
+                {/* End AI Chat Modal */}
 
-              {/* The rest remain as before */}
-              {new Array(5).fill(0).map((_, i) => (
-                <div
-                  key={`ai-ph_${i}`}
-                  className="border border-[var(--border-02-color)] bg-white"
-                />
-              ))}
+                {/* Placeholder squares */}
+                {new Array(6).fill(0).map((_, i) => (
+                  <div
+                    key={`ai-ph_${i}`}
+                    className="aspect-square min-w-40 min-h-40 border border-[var(--border-02-color)] bg-white rounded-lg hover:border-[var(--border-03-color)] transition-colors duration-100"
+                  />
+                ))}
+              </div>
             </div>
 
             <nav className="flex justify-between">
