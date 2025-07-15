@@ -677,3 +677,31 @@ video {
 .CustomScrollArea::-webkit-scrollbar-thumb:hover {
   background: var(--neutral-40-color);
 }
+
+.tiptap table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font: var(--font-body);
+  color: var(--text-color);
+}
+
+.tiptap th,
+.tiptap td {
+  border: 1px solid var(--border-01-color);
+  padding: 0.5rem 1rem;
+  text-align: left;
+}
+
+.tiptap th {
+  background: var(--background-01-color);
+  font-weight: 600;
+}
+
+.tiptap tbody tr {
+  background: var(--background-color);
+}
+
+.tiptap tbody tr:nth-child(even) {
+  background: var(--background-01-color);
+}

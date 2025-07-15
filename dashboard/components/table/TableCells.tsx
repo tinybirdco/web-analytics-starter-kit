@@ -5,7 +5,7 @@ import styles from './TableCells.module.css'
 
 // Regular text cell
 export function TableCellText({ children }: { children: React.ReactNode }) {
-  return <Text variant="body">{children}</Text>
+  return <Text variant="bodysemibold">{children}</Text>
 }
 
 // Bold text cell, optionally as a link

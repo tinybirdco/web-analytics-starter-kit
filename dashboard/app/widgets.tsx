@@ -1,16 +1,12 @@
 import { SqlChart } from '@/components/ui/SqlChart'
-import { Stack } from '@/components/ui/Stack'
 import { useEndpoint } from '@/lib/hooks/use-endpoint'
 import { PipeTable } from '@/components/PipeTable'
 import {
-  TableCellText,
-  TableCellBold,
-  TableCellMono,
+  TableCellText, TableCellMono,
   TableCellProgress,
   TableCellDelta,
-  TableCellCombined,
+  TableCellCombined
 } from '@/components/table/TableCells'
-import { Card } from '@/components/ui/Card'
 
 export const Widgets = () => {
   const { data, error, isLoading } =
@@ -29,9 +25,10 @@ export const Widgets = () => {
   // Demo: calculate max and deltas for progress and delta columns
   const maxVisitors =
     topSources?.reduce((max, row) => Math.max(max, row.visits), 0) || 1
-  const maxViews =
+  
+    const maxViews =
     topSources?.reduce((max, row) => Math.max(max, row.hits), 0) || 1
-  // For demo, fake deltas
+
   const getDelta = (row: any) =>
     row.referrer === 'google.com' ? -2 : row.referrer === '(none)' ? -2 : 6
 
@@ -69,7 +66,7 @@ export const Widgets = () => {
           {
             label: 'Visitors',
             key: 'visits',
-            align: 'right',
+            align: 'left',
             render: row => (
               <TableCellCombined>
                 <TableCellProgress value={row.visits} max={maxVisitors} />
@@ -81,7 +78,7 @@ export const Widgets = () => {
           {
             label: 'Views',
             key: 'hits',
-            align: 'right',
+            align: 'left',
             render: row => (
               <TableCellCombined>
                 <TableCellMono>{row.hits.toLocaleString()}</TableCellMono>
