@@ -25,7 +25,7 @@ export function PipeTable({
   style?: CSSProperties
 }) {
   return (
-    <div style={style} className="bg-white rounded-xl border p-6">
+    <div style={style} className="bg-white rounded-xl">
       {title && <h2 className="text-xl font-semibold mb-4">{title}</h2>}
       <table className="w-full text-left">
         <thead>
