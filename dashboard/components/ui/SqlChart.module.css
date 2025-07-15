@@ -2,8 +2,6 @@
   min-width: 240px;
   flex: 1;
   border-radius: 4px;
-  padding: 16px;
-  border: 1px solid var(--border-01-color);
   transition: border-color 0.2s ease-in-out;
 }
 
