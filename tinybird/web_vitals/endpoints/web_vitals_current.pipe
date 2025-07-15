@@ -1,0 +1,73 @@
+DESCRIPTION >
+	Returns current web vitals metrics (LCP, TTFB, FCP, INP, CLS) with average values over a configurable time period (defaults to 1 day), calculated scores, and detailed metric descriptions with units and scoring ranges.
+
+TOKEN "dashboard" READ
+
+NODE daily_vitals
+DESCRIPTION >
+    Get web vital metrics aggregated over the specified time period with averages and metadata
+
+SQL >
+
+    %
+    SELECT
+        metric_name,
+        avg(value) as avg_value,
+        avg(delta) as avg_delta,
+        count() as measurements,
+        any(units) as units,
+        any(description) as description,
+        any(thresholds_text) as thresholds_text
+    FROM web_vitals_events
+    WHERE timestamp >= now() - interval {{Int32(days, 1, description="Number of days to analyze (defaults to 1 day)")}} day
+        {% if defined(domain) %}
+        AND domain = {{ String(domain, description="Domain to filter web vitals for") }}
+        {% end %}
+    GROUP BY metric_name
+    HAVING measurements >= 1
+
+NODE endpoint
+DESCRIPTION >
+    Calculate scores and status using built-in metadata from web_vitals_events
+
+SQL >
+    SELECT
+        metric_name,
+        round(avg_value, 2) as avg_value,
+        round(avg_delta, 2) as avg_delta,
+        measurements,
+        -- Calculate score based on thresholds (using same logic as web_vitals_events)
+        CASE 
+            WHEN metric_name = 'LCP' AND avg_value <= 2500 THEN 100
+            WHEN metric_name = 'LCP' AND avg_value <= 4000 THEN 75
+            WHEN metric_name = 'TTFB' AND avg_value <= 500 THEN 100
+            WHEN metric_name = 'TTFB' AND avg_value <= 1000 THEN 75
+            WHEN metric_name = 'FCP' AND avg_value <= 1800 THEN 100
+            WHEN metric_name = 'FCP' AND avg_value <= 3000 THEN 75
+            WHEN metric_name = 'INP' AND avg_value <= 200 THEN 100
+            WHEN metric_name = 'INP' AND avg_value <= 500 THEN 75
+            WHEN metric_name = 'CLS' AND avg_value <= 0.1 THEN 100
+            WHEN metric_name = 'CLS' AND avg_value <= 0.25 THEN 75
+            ELSE 25
+        END as score,
+        -- Calculate status based on thresholds
+        CASE 
+            WHEN metric_name = 'LCP' AND avg_value <= 2500 THEN 'Excellent'
+            WHEN metric_name = 'LCP' AND avg_value <= 4000 THEN 'Good'
+            WHEN metric_name = 'TTFB' AND avg_value <= 500 THEN 'Excellent'
+            WHEN metric_name = 'TTFB' AND avg_value <= 1000 THEN 'Good'
+            WHEN metric_name = 'FCP' AND avg_value <= 1800 THEN 'Excellent'
+            WHEN metric_name = 'FCP' AND avg_value <= 3000 THEN 'Good'
+            WHEN metric_name = 'INP' AND avg_value <= 200 THEN 'Excellent'
+            WHEN metric_name = 'INP' AND avg_value <= 500 THEN 'Good'
+            WHEN metric_name = 'CLS' AND avg_value <= 0.1 THEN 'Excellent'
+            WHEN metric_name = 'CLS' AND avg_value <= 0.25 THEN 'Good'
+            ELSE 'Poor'
+        END as status,
+        units,
+        description,
+        thresholds_text as thresholds
+    FROM daily_vitals
+    ORDER BY metric_name
+
+TYPE endpoint

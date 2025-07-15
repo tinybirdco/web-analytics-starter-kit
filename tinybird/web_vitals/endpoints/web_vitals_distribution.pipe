@@ -1,0 +1,83 @@
+DESCRIPTION >
+	Returns web vitals performance distribution across excellent, good, and poor ranges with average values and percentage of measurements in each category. Shows how measurements are distributed across performance thresholds for each Core Web Vitals metric over a configurable time period (defaults to 1 day) with optional domain filtering.
+
+TOKEN "dashboard" READ
+
+NODE filtered_vitals
+DESCRIPTION >
+    Filter web vitals data for the specified time period and domain
+
+SQL >
+
+    %
+    SELECT
+        metric_name,
+        value,
+        performance_category,
+        score,
+        units,
+        description,
+        thresholds_text
+    FROM web_vitals_events
+    WHERE timestamp >= now() - interval {{Int32(days, 1, description="Number of days to analyze (defaults to 1 day)")}} day
+        {% if defined(domain) %}
+        AND domain = {{ String(domain, description="Domain to filter web vitals for") }}
+        {% end %}
+        AND performance_category != 'unknown'
+
+NODE category_stats
+DESCRIPTION >
+    Calculate aggregated statistics for each metric and performance category combination
+
+SQL >
+    SELECT
+        metric_name,
+        performance_category,
+        round(avg(value), 2) as avg_value,
+        count() as measurement_count,
+        any(score) as score,
+        any(units) as units,
+        any(description) as description,
+        any(thresholds_text) as thresholds
+    FROM filtered_vitals
+    GROUP BY metric_name, performance_category
+
+NODE metric_totals
+DESCRIPTION >
+    Calculate total measurements per metric for percentage calculations
+
+SQL >
+    SELECT
+        metric_name,
+        sum(measurement_count) as total_measurements
+    FROM category_stats
+    GROUP BY metric_name
+
+NODE endpoint
+DESCRIPTION >
+    Calculate final distribution with percentages and combine all metadata
+
+SQL >
+    SELECT
+        cs.metric_name,
+        cs.performance_category,
+        cs.avg_value,
+        cs.measurement_count,
+        round((cs.measurement_count * 100.0) / mt.total_measurements, 1) as percentage,
+        mt.total_measurements,
+        cs.score,
+        cs.units,
+        cs.thresholds,
+        cs.description
+    FROM category_stats cs
+    JOIN metric_totals mt ON cs.metric_name = mt.metric_name
+    ORDER BY 
+        cs.metric_name,
+        CASE cs.performance_category 
+            WHEN 'excellent' THEN 1 
+            WHEN 'good' THEN 2 
+            WHEN 'poor' THEN 3 
+            ELSE 4 
+        END
+
+TYPE endpoint

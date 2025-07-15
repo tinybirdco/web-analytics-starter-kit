@@ -1,0 +1,8 @@
+- name: web_vitals_demo_site_100_days
+  description: Test web vitals metrics for demo.site over the last 100 days
+  parameters: domain=demo.site&days=100
+  expected_result: "{\"metric_name\":\"LCP\",\"avg_value\":1171,\"avg_delta\":51,\"\
+    measurements\":289,\"score\":100,\"status\":\"Excellent\",\"units\":\"ms\",\"\
+    description\":\"Largest Contentful Paint - measures loading performance of the\
+    \ largest content element\",\"thresholds\":\"Excellent: \u22642500ms, Good: \u2264\
+    4000ms, Poor: >4000ms\"}\n"

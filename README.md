@@ -67,7 +67,7 @@ These parameters can be used with the tracker snippet:
 ```js
 <script
   src="https://unpkg.com/@tinybirdco/flock.js"
-  data-token="TOKEN-ID"
+  data-token="YOUR_TRACKER_TOKEN"
   data-tb-customer-id="CUSTOMER_ID"
 ></script>
 ```
@@ -83,7 +83,7 @@ Track web vitals like this:
 ```js
 <script
   src="https://unpkg.com/@tinybirdco/flock.js"
-  data-token="TOKEN-ID"
+  data-token="YOUR_TRACKER_TOKEN"
   web-vitals="true"
 ></script>
 ```
