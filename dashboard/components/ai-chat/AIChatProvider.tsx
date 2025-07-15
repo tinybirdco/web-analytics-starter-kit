@@ -6,7 +6,7 @@ import { useChat } from '@ai-sdk/react'
 interface AIChatContextType {
   messages: any[]
   input: string
-  handleInputChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void
+  handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void
   handleSubmit: (e: React.FormEvent) => void
   status: string
   isLoading: boolean
