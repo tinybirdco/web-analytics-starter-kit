@@ -30,7 +30,7 @@ export function AIChatForm({
 
   return (
     <motion.div
-      initial={{ opacity: 0, translateY: 12 }}
+      initial={{ opacity: 0, translateY: 6 }}
       animate={{ opacity: 1, translateY: 0 }}
       transition={{
         duration: 0.1,
@@ -49,7 +49,7 @@ export function AIChatForm({
           <div className="relative bg-white rounded-xl border border-[var(--border-01-color)] focus-within:border-[var(--border-02-color)] flex min-h-20 py-4 px-5 items-center transition-colors">
             <input
               id="ai-chat-input"
-              className="flex-1 resize-none text-lg !bg-none placeholder:text-[var(--text-02-color)] disabled:bg-white"
+              className="flex-1 resize-none text-lg !bg-none placeholder:text-[var(--text-02-color)] disabled:bg-white pr-3"
               placeholder={placeholder}
               value={input}
               onChange={handleInputChange}

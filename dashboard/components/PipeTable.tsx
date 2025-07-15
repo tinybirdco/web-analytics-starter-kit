@@ -1,11 +1,16 @@
 import { formatNumber } from '@/lib/utils'
 import { CSSProperties } from 'react'
+import { Text } from './ui/Text'
 
 export type PipeTableColumn = {
   label: string
   key: string
   align?: 'left' | 'right' | 'center'
-  render?: (row: Record<string, any>, value: any, rowIndex: number) => React.ReactNode
+  render?: (
+    row: Record<string, any>,
+    value: any,
+    rowIndex: number
+  ) => React.ReactNode
 }
 
 export function PipeTable({
@@ -22,16 +27,18 @@ export function PipeTable({
   return (
     <div style={style} className="bg-white rounded-xl border p-6">
       {title && <h2 className="text-xl font-semibold mb-4">{title}</h2>}
-      <table className="w-full text-left border-separate border-spacing-y-2">
+      <table className="w-full text-left">
         <thead>
           <tr>
             {columns.map(col => (
               <th
                 key={col.key}
-                className="text-secondary text-xs font-semibold pb-2"
+                className="border-b border-[var(--border-01-color)] align-middle pb-1"
                 style={{ textAlign: col.align || 'left' }}
               >
-                {col.label}
+                <Text variant="caption" color="01">
+                  {col.label}
+                </Text>
               </th>
             ))}
           </tr>
@@ -39,19 +46,19 @@ export function PipeTable({
         <tbody>
           {data.map((row, i) => (
             <tr key={i} className="border-t border-gray-100">
-              {columns.map(col => {
+              {columns.map((col, j) => {
                 const value = row[col.key]
                 return (
                   <td
                     key={col.key}
-                    className="py-1 pr-4"
-                    style={{ textAlign: col.align || 'left' }}
+                    className="py-2 pr-4 border-b border-[var(--border-01-color)]"
+                    style={{ textAlign: col.align || 'left', fontWeight: j === 0 ? '600' : '400' }}
                   >
                     {col.render
                       ? col.render(row, value, i)
                       : typeof value === 'number'
-                        ? formatNumber(value)
-                        : value || '(none)'}
+                      ? formatNumber(value)
+                      : value || '(none)'}
                   </td>
                 )
               })}
@@ -61,4 +68,4 @@ export function PipeTable({
       </table>
     </div>
   )
-} 
+}
