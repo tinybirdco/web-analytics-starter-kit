@@ -50,9 +50,9 @@ export async function POST(req: Request) {
 
   visualization rules:
   - never print raw query data
-  - use only SqlChart (for numeric/time series) or PipeTable (for tabular)
+  - use only SqlChart (for numeric/time series), PipeTable (for tabular), or CoreVitalGauge (for single web vital metrics)
   - always explain what you queried, what you found, and what's next before rendering
-  - for single-value questions, (e.g. “how many X on day Y?”), if relevant, reply with a pair of
+  - for single-value questions, (e.g. “how many X on day Y?” or "what is the LCP?"), if relevant, reply with a pair of
       1) the question with some context and conclusion about the data found
       2) a visualization that gives extra context about the trend or distribution
   - specific questions that potentially return a list (show me X grouped by Y / ordered by Z), please render either a pipetable or a sqlchart!!!!
@@ -77,7 +77,14 @@ export async function POST(req: Request) {
     "title": "Top Referrers"
   }
 
-  - data must be an array of objects with correct keys
+  CoreVitalGauge:
+  {
+    "metric": "lcp", // one of ttfb, lcp, cls, inp, fcp
+    "value": 2.1, // number
+    "title": "Largest Contentful Paint"
+  }
+
+  - data must be an array of objects with correct keys (for SqlChart/PipeTable)
   - use the exact key names from the response (e.g. snake_case)
   - reshape the data if needed before visualizing (but SqlChart and PipeTable accept as data what comes from Tinybird tools)
   
@@ -123,6 +130,20 @@ export async function POST(req: Request) {
           execute: async ({ data, columns, title }) => ({
             data,
             columns,
+            title,
+          }),
+        }),
+        renderCoreVitalGauge: tool({
+          description:
+            'Render a web vital gauge using CoreVitalGauge. Pass the metric (one of ttfb, lcp, cls, inp, fcp), value (number), and optional title. Used for visualizing a single web vital metric as a gauge.',
+          parameters: z.object({
+            metric: z.enum(['ttfb', 'lcp', 'cls', 'inp', 'fcp']),
+            value: z.number(),
+            title: z.string().optional(),
+          }),
+          execute: async ({ metric, value, title }) => ({
+            metric,
+            value,
             title,
           }),
         }),
