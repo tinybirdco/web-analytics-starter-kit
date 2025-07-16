@@ -6,6 +6,7 @@ import { PipeTable } from '@/components/PipeTable'
 import { Loader } from '@/components/ui/Loader'
 import { CheckIcon } from '@/components/ui/Icons'
 import { Text } from '@/components/ui/Text'
+import { CoreVitalGauge } from '@/components/ui/CoreVitalGauge'
 
 interface AIChatToolCallProps {
   part: any
@@ -66,6 +67,17 @@ export function AIChatToolCall({ part, partIndex, isResult = false }: AIChatTool
               padding: 0,
               border: 0,
             }}
+          />
+        </div>
+      )
+    }
+
+    if (toolName === 'renderCoreVitalGauge' && result) {
+      return (
+        <div className="my-2 flex justify-center">
+          <CoreVitalGauge
+            metric={result.metric}
+            value={result.value}
           />
         </div>
       )

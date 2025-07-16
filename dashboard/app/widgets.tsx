@@ -11,6 +11,63 @@ import {
 import { CoreVitalGauge } from '@/components/ui/CoreVitalGauge'
 import { Card } from '@/components/ui/Card'
 import { Text } from '@/components/ui/Text'
+import React from 'react'
+
+export const CoreVitals = () => {
+  const { data: coreVitals } = useEndpoint<
+    {
+      metric_name: string
+      avg_value: number
+      avg_delta: number
+      measurements: number
+      score: number
+      status: string
+      units: string
+      description: string
+      thresholds: string
+    }[]
+  >('web_vitals_current')
+
+  return (
+    <Card className="col-span-2">
+      <Text variant="displayxsmall">Core Vitals</Text>
+      <div className="flex flex-row gap-8 mb-6 justify-center h-full items-center">
+        <CoreVitalGauge
+          metric="ttfb"
+          value={
+            coreVitals?.find(v => v.metric_name === 'TTFB')?.avg_value || 0
+          }
+        />
+        <CoreVitalGauge
+          metric="fcp"
+          value={
+            (coreVitals?.find(v => v.metric_name === 'FCP')?.avg_value ??
+              0) / 1000 || 0
+          }
+        />
+        <CoreVitalGauge
+          metric="lcp"
+          value={
+            (coreVitals?.find(v => v.metric_name === 'LCP')?.avg_value ??
+              0) / 1000 || 0
+          }
+        />
+        <CoreVitalGauge
+          metric="cls"
+          value={
+            coreVitals?.find(v => v.metric_name === 'CLS')?.avg_value || 0
+          }
+        />
+        <CoreVitalGauge
+          metric="inp"
+          value={
+            coreVitals?.find(v => v.metric_name === 'INP')?.avg_value || 0
+          }
+        />
+      </div>
+    </Card>
+  )
+}
 
 export const Widgets = () => {
   const { data, error, isLoading } =
@@ -26,20 +83,6 @@ export const Widgets = () => {
       'top_devices'
     )
 
-  const { data: coreVitals } = useEndpoint<
-    {
-      metric_name: string
-      avg_value: number
-      avg_delta: number
-      measurements: number
-      score: number
-      status: string
-      units: string
-      description: string
-      thresholds: string
-    }[]
-  >('web_vitals_current')
-
   // Demo: calculate max and deltas for progress and delta columns
   const maxVisitors =
     topSources?.reduce((max, row) => Math.max(max, row.visits), 0) || 1
@@ -53,44 +96,7 @@ export const Widgets = () => {
   return (
     <>
       <div className="grid grid-cols-2 gap-4">
-        <Card className="col-span-2">
-          <Text variant="displayxsmall">Core Vitals</Text>
-          <div className="flex flex-row gap-8 mb-6 justify-center h-full items-center">
-            <CoreVitalGauge
-              metric="ttfb"
-              value={
-                coreVitals?.find(v => v.metric_name === 'TTFB')?.avg_value || 0
-              }
-            />
-            <CoreVitalGauge
-              metric="fcp"
-              value={
-                (coreVitals?.find(v => v.metric_name === 'FCP')?.avg_value ??
-                  0) / 1000 || 0
-              }
-            />
-            <CoreVitalGauge
-              metric="lcp"
-              value={
-                (coreVitals?.find(v => v.metric_name === 'LCP')?.avg_value ??
-                  0) / 1000 || 0
-              }
-            />
-            <CoreVitalGauge
-              metric="cls"
-              value={
-                coreVitals?.find(v => v.metric_name === 'CLS')?.avg_value || 0
-              }
-            />
-            <CoreVitalGauge
-              metric="inp"
-              value={
-                coreVitals?.find(v => v.metric_name === 'INP')?.avg_value || 0
-              }
-            />
-          </div>
-        </Card>
-
+        {/* Core Vitals moved to CoreVitals component */}
         <Card>
           <SqlChart
             title={'Visitors'}

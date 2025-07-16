@@ -6,6 +6,7 @@ import Script from 'next/script'
 import useAuth from '../lib/hooks/use-auth'
 import config from '../lib/config'
 import { Widgets } from './widgets'
+import DashboardTabs from './DashboardTabs'
 import { TimeRangeSelect } from '@/components/ui/TimeRangeSelect'
 import { useTimeRange } from '@/lib/hooks/use-time-range'
 import CredentialsDialog from '@/components/CredentialsDialog'
@@ -100,7 +101,7 @@ export default function DashboardPage() {
             </nav>
             <div>
               {isAuthenticated && !isTokenValid && <p>error</p>}
-              {isAuthenticated && isTokenValid && <Widgets />}
+              {isAuthenticated && isTokenValid && <DashboardTabs />}
               {!isAuthenticated && <CredentialsDialog />}
             </div>
           </main>
