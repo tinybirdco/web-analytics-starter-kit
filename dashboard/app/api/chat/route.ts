@@ -7,8 +7,17 @@ import {
 } from 'ai'
 import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js'
 import { z } from 'zod'
+import fs from 'fs';
 
 export const maxDuration = 30
+
+if (process.env.GOOGLE_CREDENTIALS_JSON) {
+  const credsPath = '/tmp/gcp-creds.json';
+  if (!fs.existsSync(credsPath)) {
+    fs.writeFileSync(credsPath, process.env.GOOGLE_CREDENTIALS_JSON, 'utf8');
+  }
+  process.env.GOOGLE_APPLICATION_CREDENTIALS = credsPath;
+}
 
 const vertex = createVertex({
   location: 'europe-west1',
