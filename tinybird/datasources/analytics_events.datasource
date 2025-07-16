@@ -8,9 +8,11 @@ SCHEMA >
     `session_id` Nullable(String) `json:$.session_id`,
     `action` LowCardinality(String) `json:$.action`,
     `version` LowCardinality(String) `json:$.version`,
-    `payload` String `json:$.payload`
+    `payload` String `json:$.payload`,
+    `tenant_id` String `json:$.tenant_id` DEFAULT '',
+    `domain` String `json:$.domain` DEFAULT ''
 
 ENGINE MergeTree
 ENGINE_PARTITION_KEY toYYYYMM(timestamp)
-ENGINE_SORTING_KEY timestamp
+ENGINE_SORTING_KEY tenant_id, domain, timestamp
 ENGINE_TTL timestamp + toIntervalDay(60)

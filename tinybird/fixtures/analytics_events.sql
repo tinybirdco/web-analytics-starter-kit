@@ -1,65 +1,45 @@
 SELECT
-    now() - (rand() % (7 * 24 * 60 * 60)) AS timestamp,
-    if(rand() % 10 > 0, concat('session_', toString(1 + rand() % 500)), NULL) AS session_id,
+    now() - rand() % (30 * 86400) AS timestamp,
+    if(rand() % 10 > 0, concat('sess_', toString(rand() % 1000)), NULL) AS session_id,
     if(rand() % 10 < 7, 'page_hit', 'web_vital') AS action,
-    concat('v', toString(1 + rand() % 3), '.', toString(rand() % 10)) AS version,
-    
-    if(action = 'page_hit',
-        /* PAGE HIT PAYLOAD */
+    concat('v', toString(1 + rand() % 3), '.', toString(rand() % 10), '.', toString(rand() % 10)) AS version,
+    if(
+        action = 'page_hit',
         concat('{
-            "pathname": "', ['/', '/about', '/pricing', '/docs', '/blog', '/product', '/job-offers', '/customer-stories', '/templates', '/waiting', '/blog-posts', '/api', '/products', '/contact', '/features', '/team', '/privacy', '/terms'][1 + rand() % 18], '",
-            "href": "https://', ['example.com', 'demo.site', 'test.org', 'app.example.com', 'dev.test.org'][1 + rand() % 5], ['/', '/about', '/pricing', '/docs', '/blog', '/product', '/job-offers', '/customer-stories', '/templates', '/waiting', '/blog-posts', '/api', '/products', '/contact', '/features', '/team', '/privacy', '/terms'][1 + rand() % 18], '",
-            "referrer": "', ['', 'https://google.com', 'https://linkedin.com', 'https://facebook.com', 'https://twitter.com'][rand() % 5], '",
-            "userAgent": "', ['Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 Edg/114.0.1823.51'][rand() % 5], '",
-            "locale": "', ['en-US', 'en-GB', 'es-ES', 'fr-FR', 'de-DE'][rand() % 5], '",
+            "pathname": "', arrayElement(['/','','/product','/blog','/contact','/pricing','/about','/login','/signup'], 1 + rand() % 8), '",
+            "href": "https://', arrayElement(['example.com','demo.site','test.org','app.demo.io','myapp.com'], 1 + rand() % 5), arrayElement(['/','','/product','/blog','/contact','/pricing','/about','/login','/signup'], 1 + rand() % 8), '",
+            "referrer": "', arrayElement(['','','','https://google.com','https://facebook.com','https://linkedin.com','https://twitter.com'], 1 + rand() % 7), '",
+            "userAgent": "', arrayElement([
+                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36',
+                'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.3 Safari/605.1.15',
+                'Mozilla/5.0 (iPhone; CPU iPhone OS 15_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.3 Mobile/15E148 Safari/604.1',
+                'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:99.0) Gecko/20100101 Firefox/99.0',
+                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Edge/100.0.1185.44'
+            ], 1 + rand() % 5), '",
+            "locale": "', arrayElement(['en-US','es-ES','fr-FR','de-DE','it-IT','zh-CN','ja-JP','ko-KR'], 1 + rand() % 8), '",
             "location": {
-                "country": "', ['United States', 'United Kingdom', 'Germany', 'France', 'Spain', 'Canada', 'Australia', 'Japan', 'Brazil', 'India'][rand() % 10], '",
-                "city": "', ['New York', 'London', 'Berlin', 'Paris', 'Madrid', 'Toronto', 'Sydney', 'Tokyo', 'Sao Paulo', 'Mumbai'][rand() % 10], '"
+                "country": "', arrayElement(['United States','Spain','France','Germany','Italy','United Kingdom','Canada','Japan','Australia'], 1 + rand() % 9), '",
+                "city": "', arrayElement(['New York','Los Angeles','Madrid','Paris','Berlin','Rome','London','Toronto','Tokyo','Sydney'], 1 + rand() % 10), '"
             }
         }'),
-        
-        /* WEB VITAL PAYLOAD */
-        (
-            WITH 
-                ['LCP', 'TTFB', 'FCP', 'INP', 'CLS'][rand() % 5] AS metric_name,
-                rand() % 100 AS performance_category
-            
-            SELECT concat('{
-                "name": "', metric_name, '",
-                "value": ', 
-                    CASE 
-                        WHEN performance_category < 80 THEN
-                            /* Good performance (80%) */
-                            CASE 
-                                WHEN metric_name = 'LCP' THEN toString(600 + rand() % 1900)
-                                WHEN metric_name = 'TTFB' THEN toString(100 + rand() % 700)
-                                WHEN metric_name = 'FCP' THEN toString(400 + rand() % 1600)
-                                WHEN metric_name = 'INP' THEN toString(30 + rand() % 270)
-                                ELSE toString(round(0.01 + rand() / 7000, 3))  /* CLS */
-                            END
-                        WHEN performance_category < 95 THEN
-                            /* Moderate performance (15%) */
-                            CASE 
-                                WHEN metric_name = 'LCP' THEN toString(2500 + rand() % 5000)
-                                WHEN metric_name = 'TTFB' THEN toString(800 + rand() % 1200)
-                                WHEN metric_name = 'FCP' THEN toString(2000 + rand() % 3000)
-                                WHEN metric_name = 'INP' THEN toString(300 + rand() % 500)
-                                ELSE toString(round(0.15 + rand() / 4000, 3))  /* CLS */
-                            END
-                        ELSE
-                            /* Poor performance (5%) */
-                            CASE 
-                                WHEN metric_name = 'LCP' THEN toString(7500 + rand() % 7500)
-                                WHEN metric_name = 'TTFB' THEN toString(2000 + rand() % 1000)
-                                WHEN metric_name = 'FCP' THEN toString(5000 + rand() % 3000)
-                                WHEN metric_name = 'INP' THEN toString(800 + rand() % 700)
-                                ELSE toString(round(0.3 + rand() / 2000, 3))  /* CLS */
-                            END
-                    END, ',
-                "delta": ', toString(10 + rand() % 90), ',
-                "pathname": "', ['/', '/about', '/pricing', '/docs', '/blog', '/product', '/job-offers', '/customer-stories', '/templates', '/waiting', '/blog-posts', '/api', '/products', '/contact', '/features', '/team', '/privacy', '/terms'][1 + rand() % 18], '",
-                "domain": "', ['example.com', 'demo.site', 'test.org', 'app.example.com', 'dev.test.org'][1 + rand() % 5], '"
-            }')
-        )
-    ) AS payload
+        concat('{
+            "name": "', arrayElement(['LCP','TTFB','FCP','INP','CLS'], 1 + rand() % 5), '",
+            "value": ', 
+            toString(
+                case 
+                    when arrayElement(['LCP','TTFB','FCP','INP','CLS'], 1 + rand() % 5) = 'LCP' then 800 + rand() % 3200 
+                    when arrayElement(['LCP','TTFB','FCP','INP','CLS'], 1 + rand() % 5) = 'TTFB' then 100 + rand() % 1400
+                    when arrayElement(['LCP','TTFB','FCP','INP','CLS'], 1 + rand() % 5) = 'FCP' then 500 + rand() % 2500
+                    when arrayElement(['LCP','TTFB','FCP','INP','CLS'], 1 + rand() % 5) = 'INP' then 50 + rand() % 750
+                    when arrayElement(['LCP','TTFB','FCP','INP','CLS'], 1 + rand() % 5) = 'CLS' then round((rand() % 50) / 100.0, 2)
+                    else 0
+                end
+            ), ',
+            "delta": ', toString(10 + rand() % 190), ',
+            "pathname": "', arrayElement(['/','','/product','/blog','/contact','/pricing','/about','/login','/signup'], 1 + rand() % 8), '",
+            "domain": "', arrayElement(['example.com','demo.site','test.org','app.demo.io','myapp.com'], 1 + rand() % 5), '"
+        }')
+    ) AS payload,
+    concat('tenant_', toString(1 + rand() % 20)) AS tenant_id,
+    arrayElement(['example.com','demo.site','test.org','app.demo.io','myapp.com'], 1 + rand() % 5) AS domain
 FROM numbers(1000)

@@ -1,0 +1,20 @@
+DESCRIPTION >
+    Materializes distinct actions by tenant and domain from analytics events
+
+NODE tenant_actions_node
+DESCRIPTION >
+    Aggregate distinct actions per tenant/domain with last payload sample
+
+SQL >
+    SELECT
+        tenant_id,
+        domain,
+        action,
+        anySimpleState(payload) AS last_payload,
+        maxSimpleState(timestamp) AS last_seen,
+        countState() AS total_occurrences
+    FROM analytics_events
+    GROUP BY tenant_id, domain, action
+
+TYPE MATERIALIZED
+DATASOURCE tenant_actions_mv
