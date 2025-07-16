@@ -18,7 +18,6 @@ if (process.env.GOOGLE_CREDENTIALS_JSON) {
   }
   process.env.GOOGLE_APPLICATION_CREDENTIALS = credsPath;
 }
-
 const vertex = createVertex({
   location: 'europe-west1',
   project: 'gen-lang-client-0705305160'
@@ -42,7 +41,7 @@ export async function POST(req: Request) {
     const tbTools = await mcpClient.tools()
 
     const result = streamText({
-      model: vertex('gemini-2.5-flash'),
+      model: vertex('gemini-2.0-flash-001'),
       messages,
       maxSteps: 30,
       system: `
@@ -79,7 +78,7 @@ export async function POST(req: Request) {
       2) a visualization that gives extra context about the trend or distribution
   - specific questions that potentially return a list (show me X grouped by Y / ordered by Z), please render either a pipetable or a sqlchart!!!!
   - e.g. when asked about visitors over the past 30 days, say the aggregate but show a chart of the daily users over said period as well!!!
-  - whenever you feel like writing a markdown table or a markdown list to show query or enddpoint results DO NOT DO IT, render a pipetable tool component! wrangle the data if necessary to fit in the props.
+  - whenever you feel like writing a markdown table or a markdown list to show query or enddpoint results DO NOT DO IT, render a pipetable tool component! wrangle the data if necessary to fit in the props. Markdown table only for context, not for data.
 
   visualization formats:
   SqlChart:
