@@ -8,7 +8,7 @@ export type Domain = {
   total_hits: number
 }
 
-export function useDomains(tenant_id: string = 'zz') {
+export function useDomains(tenant_id: string = '') {
   const fetcher = async () => {
     const params = tenant_id ? { tenant_id } : {}
     const { data } = await queryPipe<Domain[]>('domains', params)
