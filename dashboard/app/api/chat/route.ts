@@ -71,8 +71,11 @@ export async function POST(req: Request) {
 
   visualization rules:
   - never print raw query data
-  - use only SqlChart (for numeric/time series), PipeTable (for tabular), or CoreVitalGauge (for single web vital metrics)
-  - always explain what you queried, what you found, and what's next before rendering
+  - use the filters and parameters for all endpoint tool calls EXCEPT FOR "q" (query), do not use it at all or a kitten will die
+  - you must use SqlChart for numeric time series (e.g. when there's a date in the response)
+  - you must use PipeTable for tabular data (e.g. when there's a list of dimensions and a value)
+  - you must use PipeTable if there's a list of dimensions and multiple values, choose the most relevant ones
+  - always explain what you queried, what you found, and what's next before rendering. give explanations between tool calls!!!
   - for single-value questions, (e.g. “how many X on day Y?” or "what is the LCP?"), if relevant, reply with a pair of
       1) the question with some context and conclusion about the data found
       2) a visualization that gives extra context about the trend or distribution

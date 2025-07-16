@@ -1,7 +1,7 @@
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/Tabs'
 import { Widgets, CoreVitals } from './widgets'
 
-const DashboardTabs = ({ domain }: { domain?: string }) => {
+const DashboardTabs = () => {
   return (
     <Tabs defaultValue="analytics">
       <TabsList className="mb-4">
@@ -9,13 +9,13 @@ const DashboardTabs = ({ domain }: { domain?: string }) => {
         <TabsTrigger value="speed">Speed Insights</TabsTrigger>
       </TabsList>
       <TabsContent value="analytics">
-        <Widgets domain={domain} />
+        <Widgets />
       </TabsContent>
       <TabsContent value="speed">
-        <CoreVitals domain={domain} />
+        <CoreVitals />
       </TabsContent>
     </Tabs>
   )
 }
 
-export default DashboardTabs 
+export default DashboardTabs
