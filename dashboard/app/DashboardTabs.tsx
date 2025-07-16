@@ -4,7 +4,7 @@ import { Widgets, CoreVitals } from './widgets'
 const DashboardTabs = () => {
   return (
     <Tabs defaultValue="analytics">
-      <TabsList>
+      <TabsList className="mb-4">
         <TabsTrigger value="analytics">Analytics</TabsTrigger>
         <TabsTrigger value="speed">Speed Insights</TabsTrigger>
       </TabsList>

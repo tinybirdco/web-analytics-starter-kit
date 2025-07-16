@@ -17,15 +17,18 @@ export function AIChatForm({
   placeholder = 'Are there any bounce rate trends for my blog pages?',
   className = '',
 }: AIChatFormProps) {
-  const { input, handleInputChange, handleSubmit, isLoading, error } =
+  const { input, handleInputChange, handleSubmit, isLoading, error, setMessages, setInput } =
     useAIChat()
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const onSubmit = (e: React.FormEvent) => {
+    const savedInput = input; // Save the current input value
+    setMessages([])
     handleSubmit(e)
     setTimeout(() => {
+      setInput(savedInput); // Restore the input value after handleSubmit clears it
       messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-    }, 100)
+    }, 10)
   }
 
   return (
@@ -57,7 +60,7 @@ export function AIChatForm({
             />
             <button
               type="submit"
-              className="aspect-square color-white bg-[var(--alternative-color)] size-12 rounded-lg inline-flex justify-center items-center hover:opacity-75"
+              className="aspect-square color-white bg-[var(--alternative-color)] size-12 rounded-lg inline-flex justify-center items-center hover:opacity-75 disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={!input.trim() || isLoading}
             >
               {isLoading ? (

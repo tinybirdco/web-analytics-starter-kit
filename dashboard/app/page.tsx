@@ -68,7 +68,7 @@ export default function DashboardPage() {
                   {/* Empty DialogContent to keep overlay, but not use the content box */}
                   <DialogContent className="!bg-transparent !shadow-none !border-none !p-0">
                     <AIChatProvider>
-                      <AIChatContainer className="max-h-screen max-w-2xl overflow-y-scroll" />
+                      <AIChatContainer className="max-h-screen max-w-2xl overflow-y-auto" />
                     </AIChatProvider>
                   </DialogContent>
                 </Dialog>

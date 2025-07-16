@@ -14,58 +14,44 @@ import { Text } from '@/components/ui/Text'
 import React from 'react'
 
 export const CoreVitals = () => {
-  const { data: coreVitals } = useEndpoint<
-    {
-      metric_name: string
-      avg_value: number
-      avg_delta: number
-      measurements: number
-      score: number
-      status: string
-      units: string
-      description: string
-      thresholds: string
-    }[]
-  >('web_vitals_current')
+  type MetricEntry = {
+    metric_name: string
+    performance_category: string
+    avg_value: number
+    measurement_count: number
+    percentage: number
+    total_measurements: number
+    score: number
+    units: string
+    thresholds: string
+    description: string
+    domain: string
+  }
+
+  const { data: coreVitals } = useEndpoint<MetricEntry[]>(
+    'web_vitals_distribution'
+  )
+
+  // Group by metric_name (and optionally domain if needed)
+  const grouped: Record<string, MetricEntry[]> = {}
+  if (coreVitals) {
+    for (const entry of coreVitals) {
+      if (!grouped[entry.metric_name]) grouped[entry.metric_name] = []
+      grouped[entry.metric_name].push(entry)
+    }
+  }
 
   return (
-    <Card className="col-span-2">
-      <Text variant="displayxsmall">Core Vitals</Text>
-      <div className="flex flex-row gap-8 mb-6 justify-center h-full items-center">
-        <CoreVitalGauge
-          metric="ttfb"
-          value={
-            coreVitals?.find(v => v.metric_name === 'TTFB')?.avg_value || 0
-          }
-        />
-        <CoreVitalGauge
-          metric="fcp"
-          value={
-            (coreVitals?.find(v => v.metric_name === 'FCP')?.avg_value ??
-              0) / 1000 || 0
-          }
-        />
-        <CoreVitalGauge
-          metric="lcp"
-          value={
-            (coreVitals?.find(v => v.metric_name === 'LCP')?.avg_value ??
-              0) / 1000 || 0
-          }
-        />
-        <CoreVitalGauge
-          metric="cls"
-          value={
-            coreVitals?.find(v => v.metric_name === 'CLS')?.avg_value || 0
-          }
-        />
-        <CoreVitalGauge
-          metric="inp"
-          value={
-            coreVitals?.find(v => v.metric_name === 'INP')?.avg_value || 0
-          }
-        />
-      </div>
-    </Card>
+    <div className="grid grid-cols-2 gap-4">
+      {['TTFB', 'FCP', 'LCP', 'CLS', 'INP'].map(metric => (
+        <Card key={metric}>
+          <CoreVitalGauge
+            key={metric}
+            metricEntries={grouped?.[metric] ?? []}
+          />
+        </Card>
+      ))}
+    </div>
   )
 }
 
