@@ -1,134 +1,90 @@
 import React from "react";
 
-// Hardcoded config for each core web vital
-const CORE_VITALS = {
-  ttfb: {
-    label: "TTFB",
-    unit: "ms",
-    min: 0,
-    pass: 800,
-    warn: 1800,
-    max: 3000,
-    // green, yellow, red
-    colors: ["#22c55e", "#facc15", "#ef4444"],
-  },
-  lcp: {
-    label: "LCP",
-    unit: "s",
-    min: 0,
-    pass: 2.5,
-    warn: 4,
-    max: 8,
-    colors: ["#22c55e", "#facc15", "#ef4444"],
-  },
-  cls: {
-    label: "CLS",
-    unit: "score",
-    min: 0,
-    pass: 0.1,
-    warn: 0.25,
-    max: 1,
-    colors: ["#22c55e", "#facc15", "#ef4444"],
-  },
-  inp: {
-    label: "INP",
-    unit: "ms",
-    min: 0,
-    pass: 200,
-    warn: 500,
-    max: 2000,
-    colors: ["#22c55e", "#facc15", "#ef4444"],
-  },
-  fcp: {
-    label: "FCP",
-    unit: "s",
-    min: 0,
-    pass: 1.8,
-    warn: 3,
-    max: 6,
-    colors: ["#22c55e", "#facc15", "#ef4444"],
-  },
+const CATEGORY_COLORS: Record<string, string> = {
+  excellent: "#2a2aff", // blue
+  good: "#a5a5ff",     // light blue
+  poor: "#e5e7eb",     // gray
 };
 
-type MetricKey = keyof typeof CORE_VITALS;
+const METRIC_THRESHOLDS: Record<string, { excellent: number; good: number; poor: number }> = {
+  TTFB: { excellent: 500, good: 1000, poor: 1000 },
+  FCP: { excellent: 1800, good: 3000, poor: 3000 },
+  LCP: { excellent: 2500, good: 4000, poor: 4000 },
+  CLS: { excellent: 0.1, good: 0.25, poor: 0.25 },
+  INP: { excellent: 200, good: 500, poor: 500 },
+};
+
+const Triangle = ({ color, style = {} }: { color: string; style?: React.CSSProperties }) => (
+  <svg width="12" height="9" viewBox="0 0 16 10" style={style}>
+    <polygon points="8,0 16,10 0,10" fill={color} />
+  </svg>
+);
+
+interface MetricEntry {
+  metric_name: string;
+  performance_category: string;
+  avg_value: number;
+  measurement_count: number;
+  percentage: number;
+  total_measurements: number;
+  score: number;
+  units: string;
+  thresholds: string;
+  description: string;
+  domain: string;
+}
 
 interface CoreVitalGaugeProps {
-  metric: MetricKey;
-  value: number;
+  metricEntries: MetricEntry[];
 }
 
-function getColor(value: number, config: typeof CORE_VITALS[MetricKey]) {
-  if (value <= config.pass) return config.colors[0];
-  if (value <= config.warn) return config.colors[1];
-  return config.colors[2];
-}
+export const CoreVitalGauge: React.FC<CoreVitalGaugeProps> = ({ metricEntries }) => {
+  if (!metricEntries || metricEntries.length === 0) return null;
 
-function getScore(value: number, config: typeof CORE_VITALS[MetricKey]) {
-  // 100 if value <= pass, 50 if value == warn, 0 if value >= max, linear in between
-  if (value <= config.pass) return 100;
-  if (value >= config.max) return 0;
-  if (value <= config.warn) {
-    // Between pass and warn: 100 -> 50
-    return 100 - ((value - config.pass) / (config.warn - config.pass)) * 50;
-  }
-  // Between warn and max: 50 -> 0
-  return 50 - ((value - config.warn) / (config.max - config.warn)) * 50;
-}
+  const { metric_name, units, description } = metricEntries[0];
 
-const RADIUS = 36;
-const STROKE = 8;
-const CIRCUM = 2 * Math.PI * RADIUS;
+  const mainEntry = metricEntries.reduce((a, b) => (a.measurement_count > b.measurement_count ? a : b));
+  const avgValue = mainEntry.avg_value;
+  const score = mainEntry.score;
 
-export const CoreVitalGauge: React.FC<CoreVitalGaugeProps> = ({ metric, value }) => {
-  const config = CORE_VITALS[metric];
-  if (!config) return null;
-  const color = getColor(value, config);
-  const score = Math.round(getScore(value, config));
-  // Clamp arc to [0, 100]
-  const arcLen = Math.max(0, Math.min(1, score / 100)) * CIRCUM;
+  const thresholds = METRIC_THRESHOLDS[metric_name.toUpperCase()] || { excellent: 1, good: 2, poor: 3 };
+  const min = 0;
+  const max = thresholds.poor;
+
+  const segments = metricEntries.map((entry, i) => ({
+    color: CATEGORY_COLORS[entry.performance_category] || '#e5e7eb',
+    width: `${entry.percentage}%`,
+    key: entry.performance_category + i,
+    category: entry.performance_category,
+  }));
+
+  let leftPercent = ((avgValue - min) / (max - min)) * 100;
+  leftPercent = Math.max(0, Math.min(100, leftPercent));
+  const triangleLeft = `calc(${leftPercent}% - 8px)`;
 
   return (
-    <div className="flex flex-col items-center w-32">
-      <div className="relative w-20 h-20">
-        <svg width={80} height={80} className="block">
-          {/* Background circle */}
-          <circle
-            cx={40}
-            cy={40}
-            r={RADIUS}
-            stroke="#e5e7eb"
-            strokeWidth={STROKE}
-            fill="none"
-          />
-          {/* Foreground arc for score */}
-          <circle
-            cx={40}
-            cy={40}
-            r={RADIUS}
-            stroke={color}
-            strokeWidth={STROKE}
-            fill="none"
-            strokeDasharray={`${arcLen} ${CIRCUM - arcLen}`}
-            strokeDashoffset={CIRCUM}
-            strokeLinecap="round"
-            style={{ transform: "rotate(-90deg)", transformOrigin: "50% 50%" }}
-            className="transition-all duration-500"
-          />
-        </svg>
-        {/* Score in center */}
-        <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-2xl font-bold text-black">{score}</span>
+    <div className="flex flex-col gap-2 w-full max-w-xl"> 
+      <div className="flex items-center justify-between">
+        <span className="font-semibold text-lg">{metric_name}</span>
+        <span className="text-2xl font-bold">{avgValue.toFixed(2)}<span className="text-base font-normal text-gray-500 ml-1">{units}</span></span>
+      </div>
+      <div className="relative h-1 w-full mt-2 mb-2">
+
+        <div className="flex h-full w-full rounded-full overflow-hidden">
+          {segments.map((seg, i) => (
+            <div key={seg.key} style={{ background: seg.color, width: seg.width }} />
+          ))}
+        </div>
+
+        <div style={{ position: 'absolute', left: triangleLeft, top: -12  ,transform: 'rotate(180deg)' }}>
+          <Triangle color="#2a2aff" />
+        </div>
+
+        <div style={{ position: 'absolute', left: triangleLeft, bottom: -12 }}>
+          <Triangle color="#a5a5ff" />
         </div>
       </div>
-      {/* Value and unit */}
-      <div className="mt-2 text-lg font-semibold text-gray-700 flex items-baseline">
-        {value?.toFixed(2)}
-        {config.unit && <span className="text-base text-gray-400 ml-1">{config.unit}</span>}
-      </div>
-      {/* Label */}
-      <div className="text-base text-gray-400 font-medium mt-0.5 tracking-wide uppercase">
-        {config.label}
-      </div>
+      <div className="text-gray-500 text-sm mt-1">{description}</div>
     </div>
   );
 };

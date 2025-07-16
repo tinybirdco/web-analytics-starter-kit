@@ -28,6 +28,8 @@ export function AIChatContainer({
       index,
     }))
 
+  console.log('messages', messages)
+
   return (
     <div className={className}>
       {showForm && <AIChatForm placeholder={placeholder} />}

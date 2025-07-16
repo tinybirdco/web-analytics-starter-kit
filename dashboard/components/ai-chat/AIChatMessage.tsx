@@ -43,6 +43,7 @@ export function AIChatMessage({ message, messageIndex }: AIChatMessageProps) {
       {reasoningParts.length > 0 && (
         <motion.div
           initial={{ opacity: 0, translateY: 12 }}
+          exit={{ opacity: 0, translateY: 12 }}
           animate={{ opacity: 1, translateY: 0 }}
           transition={{
             duration: 0.1,
@@ -52,7 +53,7 @@ export function AIChatMessage({ message, messageIndex }: AIChatMessageProps) {
         >
           <Card
             variant="default"
-            className="!max-h-[420px] overflow-y-scroll scroll-smooth"
+            className="!max-h-[420px] overflow-y-auto scroll-smooth"
             ref={scrollRef}
           >
             {reasoningParts.map((part: any, partIndex: number) => {
@@ -82,6 +83,7 @@ export function AIChatMessage({ message, messageIndex }: AIChatMessageProps) {
       {resultParts.length > 0 && (
         <motion.div
           initial={{ opacity: 0, translateY: 12 }}
+          exit={{ opacity: 0, translateY: 12 }}
           animate={{ opacity: 1, translateY: 0 }}
           transition={{
             duration: 0.1,

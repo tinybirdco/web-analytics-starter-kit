@@ -18,7 +18,6 @@ if (process.env.GOOGLE_CREDENTIALS_JSON) {
   }
   process.env.GOOGLE_APPLICATION_CREDENTIALS = credsPath;
 }
-
 const vertex = createVertex({
   location: 'europe-west1',
   project: 'gen-lang-client-0705305160'
@@ -29,7 +28,7 @@ export async function POST(req: Request) {
     const token = new URL(req.headers.get('referer') ?? '').searchParams.get(
       'token'
     )
-    const url = new URL('https://cloud.tinybird.co/mcp?token=' + token)
+    const url = new URL('https://mcp.tinybird.co/?token=' + token)
 
     const mcpClient = await createMCPClient({
       transport: new StreamableHTTPClientTransport(url, {
@@ -37,11 +36,12 @@ export async function POST(req: Request) {
       }),
     })
 
+    
     const { messages } = await req.json()
     const tbTools = await mcpClient.tools()
 
     const result = streamText({
-      model: vertex('gemini-2.5-flash'),
+      model: vertex('gemini-2.0-flash-001'),
       messages,
       maxSteps: 30,
       system: `
@@ -49,18 +49,20 @@ export async function POST(req: Request) {
   you are a data analyst focused on mapping user questions to the most relevant Tinybird datasources (tables) and endpoints. your domain is web analytics: user behavior, engagement, performance, etc.
 
   tools available:
-  - list_datasources() → returns all datasources (tables)
   - list_endpoints() → returns all endpoints
+  - list_datasources() → returns all datasources (tables)
+  - You have one tool per API endpoint
   - execute_query(sql) → runs a SQL query
   - Use execute_query select now() to get the current date and calculate date ranges
-  - You have one tool per API endpoint
   - text_to_sql(question) → returns a SQL query to answer the question
   - explore_data: use it as a last resort when all else fails
 
   instructions:
   - analyze the user's question
-  - select relevant datasources and/or endpoints needed to answer it
-  - exclude unrelated sources unless unsure — in which case include them
+  - prioritize using existing endpoints over querying datasources
+  - exclude unrelated sources unless unsure — in which case include themen
+  - most kpis are already available in a kpi endpoint
+  - date format is yyyy-mm-dd if Date or yyyy-mm-dd hh:mm:ss, never use other formats
   - limit to max 3 candidates if no source is specified
   - return:
     a) datasources: selected tables
@@ -76,7 +78,7 @@ export async function POST(req: Request) {
       2) a visualization that gives extra context about the trend or distribution
   - specific questions that potentially return a list (show me X grouped by Y / ordered by Z), please render either a pipetable or a sqlchart!!!!
   - e.g. when asked about visitors over the past 30 days, say the aggregate but show a chart of the daily users over said period as well!!!
-  - whenever you feel like writing a markdown table or a markdown list to show some results DO NOT DO IT, render a pipetable tool component! wrangle the data if necessary to fit in the props but DO IT
+  - whenever you feel like writing a markdown table or a markdown list to show query or enddpoint results DO NOT DO IT, render a pipetable tool component! wrangle the data if necessary to fit in the props. Markdown table only for context, not for data.
 
   visualization formats:
   SqlChart:
