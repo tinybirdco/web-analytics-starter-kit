@@ -47,6 +47,7 @@
     "class-variance-authority": "^0.7.1",
     "date-fns": "^4.1.0",
     "dompurify": "3.2.6",
+    "jose": "^6.0.12",
     "lucide-react": "^0.525.0",
     "motion": "^12.23.3",
     "next": "^14.2.25",
