@@ -1,0 +1,27 @@
+- name: actions_tenant_14_page_hits
+  description: Test actions for tenant_14 which has page_hit actions
+  parameters: tenant_id=tenant_14
+  expected_result: |
+    {"domain":"app.demo.io","action":"page_hit","last_payload":"{\n            \"pathname\": \"\/pricing\",\n            \"href\": \"https:\/\/app.demo.io\/pricing\",\n            \"referrer\": \"https:\/\/google.com\",\n            \"userAgent\": \"Mozilla\/5.0 (Windows NT 10.0; Win64; x64; rv:99.0) Gecko\/20100101 Firefox\/99.0\",\n            \"locale\": \"zh-CN\",\n            \"location\": {\n                \"country\": \"Germany\",\n                \"city\": \"Paris\"\n            }\n        }","last_seen":"2025-07-16 08:01:15","total_occurrences":54}
+
+- name: actions_tenant_10_web_vitals
+  description: Test actions for tenant_10 which has web_vital actions
+  parameters: tenant_id=tenant_10
+  expected_result: |
+    {"domain":"myapp.com","action":"web_vital","last_payload":"{\n            \"name\": \"CLS\",\n            \"value\": 0.09,\n            \"delta\": 159,\n            \"pathname\": \"\/pricing\",\n            \"domain\": \"myapp.com\"\n        }","last_seen":"2025-07-15 21:30:39","total_occurrences":57}
+
+- name: actions_tenant_1_page_hits
+  description: Test actions for tenant_1 which has page_hit actions
+  parameters: tenant_id=tenant_1
+  expected_result: |
+    {"domain":"example.com","action":"page_hit","last_payload":"{\n            \"pathname\": \"\/contact\",\n            \"href\": \"https:\/\/example.com\/contact\",\n            \"referrer\": \"\",\n            \"userAgent\": \"Mozilla\/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/100.0.4896.127 Safari\/537.36\",\n            \"locale\": \"it-IT\",\n            \"location\": {\n                \"country\": \"United States\",\n                \"city\": \"New York\"\n            }\n        }","last_seen":"2025-07-15 18:41:08","total_occurrences":47}
+
+- name: actions_empty_tenant
+  description: Test actions for tenant with no data
+  parameters: tenant_id=tenant_999
+  expected_result: ''
+
+- name: actions_default_tenant
+  description: Test actions endpoint with default empty tenant_id parameter
+  parameters: tenant_id=
+  expected_result: ''

@@ -5,6 +5,8 @@ DESCRIPTION >
 SQL >
     SELECT
         toDate(timestamp) AS date,
+        tenant_id,
+        domain,
         device,
         browser,
         location,
@@ -13,7 +15,7 @@ SQL >
         countState() AS hits
     FROM analytics_hits
     WHERE domainWithoutWWW(referrer) != current_domain
-    GROUP BY date, device, browser, location, referrer
+    GROUP BY date, tenant_id, domain, device, browser, location, referrer
 
 TYPE MATERIALIZED
 DATASOURCE analytics_sources_mv

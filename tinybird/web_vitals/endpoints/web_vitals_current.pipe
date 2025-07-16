@@ -17,13 +17,18 @@ SQL >
         count() as measurements,
         any(units) as units,
         any(description) as description,
-        any(thresholds_text) as thresholds_text
+        any(thresholds_text) as thresholds_text,
+        domain,
+        tenant_id
     FROM web_vitals_events
     WHERE timestamp >= now() - interval {{Int32(days, 1, description="Number of days to analyze (defaults to 1 day)")}} day
+        {% if defined(tenant_id) %}
+        AND tenant_id = {{ String(tenant_id, description="Filter by tenant ID") }}
+        {% end %}
         {% if defined(domain) %}
         AND domain = {{ String(domain, description="Domain to filter web vitals for") }}
         {% end %}
-    GROUP BY metric_name
+    GROUP BY metric_name, domain, tenant_id
     HAVING measurements >= 1
 
 NODE endpoint
@@ -66,7 +71,9 @@ SQL >
         END as status,
         units,
         description,
-        thresholds_text as thresholds
+        thresholds_text as thresholds,
+        domain,
+        tenant_id
     FROM daily_vitals
     ORDER BY metric_name
 
