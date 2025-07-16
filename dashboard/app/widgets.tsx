@@ -13,7 +13,7 @@ import { Card } from '@/components/ui/Card'
 import { Text } from '@/components/ui/Text'
 import React from 'react'
 
-export const CoreVitals = () => {
+export const CoreVitals = ({ domain }: { domain?: string }) => {
   type MetricEntry = {
     metric_name: string
     performance_category: string
@@ -29,7 +29,8 @@ export const CoreVitals = () => {
   }
 
   const { data: coreVitals } = useEndpoint<MetricEntry[]>(
-    'web_vitals_distribution'
+    'web_vitals_distribution',
+    domain && domain !== 'ALL' ? { domain } : {}
   )
 
   // Group by metric_name (and optionally domain if needed)
@@ -55,18 +56,20 @@ export const CoreVitals = () => {
   )
 }
 
-export const Widgets = () => {
+export const Widgets = ({ domain }: { domain?: string }) => {
   const { data, error, isLoading } =
-    useEndpoint<{ visits: number; pageviews: number }[]>('kpis')
+    useEndpoint<{ visits: number; pageviews: number }[]>('kpis', domain && domain !== 'ALL' ? { domain } : {})
 
   const { data: topSources } =
     useEndpoint<{ referrer: string; visits: number; hits: number }[]>(
-      'top_sources'
+      'top_sources',
+      domain && domain !== 'ALL' ? { domain } : {}
     )
 
   const { data: topDevices } =
     useEndpoint<{ referrer: string; visits: number; hits: number }[]>(
-      'top_devices'
+      'top_devices',
+      domain && domain !== 'ALL' ? { domain } : {}
     )
 
   // Demo: calculate max and deltas for progress and delta columns
