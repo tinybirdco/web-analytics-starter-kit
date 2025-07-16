@@ -2,6 +2,7 @@
 
 import { Fragment } from 'react'
 import { useDomains } from '@/lib/hooks/use-domains'
+import useDomain from '@/lib/hooks/use-domain'
 import {
   SelectContent,
   SelectItem,
@@ -13,11 +14,12 @@ import { useSearchParams, useRouter } from 'next/navigation'
 
 export function DomainSelect({ className, style }: { className?: string, style?: React.CSSProperties }) {
   const { domains, isLoading } = useDomains()
+  const { domain: fallbackDomain } = useDomain()
   const searchParams = useSearchParams()
   const router = useRouter()
   const domain = searchParams.get('domain') || 'ALL'
 
-  const options = [
+  let options = [
     { value: 'ALL', label: 'All domains' },
     ...(domains?.filter(d => d.domain !== '').map(d => ({ value: d.domain, label: d.domain })) ?? [])
   ]
@@ -35,7 +37,10 @@ export function DomainSelect({ className, style }: { className?: string, style?:
   if (isLoading) {
     return <span className="block text-xs font-medium text-[var(--text-02-color)] mb-1">Loading domains...</span>
   }
-  if (!domains || domains.length === 0) {
+  if ((!domains || domains.length === 0) && fallbackDomain && fallbackDomain !== 'domain.com') {
+    return <span className="block text-xs font-medium text-[var(--text-02-color)] mb-1">{fallbackDomain}</span>
+  }
+  if (options.length === 1) {
     return <span className="block text-xs font-medium text-[var(--text-02-color)] mb-1">No domains found</span>
   }
 
