@@ -1,4 +1,5 @@
-import { openai } from '@ai-sdk/openai'
+import { createVertex } from '@ai-sdk/google-vertex';
+
 import {
   streamText,
   tool,
@@ -8,6 +9,11 @@ import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/
 import { z } from 'zod'
 
 export const maxDuration = 30
+
+const vertex = createVertex({
+  location: 'europe-west1',
+  project: 'gen-lang-client-0705305160'
+});
 
 export async function POST(req: Request) {
   try {
@@ -26,7 +32,7 @@ export async function POST(req: Request) {
     const tbTools = await mcpClient.tools()
 
     const result = streamText({
-      model: openai('gpt-4o'),
+      model: vertex('gemini-2.5-flash'),
       messages,
       maxSteps: 30,
       system: `
@@ -37,6 +43,10 @@ export async function POST(req: Request) {
   - list_datasources() → returns all datasources (tables)
   - list_endpoints() → returns all endpoints
   - execute_query(sql) → runs a SQL query
+  - Use execute_query select now() to get the current date and calculate date ranges
+  - You have one tool per API endpoint
+  - text_to_sql(question) → returns a SQL query to answer the question
+  - explore_data: use it as a last resort when all else fails
 
   instructions:
   - analyze the user's question
@@ -50,7 +60,9 @@ export async function POST(req: Request) {
 
   visualization rules:
   - never print raw query data
-  - use only SqlChart (for numeric/time series) or PipeTable (for tabular)
+  - you must use SqlChart for numeric time series (e.g. when there's a date in the response)
+  - you must use PipeTable for tabular data (e.g. when there's a list of dimensions and a value)
+  - you must use PipeTable if there's a list of dimensions and multiple values, choose the most relevant ones
   - always explain what you queried, what you found, and what's next before rendering
   - for single-value questions, (e.g. “how many X on day Y?”), if relevant, reply with a pair of
       1) the question with some context and conclusion about the data found
