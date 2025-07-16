@@ -12,8 +12,10 @@ export function useEndpoint<T>(
   if (searchParams) {
     const date_from = searchParams.get('date_from')
     const date_to = searchParams.get('date_to')
+    const domain = searchParams.get('domain')
     if (date_from && !('date_from' in params)) mergedParams.date_from = date_from
     if (date_to && !('date_to' in params)) mergedParams.date_to = date_to
+    if (domain && domain !== 'ALL' && !('domain' in params)) mergedParams.domain = domain
   }
 
   const fetcher = async () => {
