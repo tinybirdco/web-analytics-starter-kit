@@ -18,6 +18,7 @@ if (process.env.GOOGLE_CREDENTIALS_JSON) {
   }
   process.env.GOOGLE_APPLICATION_CREDENTIALS = credsPath;
 }
+
 const vertex = createVertex({
   location: 'europe-west1',
   project: 'gen-lang-client-0705305160'
@@ -41,7 +42,7 @@ export async function POST(req: Request) {
     const tbTools = await mcpClient.tools()
 
     const result = streamText({
-      model: vertex('gemini-2.0-flash-001'),
+      model: vertex('gemini-2.5-flash'),
       messages,
       maxSteps: 30,
       system: `
