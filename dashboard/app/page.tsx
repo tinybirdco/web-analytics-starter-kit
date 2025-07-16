@@ -5,7 +5,6 @@ import { Suspense, useState } from 'react'
 import Script from 'next/script'
 import useAuth from '../lib/hooks/use-auth'
 import config from '../lib/config'
-import { Widgets } from './widgets'
 import DashboardTabs from './DashboardTabs'
 import { TimeRangeSelect } from '@/components/ui/TimeRangeSelect'
 import { useTimeRange } from '@/lib/hooks/use-time-range'
@@ -14,11 +13,9 @@ import { cn } from '@/lib/utils'
 import { Text } from '@/components/ui/Text'
 import { AIChatProvider, AIChatContainer } from '@/components/ai-chat'
 import { Dialog, DialogTrigger, DialogContent } from '@/components/ui/Dialog'
-import { AskAiIcon, FormatIcon } from '@/components/ui/Icons'
-import { Select } from '@/components/ui/Select'
-import { useDomains } from '../lib/hooks/use-domains'
+import { AskAiIcon } from '@/components/ui/Icons'
+import { DomainSelect } from '@/components/ui/DomainSelect'
 import React from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
 
 export default function DashboardPage() {
   const { isAuthenticated, isTokenValid } = useAuth()
@@ -28,43 +25,6 @@ export default function DashboardPage() {
     options: timeRanges,
   } = useTimeRange()
   const [open, setOpen] = useState(false)
-  const [selectedDomain, setSelectedDomain] = useState<string | undefined>(undefined)
-  const { domains, isLoading: domainsLoading } = useDomains()
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const hasSetInitialDomain = React.useRef(false)
-
-  // On mount, set selectedDomain from search params if present, only once
-  React.useEffect(() => {
-    if (domainsLoading) return
-    if (hasSetInitialDomain.current) return
-    const urlDomain = searchParams?.get('domain')
-    if (urlDomain) {
-      setSelectedDomain(urlDomain)
-    } else if (domains && domains.length > 0) {
-      setSelectedDomain('ALL')
-    }
-    hasSetInitialDomain.current = true
-  }, [domains, domainsLoading, searchParams])
-
-  // When selectedDomain changes, update the URL search params
-  React.useEffect(() => {
-    if (selectedDomain === undefined) return
-    const params = new URLSearchParams(searchParams?.toString() || '')
-    if (selectedDomain === 'ALL') {
-      params.delete('domain')
-    } else {
-      params.set('domain', selectedDomain)
-    }
-    const newUrl = `${window.location.pathname}${params.toString() ? '?' + params.toString() : ''}`
-    window.history.replaceState({}, '', newUrl)
-  }, [selectedDomain])
-
-  // Build options for the Select, with 'All' at the top
-  const domainOptions = [
-    { value: 'ALL', label: 'All domains' },
-    ...(domains?.filter(d => d.domain !== '').map(d => ({ value: d.domain, label: d.domain })) ?? [])
-  ]
 
   return (
     <Suspense>
@@ -127,19 +87,7 @@ export default function DashboardPage() {
 
             <nav className="flex justify-between items-center">
               <div>
-                {domainsLoading ? (
-                  <span className="block text-xs font-medium text-[var(--text-02-color)] mb-1">Loading domains...</span>
-                ) : domains && domains.length === 0 ? (
-                  <span className="block text-xs font-medium text-[var(--text-02-color)] mb-1">No domains found</span>
-                ) : (
-                  <Select
-                    options={domainOptions}
-                    value={selectedDomain}
-                    onValueChange={setSelectedDomain}
-                    placeholder="Select domain"
-                    width={220}
-                  />
-                )}
+                <DomainSelect />
               </div>
               <div>
                 <TimeRangeSelect
@@ -151,8 +99,8 @@ export default function DashboardPage() {
             </nav>
             <div>
               {isAuthenticated && !isTokenValid && <p>error</p>}
-              {isAuthenticated && isTokenValid && !domainsLoading && selectedDomain !== undefined && (
-                <DashboardTabs domain={selectedDomain} />
+              {isAuthenticated && isTokenValid && (
+                <DashboardTabs />
               )}
               {!isAuthenticated && <CredentialsDialog />}
             </div>
