@@ -80,7 +80,13 @@ SQL >
             min(timestamp) as first_hit_aux
         from analytics_hits
         where toDate(timestamp) = {{ Date(date_from) }}
-        group by toStartOfHour(timestamp), session_id
+            {% if defined(tenant_id) %}
+            AND tenant_id = {{ String(tenant_id, description="Filter by tenant ID") }}
+            {% end %}
+            {% if defined(domain) %}
+            AND domain = {{ String(domain, description="Filter by domain") }}
+            {% end %}
+        group by toStartOfHour(timestamp), session_id, tenant_id, domain
     {% else %}
         select
             date,
@@ -98,7 +104,13 @@ SQL >
             {% if defined(date_to) %} and date <= {{ Date(date_to) }}
             {% else %} and date <= today()
             {% end %}
-        group by date, session_id
+            {% if defined(tenant_id) %}
+            AND tenant_id = {{ String(tenant_id, description="Filter by tenant ID") }}
+            {% end %}
+            {% if defined(domain) %}
+            AND domain = {{ String(domain, description="Filter by domain") }}
+            {% end %}
+        group by date, session_id, tenant_id, domain
     {% end %}
 
 NODE data

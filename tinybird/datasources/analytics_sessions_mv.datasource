@@ -1,6 +1,8 @@
 SCHEMA >
     `date` Date,
     `session_id` String,
+    `tenant_id` String,
+    `domain` String,
     `device` SimpleAggregateFunction(any, String),
     `browser` SimpleAggregateFunction(any, String),
     `location` SimpleAggregateFunction(any, String),
@@ -10,4 +12,4 @@ SCHEMA >
 
 ENGINE AggregatingMergeTree
 ENGINE_PARTITION_KEY toYYYYMM(date)
-ENGINE_SORTING_KEY date, session_id
+ENGINE_SORTING_KEY tenant_id, domain, date, session_id

@@ -1,14 +1,24 @@
 
-- name: routes_analysis_worst_performers
-  description: Show worst performing routes from the last 100 days with a limit of
-    10 results
-  parameters: days=100&analysis_type=routes&limit=10&sort_order=desc
+- name: routes_analysis_best_performers
+  description: Show best performing routes from the last 30 days with a limit of 3
+    results (highest scores)
+  parameters: days=30&analysis_type=routes&limit=3&sort_order=desc
   expected_result: |
-    {"route":"product","overall_score":100,"lcp_avg":1171,"ttfb_avg":null,"fcp_avg":null,"inp_avg":null,"cls_avg":null,"lcp_score":100,"ttfb_score":null,"fcp_score":null,"inp_score":null,"cls_score":null,"metric_units":"LCP=ms, TTFB=ms, FCP=ms, INP=ms, CLS=score","domain":"demo.site","analysis_type":"routes"}
+    {"route":"blog","overall_score":88,"lcp_avg":null,"ttfb_avg":null,"fcp_avg":1703,"inp_avg":null,"cls_avg":null,"lcp_score":null,"ttfb_score":null,"fcp_score":88,"inp_score":null,"cls_score":null,"metric_units":"LCP=ms, TTFB=ms, FCP=ms, INP=ms, CLS=score","domain":"test.org","analysis_type":"routes"}
+    {"route":"pricing","overall_score":86,"lcp_avg":null,"ttfb_avg":null,"fcp_avg":1785.8,"inp_avg":null,"cls_avg":null,"lcp_score":null,"ttfb_score":null,"fcp_score":86,"inp_score":null,"cls_score":null,"metric_units":"LCP=ms, TTFB=ms, FCP=ms, INP=ms, CLS=score","domain":"test.org","analysis_type":"routes"}
+    {"route":"login","overall_score":85.87,"lcp_avg":null,"ttfb_avg":null,"fcp_avg":1920.91,"inp_avg":null,"cls_avg":null,"lcp_score":null,"ttfb_score":null,"fcp_score":86,"inp_score":null,"cls_score":null,"metric_units":"LCP=ms, TTFB=ms, FCP=ms, INP=ms, CLS=score","domain":"test.org","analysis_type":"routes"}
+
+- name: routes_analysis_worst_performers
+  description: Show worst performing routes from the last 30 days with a limit of
+    3 results (lowest scores)
+  parameters: days=30&analysis_type=routes&limit=3&sort_order=asc
+  expected_result: |
+    {"route":"login","overall_score":50,"lcp_avg":null,"ttfb_avg":null,"fcp_avg":null,"inp_avg":null,"cls_avg":0.29,"lcp_score":null,"ttfb_score":null,"fcp_score":null,"inp_score":null,"cls_score":50,"metric_units":"LCP=ms, TTFB=ms, FCP=ms, INP=ms, CLS=score","domain":"myapp.com","analysis_type":"routes"}
+    {"route":"pricing","overall_score":51.85,"lcp_avg":null,"ttfb_avg":null,"fcp_avg":null,"inp_avg":null,"cls_avg":0.29,"lcp_score":null,"ttfb_score":null,"fcp_score":null,"inp_score":null,"cls_score":52,"metric_units":"LCP=ms, TTFB=ms, FCP=ms, INP=ms, CLS=score","domain":"myapp.com","analysis_type":"routes"}
+    {"route":"about","overall_score":53.75,"lcp_avg":null,"ttfb_avg":null,"fcp_avg":null,"inp_avg":501.5,"cls_avg":null,"lcp_score":null,"ttfb_score":null,"fcp_score":null,"inp_score":54,"cls_score":null,"metric_units":"LCP=ms, TTFB=ms, FCP=ms, INP=ms, CLS=score","domain":"app.demo.io","analysis_type":"routes"}
 
 - name: pathnames_analysis_product_route
-  description: Show worst performing pathnames within the product route from the last
-    100 days with a limit of 3 results
+  description: Show pathnames within the product route from the last 100 days
   parameters: days=100&analysis_type=pathnames&route=product&limit=3&sort_order=desc
   expected_result: |
-    {"pathname":"\/product","full_pathname":"\/product","route_part":"product","overall_score":100,"lcp_avg":1171,"ttfb_avg":null,"fcp_avg":null,"inp_avg":null,"cls_avg":null,"lcp_score":100,"ttfb_score":null,"fcp_score":null,"inp_score":null,"cls_score":null,"metric_units":"LCP=ms, TTFB=ms, FCP=ms, INP=ms, CLS=score","domain":"demo.site","analysis_type":"pathnames"}
+    {"pathname":"\/product","full_pathname":"\/product","route_part":"product","overall_score":62.5,"lcp_avg":null,"ttfb_avg":null,"fcp_avg":null,"inp_avg":428,"cls_avg":null,"lcp_score":null,"ttfb_score":null,"fcp_score":null,"inp_score":62,"cls_score":null,"metric_units":"LCP=ms, TTFB=ms, FCP=ms, INP=ms, CLS=score","domain":"app.demo.io","analysis_type":"pathnames"}

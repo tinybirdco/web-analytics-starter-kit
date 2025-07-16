@@ -1,7 +1,7 @@
 DESCRIPTION >
 	Returns routes with web vitals scores, sortable by best/worst performance. Supports both route-based analysis (first part of pathname) and full pathname analysis. Includes detailed metric descriptions, units, and scoring ranges. Accepts sort_order parameter ('asc' for best scores, 'desc' for worst scores), days parameter for time range (defaults to 1 day), optional domain filter, analysis_type parameter ('routes' for route-based, 'pathnames' for full pathnames), optional route filter for both analysis types, and skip/limit parameters for pagination (defaults to limit 10).
 
-TOKEN "dashboard" read
+TOKEN "dashboard" READ
 
 NODE filtered_vitals
 DESCRIPTION >
@@ -27,6 +27,9 @@ SQL >
         domain
     FROM web_vitals_events
     WHERE timestamp >= now() - interval {{Int32(days, 1, description="Number of days to analyze (defaults to 1 day)")}} day
+        {% if defined(tenant_id) %}
+        AND tenant_id = {{ String(tenant_id, description="Filter by tenant ID") }}
+        {% end %}
         {% if defined(domain) %}
         AND domain = {{ String(domain, description="Domain to filter web vitals for") }}
         {% end %}
