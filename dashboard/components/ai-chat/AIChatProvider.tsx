@@ -6,11 +6,13 @@ import { useChat } from '@ai-sdk/react'
 interface AIChatContextType {
   messages: any[]
   input: string
+  setInput: React.Dispatch<React.SetStateAction<string>>
   handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void
   handleSubmit: (e: React.FormEvent) => void
   status: string
   isLoading: boolean
   error: any
+  setMessages: (messages: any[] | ((messages: any[]) => any[])) => void
 }
 
 const AIChatContext = createContext<AIChatContextType | undefined>(undefined)
@@ -26,7 +28,7 @@ export function AIChatProvider({ children, maxSteps = 30 }: AIChatProviderProps)
   })
 
   return (
-    <AIChatContext.Provider value={chatState}>
+    <AIChatContext.Provider value={{ ...chatState }}>
       {children}
     </AIChatContext.Provider>
   )
