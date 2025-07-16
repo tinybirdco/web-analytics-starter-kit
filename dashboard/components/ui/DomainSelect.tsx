@@ -1,6 +1,5 @@
 'use client'
 
-import { Fragment } from 'react'
 import { useDomains } from '@/lib/hooks/use-domains'
 import useDomain from '@/lib/hooks/use-domain'
 import {
@@ -11,6 +10,7 @@ import {
   SelectValue
 } from './Select'
 import { useSearchParams, useRouter } from 'next/navigation'
+import { Text } from './Text'
 
 export function DomainSelect({ className, style }: { className?: string, style?: React.CSSProperties }) {
   const { domains, isLoading } = useDomains()
@@ -38,7 +38,11 @@ export function DomainSelect({ className, style }: { className?: string, style?:
     return <span className="block text-xs font-medium text-[var(--text-02-color)] mb-1">Loading domains...</span>
   }
   if ((!domains || domains.length === 0) && fallbackDomain && fallbackDomain !== 'domain.com') {
-    return <span className="block text-xs font-medium text-[var(--text-02-color)] mb-1">{fallbackDomain}</span>
+    return <Text variant="displaymedium" className="tracking-tight">
+      <span className="ml-2 text-[var(--text-02-color)]">
+        https://{fallbackDomain}
+      </span>
+    </Text>
   }
   if (options.length === 1) {
     return <span className="block text-xs font-medium text-[var(--text-02-color)] mb-1">No domains found</span>
