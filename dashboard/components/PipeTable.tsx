@@ -52,10 +52,10 @@ export function PipeTable({
                 {columns.map((col, j) => (
                   <td
                     key={col.key}
-                    className="py-4 pr-4 border-b border-[var(--border-01-color)]"
+                    className="py-3 pr-4 border-b border-[var(--border-01-color)]"
                     style={{ textAlign: col.align || 'left', fontWeight: j === 0 ? '600' : '400' }}
                   >
-                    <Skeleton height={28} width={j === 0 ? '60%' : '40%'} />
+                    <Skeleton height={16} width={j === 0 ? '60%' : '40%'} />
                   </td>
                 ))}
               </tr>
