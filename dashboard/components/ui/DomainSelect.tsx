@@ -58,7 +58,7 @@ export function DomainSelect({ className, style }: { className?: string, style?:
       <SelectTrigger className={className} style={{ minWidth: 220, ...style }}>
         <SelectValue placeholder="Select domain" />
       </SelectTrigger>
-      <SelectContent sideOffset={8}>
+      <SelectContent sideOffset={8} style={{ maxHeight: 400, overflowY: 'auto' }}>
         {options.map(option => (
           <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
         ))}
