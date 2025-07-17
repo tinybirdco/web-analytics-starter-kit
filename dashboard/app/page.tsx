@@ -15,8 +15,10 @@ import { Text } from '@/components/ui/Text'
 import { AIChatProvider, AIChatContainer } from '@/components/ai-chat'
 import { Dialog, DialogTrigger, DialogContent } from '@/components/ui/Dialog'
 import { AskAiIcon, FormatIcon } from '@/components/ui/Icons'
+import useDomain from '@/lib/hooks/use-domain'
 
 export default function DashboardPage() {
+  const { domain, logo } = useDomain()
   const { isAuthenticated, isTokenValid } = useAuth()
   const {
     value: timeRangeValue,
@@ -78,7 +80,8 @@ export default function DashboardPage() {
                 {new Array(6).fill(0).map((_, i) => (
                   <div
                     key={`ai-ph_${i}`}
-                    className="aspect-square min-w-40 min-h-40 border border-[var(--border-02-color)] bg-white rounded-lg hover:border-[var(--border-03-color)] transition-colors duration-100"
+                    /*className="aspect-square min-w-40 min-h-40 border border-[var(--border-02-color)] bg-white rounded-lg hover:border-[var(--border-03-color)] transition-colors duration-100 opacity-50 pointer-events-none"*/
+                    className="aspect-square min-w-40 min-h-40 bg-[var(--background-02-color)] bg-white rounded-lg hover:border-[var(--border-03-color)] transition-colors duration-100"
                   />
                 ))}
               </div>
@@ -88,7 +91,7 @@ export default function DashboardPage() {
               <Text variant="displaymedium" className="tracking-tight">
                 Web Analytics
                 <span className="ml-2 text-[var(--text-02-color)]">
-                  https://domain.com
+                  {domain}
                 </span>
               </Text>
               <div>

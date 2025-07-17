@@ -7,6 +7,9 @@ import {
   TableCellProgress,
   TableCellDelta,
   TableCellCombined,
+  TableCellCountry,
+  TableCellBrowser,
+  TableCellDevice,
 } from '@/components/table/TableCells'
 import { CoreVitalGauge } from '@/components/ui/CoreVitalGauge'
 import { Card } from '@/components/ui/Card'
@@ -65,8 +68,24 @@ export const Widgets = () => {
     )
 
   const { data: topDevices } =
-    useEndpoint<{ referrer: string; visits: number; hits: number }[]>(
+    useEndpoint<{ device: string; visits: number; hits: number }[]>(
       'top_devices'
+    )
+
+  // New endpoints
+  const { data: topPages } =
+    useEndpoint<{ pathname: string; visits: number; hits: number }[]>(
+      'top_pages'
+    )
+
+  const { data: topLocations } =
+    useEndpoint<{ location: string; visits: number; hits: number }[]>(
+      'top_locations'
+    )
+
+  const { data: topBrowsers } =
+    useEndpoint<{ browser: string; visits: number; hits: number }[]>(
+      'top_browsers'
     )
 
   // Demo: calculate max and deltas for progress and delta columns
@@ -107,7 +126,70 @@ export const Widgets = () => {
           />
         </Card>
 
-        <Card>
+        {/* Top Pages */}
+        <Card maxHeight={400}>
+          <PipeTable
+            title="Top pages"
+            data={topPages?.slice(0, 10) || []}
+            columns={[
+              {
+                label: 'Pathname',
+                key: 'pathname',
+                render: row => <TableCellText>{row.pathname}</TableCellText>,
+              },
+              {
+                label: 'Visitors',
+                key: 'visits',
+                align: 'right',
+                render: row => (
+                  <TableCellMono>{row.visits.toLocaleString()}</TableCellMono>
+                ),
+              },
+              {
+                label: 'Views',
+                key: 'hits',
+                align: 'right',
+                render: row => (
+                  <TableCellMono>{row.hits.toLocaleString()}</TableCellMono>
+                ),
+              },
+            ]}
+          />
+        </Card>
+
+        {/* Top Locations */}
+        <Card maxHeight={400}>
+          <PipeTable
+            title="Top locations"
+            data={topLocations?.slice(0, 10) || []}
+            columns={[
+              {
+                label: 'Location',
+                key: 'location',
+                render: row => <TableCellCountry code={row.location} />,
+              },
+              {
+                label: 'Visitors',
+                key: 'visits',
+                align: 'right',
+                render: row => (
+                  <TableCellMono>{row.visits.toLocaleString()}</TableCellMono>
+                ),
+              },
+              {
+                label: 'Views',
+                key: 'hits',
+                align: 'right',
+                render: row => (
+                  <TableCellMono>{row.hits.toLocaleString()}</TableCellMono>
+                ),
+              },
+            ]}
+          />
+        </Card>
+
+        {/* Top Sources (already present) */}
+        <Card maxHeight={400}>
           <PipeTable
             title="Top sources"
             data={topSources?.slice(0, 10) || []}
@@ -125,7 +207,7 @@ export const Widgets = () => {
                   <TableCellCombined>
                     <TableCellProgress value={row.visits} max={maxVisitors} />
                     <TableCellMono>{row.visits.toLocaleString()}</TableCellMono>
-                    <TableCellDelta delta={getDelta(row)} />
+                    <TableCellDelta delta={0} />
                   </TableCellCombined>
                 ),
               },
@@ -136,7 +218,7 @@ export const Widgets = () => {
                 render: row => (
                   <TableCellCombined>
                     <TableCellMono>{row.hits.toLocaleString()}</TableCellMono>
-                    <TableCellDelta delta={getDelta(row)} />
+                    <TableCellDelta delta={1} />
                   </TableCellCombined>
                 ),
               },
@@ -144,13 +226,66 @@ export const Widgets = () => {
           />
         </Card>
 
-        <Card>
+        {/* Top Devices (already present) */}
+        <Card maxHeight={400}>
           <PipeTable
             title="Top devices"
             data={topDevices?.slice(0, 10) || []}
             columns={[
-              { label: 'Device', key: 'device' },
-              { label: 'Visitors', key: 'visits', align: 'right' },
+              {
+                label: 'Device',
+                key: 'device',
+                render: row => <TableCellDevice code={row.device} />,
+              },
+              {
+                label: 'Visitors',
+                key: 'visits',
+                align: 'right',
+                render: row => (
+                  <TableCellMono>
+                    {row.visits?.toLocaleString?.()}
+                  </TableCellMono>
+                ),
+              },
+              {
+                label: 'Views',
+                key: 'hits',
+                align: 'right',
+                render: row => (
+                  <TableCellMono>{row.hits.toLocaleString()}</TableCellMono>
+                ),
+              },
+            ]}
+          />
+        </Card>
+
+        {/* Top Browsers */}
+        <Card maxHeight={400}>
+          <PipeTable
+            title="Top browsers"
+            data={topBrowsers?.slice(0, 10) || []}
+            columns={[
+              {
+                label: 'Browser',
+                key: 'browser',
+                render: row => <TableCellBrowser code={row.browser} />,
+              },
+              {
+                label: 'Visitors',
+                key: 'visits',
+                align: 'right',
+                render: row => (
+                  <TableCellMono>{row.visits.toLocaleString()}</TableCellMono>
+                ),
+              },
+              {
+                label: 'Views',
+                key: 'hits',
+                align: 'right',
+                render: row => (
+                  <TableCellMono>{row.hits.toLocaleString()}</TableCellMono>
+                ),
+              },
             ]}
           />
         </Card>

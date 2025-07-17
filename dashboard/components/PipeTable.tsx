@@ -1,6 +1,7 @@
 import { formatNumber } from '@/lib/utils'
 import { CSSProperties } from 'react'
 import { Text } from './ui/Text'
+import { Skeleton } from './ui/Skeleton'
 
 export type PipeTableColumn = {
   label: string
@@ -44,26 +45,43 @@ export function PipeTable({
           </tr>
         </thead>
         <tbody>
-          {data.map((row, i) => (
-            <tr key={i} className="border-t border-gray-100">
-              {columns.map((col, j) => {
-                const value = row[col.key]
-                return (
+          {data.length === 0 && columns.length > 0 ? (
+            // Show 3 skeleton rows if loading or no data
+            Array.from({ length: 3 }).map((_, i) => (
+              <tr key={i} className="border-t border-gray-100">
+                {columns.map((col, j) => (
                   <td
                     key={col.key}
-                    className="py-2 pr-4 border-b border-[var(--border-01-color)]"
+                    className="py-4 pr-4 border-b border-[var(--border-01-color)]"
                     style={{ textAlign: col.align || 'left', fontWeight: j === 0 ? '600' : '400' }}
                   >
-                    {col.render
-                      ? col.render(row, value, i)
-                      : typeof value === 'number'
-                      ? formatNumber(value)
-                      : value || '(none)'}
+                    <Skeleton height={28} width={j === 0 ? '60%' : '40%'} />
                   </td>
-                )
-              })}
-            </tr>
-          ))}
+                ))}
+              </tr>
+            ))
+          ) : (
+            data.map((row, i) => (
+              <tr key={i} className="border-t border-gray-100">
+                {columns.map((col, j) => {
+                  const value = row[col.key]
+                  return (
+                    <td
+                      key={col.key}
+                      className="py-2 pr-4 border-b border-[var(--border-01-color)]"
+                      style={{ textAlign: col.align || 'left', fontWeight: j === 0 ? '600' : '400' }}
+                    >
+                      {col.render
+                        ? col.render(row, value, i)
+                        : typeof value === 'number'
+                        ? formatNumber(value)
+                        : value || value === 0 ? value : '(none)'}
+                    </td>
+                  )
+                })}
+              </tr>
+            ))
+          )}
         </tbody>
       </table>
     </div>
