@@ -9,10 +9,10 @@ const DashboardTabs = ({ domain }: { domain?: string }) => {
         <TabsTrigger value="speed">Speed Insights</TabsTrigger>
       </TabsList>
       <TabsContent value="analytics">
-        <Widgets domain={domain} />
+        <Widgets />
       </TabsContent>
       <TabsContent value="speed">
-        <CoreVitals domain={domain} />
+        <CoreVitals />
       </TabsContent>
     </Tabs>
   )

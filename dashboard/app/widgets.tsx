@@ -13,10 +13,9 @@ import {
 } from '@/components/table/TableCells'
 import { CoreVitalGauge } from '@/components/ui/CoreVitalGauge'
 import { Card } from '@/components/ui/Card'
-import { Text } from '@/components/ui/Text'
 import React from 'react'
 
-export const CoreVitals = ({ domain }: { domain?: string }) => {
+export const CoreVitals = () => {
   type MetricEntry = {
     metric_name: string
     performance_category: string
@@ -32,8 +31,7 @@ export const CoreVitals = ({ domain }: { domain?: string }) => {
   }
 
   const { data: coreVitals } = useEndpoint<MetricEntry[]>(
-    'web_vitals_distribution',
-    domain && domain !== 'ALL' ? { domain } : {}
+    'web_vitals_distribution'
   )
 
   // Group by metric_name (and optionally domain if needed)
@@ -59,14 +57,13 @@ export const CoreVitals = ({ domain }: { domain?: string }) => {
   )
 }
 
-export const Widgets = ({ domain }: { domain?: string }) => {
+export const Widgets = () => {
   const { data, error, isLoading } =
-    useEndpoint<{ visits: number; pageviews: number }[]>('kpis', domain && domain !== 'ALL' ? { domain } : {})
+    useEndpoint<{ visits: number; pageviews: number }[]>('kpis')
 
   const { data: topSources } =
     useEndpoint<{ referrer: string; visits: number; hits: number }[]>(
-      'top_sources',
-      domain && domain !== 'ALL' ? { domain } : {}
+      'top_sources'
     )
 
   const { data: topDevices } =
