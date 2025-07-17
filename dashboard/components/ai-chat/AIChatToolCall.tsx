@@ -6,7 +6,6 @@ import { PipeTable } from '@/components/PipeTable'
 import { Loader } from '@/components/ui/Loader'
 import { CheckIcon } from '@/components/ui/Icons'
 import { Text } from '@/components/ui/Text'
-import { CoreVitalGauge } from '@/components/ui/CoreVitalGauge'
 
 interface AIChatToolCallProps {
   part: any
@@ -14,23 +13,26 @@ interface AIChatToolCallProps {
   isResult?: boolean
 }
 
-export function AIChatToolCall({ part, partIndex, isResult = false }: AIChatToolCallProps) {
+export function AIChatToolCall({
+  part,
+  isResult = false,
+}: AIChatToolCallProps) {
   const getToolLabel = (tool: string) => {
     switch (tool) {
       case 'explore_data':
         return 'Exploring your data'
       case 'list_endpoints':
-        return 'Listing available endpoints'
+        return 'Scanning your datasources'
       case 'list_datasources':
-        return 'Listing your datasources'
+        return 'Scanning your endpoints'
       case 'list_service_datasources':
-        return 'Listing service datasources'
+        return 'Scanning your datasources'
       case 'text_to_sql':
-        return 'Generating SQL query'
+        return 'Running SQL query'
       case 'execute_query':
         return 'Running SQL query'
       default:
-        return `Calling ${tool.split('_').join(' ')}`
+        return `Querying your data`
     }
   }
 
@@ -41,59 +43,52 @@ export function AIChatToolCall({ part, partIndex, isResult = false }: AIChatTool
 
     if (toolName === 'renderSqlChart' && result) {
       return (
-        <div className="my-2">
-          <SqlChart
-            data={result.data}
-            error={undefined}
-            isLoading={false}
-            xAxisKey={result.xAxisKey}
-            yAxisKey={result.yAxisKey}
-            title={result.title}
-            unit={result.unit}
-            style={isResult ? { border: 'none', padding: 0 } : undefined}
-          />
-        </div>
+        <SqlChart
+          data={result.data}
+          error={undefined}
+          isLoading={false}
+          xAxisKey={result.xAxisKey}
+          yAxisKey={result.yAxisKey}
+          title={result.title}
+          unit={result.unit}
+          style={isResult ? { border: 'none', padding: 0 } : undefined}
+        />
       )
     }
 
     if (toolName === 'renderPipeTable' && result) {
       return (
-        <div className="my-2">
-          <PipeTable
-            data={result.data}
-            columns={result.columns}
-            title={result.title}
-            style={{
-              padding: 0,
-              border: 0,
-            }}
-          />
-        </div>
+        <PipeTable
+          data={result.data}
+          columns={result.columns}
+          title={result.title}
+          style={{
+            padding: 0,
+            border: 0,
+          }}
+        />
       )
     }
 
     if (toolName === 'renderCoreVitalGauge' && result) {
       return (
-        <div className="my-2 flex justify-center">
-          <CoreVitalGauge
-            metric={result.metric}
-            value={result.value}
-          />
-        </div>
+        <div className="my-2 flex justify-center">{JSON.stringify(result)}</div>
       )
     }
 
     return (
-      <div className="my-2 text-xs flex items-center gap-x-2.5 py-0.5">
+      <div className="text-xs flex items-center gap-x-2.5 py-0.5">
         {state !== 'result' ? (
-          <Loader />
+          <Loader className={'text-[var(--icon-color)]'} />
         ) : (
-          <CheckIcon />
+          <CheckIcon className={'text-[var(--icon-color)]'} />
         )}
-        <Text variant="body" color="01">{getToolLabel(toolName)}</Text>
+        <Text variant="body" color="01">
+          {getToolLabel(toolName)}
+        </Text>
       </div>
     )
   }
 
   return null
-} 
+}

@@ -3,7 +3,6 @@
 import { Node, QueryData } from '@/lib/types'
 import { cn, formatBytes, formatMilliseconds, formatNumber } from '@/lib/utils'
 import { format as formatDate } from 'date-fns'
-import { SquareCodeIcon } from 'lucide-react'
 import { CSSProperties, Fragment, useState } from 'react'
 import {
   Area,
@@ -17,7 +16,6 @@ import {
   YAxis,
 } from 'recharts'
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from './Chart'
-import { BarChartIcon, LineChartIcon } from './Icons'
 import { Skeleton } from './Skeleton'
 import styles from './SqlChart.module.css'
 import { Stack } from './Stack'
@@ -151,13 +149,6 @@ export function SqlChart({
                   }}
                   onClick={() => handleClick(0)}
                 >
-                  {isHovered ? (
-                    <SquareCodeIcon size={16} />
-                  ) : type === 'line' ? (
-                    <LineChartIcon color={colors[0]} />
-                  ) : (
-                    <BarChartIcon color={colors[0]} />
-                  )}
                   {title}
                 </Text>
               </Tooltip>

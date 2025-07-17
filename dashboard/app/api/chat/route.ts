@@ -16,6 +16,7 @@ if (process.env.GOOGLE_CREDENTIALS_JSON) {
   if (!fs.existsSync(credsPath)) {
     fs.writeFileSync(credsPath, process.env.GOOGLE_CREDENTIALS_JSON, 'utf8');
   }
+
   process.env.GOOGLE_APPLICATION_CREDENTIALS = credsPath;
 }
 const vertex = createVertex({
@@ -60,6 +61,7 @@ export async function POST(req: Request) {
   instructions:
   - analyze the user's question
   - prioritize using existing endpoints over querying datasources
+  - never ever EVER use the q parameter in any endpoint tool call (it will not work, do not use it at all to pass an inline query of any sort)
   - exclude unrelated sources unless unsure — in which case include themen
   - most kpis are already available in a kpi endpoint
   - date format is yyyy-mm-dd if Date or yyyy-mm-dd hh:mm:ss, never use other formats

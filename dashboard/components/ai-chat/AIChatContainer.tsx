@@ -4,6 +4,7 @@ import React from 'react'
 import { useAIChat } from './AIChatProvider'
 import { AIChatForm } from './AIChatForm'
 import { AIChatMessage } from './AIChatMessage'
+import { motion } from 'motion/react'
 
 interface AIChatContainerProps {
   placeholder?: string
@@ -28,16 +29,16 @@ export function AIChatContainer({
       index,
     }))
 
-  console.log('messages', messages)
-
   return (
     <div className={className}>
       {showForm && <AIChatForm placeholder={placeholder} />}
 
-      <div className="space-y-4">
-        {cards.map(({ message, index }) => (
-          <AIChatMessage key={index} message={message} messageIndex={index} />
-        ))}
+      <div>
+        {cards.map(({ message, index }) => {
+          return (
+            <AIChatMessage key={index} message={message} messageIndex={index} />
+          )
+        })}
       </div>
     </div>
   )

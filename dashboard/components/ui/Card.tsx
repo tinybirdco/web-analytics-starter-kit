@@ -51,7 +51,7 @@ export const Card = forwardRef<
         >
           <div
             className={cn(
-              'bg-white p-4 rounded-lg shadow-sm relative z-10 px-6',
+              'bg-white p-5 rounded-lg shadow-sm relative z-10 h-full',
               className
             )}
             {...props}
@@ -62,15 +62,16 @@ export const Card = forwardRef<
       ) : (
         <div
           className={cn(
-            'rounded-[9px] p-px relative overflow-hidden',
+            'relative overflow-hidden',
             bgColor,
+            variant === 'result' ? 'p-0.5 rounded-[10px]' : 'p-px rounded-[9px]',
             className
           )}
           ref={ref}
         >
           <div
             className={cn(
-              'bg-white pb-4 pt-5 rounded-lg shadow-sm relative z-10 px-5 h-full',
+              'bg-white rounded-lg shadow-sm relative z-10 p-5 h-full',
               className
             )}
             {...props}
