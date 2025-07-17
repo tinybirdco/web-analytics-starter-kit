@@ -37,12 +37,17 @@ export function DomainSelect({ className, style }: { className?: string, style?:
   if (isLoading) {
     return <span className="block text-xs font-medium text-[var(--text-02-color)] mb-1">Loading domains...</span>
   }
-  if ((!domains || domains.length === 0) && fallbackDomain && fallbackDomain !== 'domain.com') {
-    return <Text variant="displaymedium" className="tracking-tight">
-      <span className="ml-2 text-[var(--text-02-color)]">
-        https://{fallbackDomain}
-      </span>
-    </Text>
+  if (
+    (!domains || domains.length === 0)
+    || (domains && domains.length === 1 && domains[0].domain === '')
+  ) {
+    if (fallbackDomain && fallbackDomain !== 'domain.com') {
+      return <Text variant="displaymedium" className="tracking-tight">
+        <span className="ml-2 text-[var(--text-02-color)]">
+          https://{fallbackDomain}
+        </span>
+      </Text>
+    }
   }
   if (options.length === 1) {
     return <span className="block text-xs font-medium text-[var(--text-02-color)] mb-1">No domains found</span>
