@@ -4,6 +4,7 @@ import { Input } from './ui/Input'
 import { Button } from './ui/Button'
 import { Select } from './ui/Select'
 import { Link } from './ui/Link'
+import { SignJWT } from 'jose'
 
 const regionMap: Record<string, string> = {
   'gcp-europe-west2': 'https://api.europe-west2.gcp.tinybird.co',
@@ -21,25 +22,82 @@ const regionMap: Record<string, string> = {
 
 const regionValues = Object.values(regionMap)
 
+// Helper to decode JWT and extract host key
+const extractHostFromToken = (token: string): string | undefined => {
+  try {
+    const payload = token.split('.')[1]
+    if (!payload) return undefined
+    const base64 =
+      payload.replace(/-/g, '+').replace(/_/g, '/') +
+      '==='.slice((payload.length + 3) % 4)
+    const json = atob(base64)
+    const data = JSON.parse(json)
+    return data.host
+  } catch {
+    return undefined
+  }
+}
+
+// Helper to decode JWT and extract workspace id (u attribute)
+export const extractWorkspaceIdFromToken = (token: string): string | undefined => {
+  try {
+    const payload = token.split('.')[1]
+    if (!payload) return undefined
+    const base64 =
+      payload.replace(/-/g, '+').replace(/_/g, '/') +
+      '==='.slice((payload.length + 3) % 4)
+    const json = atob(base64)
+    const data = JSON.parse(json)
+    return data.u
+  } catch {
+    return undefined
+  }
+}
+
+// Create JWT function in TypeScript (browser-safe)
+export async function createJwt(token: string, tenant_id: string): Promise<string> {
+  const expiration_time = Math.floor(Date.now() / 1000) + 3 * 60 * 60 // 3 hours from now
+  const workspace_id = extractWorkspaceIdFromToken(token)
+  const resources = [
+    'domains',
+    'top_sources',
+    'top_devices',
+    'kpis',
+    'top_locations',
+    'top_browsers',
+    'top_pages',
+    'trend',
+    'analytics_hits',
+    'domain',
+    'current_visitors',
+    'web_vitals_current',
+    'web_vitals_routes',
+    'web_vitals_distribution',
+    'web_vitals_events',
+  ]
+  const payload = {
+    workspace_id: workspace_id,
+    name: 'frontend_jwt',
+    exp: expiration_time,
+    scopes: resources.map(resource => ({
+      type: 'PIPES:READ',
+      resource,
+      fixed_params: {
+        tenant_id: tenant_id,
+      },
+    })),
+  }
+  const key = new TextEncoder().encode(token)
+  return await new SignJWT(payload as any)
+    .setProtectedHeader({ alg: 'HS256' })
+    .setExpirationTime(expiration_time)
+    .sign(key)
+}
+
 export default function CredentialsDialog() {
   const [hostUrl, setHostUrl] = useState(regionValues[0])
   const [hostName, setHostName] = useState('')
-
-  // Helper to decode JWT and extract host key
-  const extractHostFromToken = (token: string): string | undefined => {
-    try {
-      const payload = token.split('.')[1]
-      if (!payload) return undefined
-      const base64 =
-        payload.replace(/-/g, '+').replace(/_/g, '/') +
-        '==='.slice((payload.length + 3) % 4)
-      const json = atob(base64)
-      const data = JSON.parse(json)
-      return data.host
-    } catch {
-      return undefined
-    }
-  }
+  const [tenantId, setTenantId] = useState('')
 
   const handleTokenChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const token = e.target.value
@@ -60,18 +118,25 @@ export default function CredentialsDialog() {
     setHostName(e.target.value)
   }
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const form = event.currentTarget
     const formData = new FormData(form)
     const token = formData.get('token') as string
     const host = hostUrl === 'other' ? hostName : hostUrl
+    const tenant_id = formData.get('tenant_id') as string
     
     if (!token || (hostUrl === 'other' && !hostName)) return
     
+    let jwt = token
+    if (tenant_id) {
+      jwt = await createJwt(token, tenant_id)
+    }
+    
     const url = new URL(window.location.href)
-    url.searchParams.set('token', token)
+    url.searchParams.set('token', jwt)
     url.searchParams.set('host', host)
+    if (tenant_id) url.searchParams.set('tenant_id', tenant_id)
     window.location.href = url.toString()
   }
 
@@ -125,6 +190,16 @@ export default function CredentialsDialog() {
               />
             </div>
           )}
+
+          <div className="space-y-1">
+            <label>Tenant ID</label>
+            <Input
+              name="tenant_id"
+              placeholder="Tenant ID"
+              value={tenantId}
+              onChange={e => setTenantId(e.target.value)}
+            />
+          </div>
 
           <Button type="submit" size="large">
             View dashboard

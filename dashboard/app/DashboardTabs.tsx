@@ -1,7 +1,7 @@
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/Tabs'
 import { Widgets, CoreVitals } from './widgets'
 
-const DashboardTabs = () => {
+const DashboardTabs = ({ domain }: { domain?: string }) => {
   return (
     <Tabs defaultValue="analytics">
       <TabsList className="mb-4">

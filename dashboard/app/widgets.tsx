@@ -13,7 +13,6 @@ import {
 } from '@/components/table/TableCells'
 import { CoreVitalGauge } from '@/components/ui/CoreVitalGauge'
 import { Card } from '@/components/ui/Card'
-import { Text } from '@/components/ui/Text'
 import React from 'react'
 
 export const CoreVitals = () => {

@@ -17,9 +17,14 @@ SQL >
         score,
         units,
         description,
-        thresholds_text
+        thresholds_text,
+        domain,
+        tenant_id
     FROM web_vitals_events
     WHERE timestamp >= now() - interval {{Int32(days, 1, description="Number of days to analyze (defaults to 1 day)")}} day
+        {% if defined(tenant_id) %}
+        AND tenant_id = {{ String(tenant_id, description="Filter by tenant ID") }}
+        {% end %}
         {% if defined(domain) %}
         AND domain = {{ String(domain, description="Domain to filter web vitals for") }}
         {% end %}
@@ -38,9 +43,11 @@ SQL >
         any(score) as score,
         any(units) as units,
         any(description) as description,
-        any(thresholds_text) as thresholds
+        any(thresholds_text) as thresholds,
+        domain,
+        tenant_id
     FROM filtered_vitals
-    GROUP BY metric_name, performance_category
+    GROUP BY metric_name, performance_category, domain, tenant_id
 
 NODE metric_totals
 DESCRIPTION >
@@ -49,9 +56,11 @@ DESCRIPTION >
 SQL >
     SELECT
         metric_name,
-        sum(measurement_count) as total_measurements
+        sum(measurement_count) as total_measurements,
+        domain,
+        tenant_id
     FROM category_stats
-    GROUP BY metric_name
+    GROUP BY metric_name, domain, tenant_id
 
 NODE endpoint
 DESCRIPTION >
@@ -68,9 +77,10 @@ SQL >
         cs.score,
         cs.units,
         cs.thresholds,
-        cs.description
+        cs.description,
+        cs.domain
     FROM category_stats cs
-    JOIN metric_totals mt ON cs.metric_name = mt.metric_name
+    JOIN metric_totals mt ON cs.metric_name = mt.metric_name and cs.domain = mt.domain and cs.tenant_id = mt.tenant_id
     ORDER BY 
         cs.metric_name,
         CASE cs.performance_category 

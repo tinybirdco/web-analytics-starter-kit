@@ -5,7 +5,6 @@ import { Suspense, useState } from 'react'
 import Script from 'next/script'
 import useAuth from '../lib/hooks/use-auth'
 import config from '../lib/config'
-import { Widgets } from './widgets'
 import DashboardTabs from './DashboardTabs'
 import { TimeRangeSelect } from '@/components/ui/TimeRangeSelect'
 import { useTimeRange } from '@/lib/hooks/use-time-range'
@@ -14,11 +13,11 @@ import { cn } from '@/lib/utils'
 import { Text } from '@/components/ui/Text'
 import { AIChatProvider, AIChatContainer } from '@/components/ai-chat'
 import { Dialog, DialogTrigger, DialogContent } from '@/components/ui/Dialog'
-import { AskAiIcon, FormatIcon } from '@/components/ui/Icons'
-import useDomain from '@/lib/hooks/use-domain'
+import { AskAiIcon } from '@/components/ui/Icons'
+import { DomainSelect } from '@/components/ui/DomainSelect'
+import React from 'react'
 
 export default function DashboardPage() {
-  const { domain, logo } = useDomain()
   const { isAuthenticated, isTokenValid } = useAuth()
   const {
     value: timeRangeValue,
@@ -87,13 +86,10 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            <nav className="flex justify-between">
-              <Text variant="displaymedium" className="tracking-tight">
-                Web Analytics
-                <span className="ml-2 text-[var(--text-02-color)]">
-                  {domain}
-                </span>
-              </Text>
+            <nav className="flex justify-between items-center">
+              <div>
+                <DomainSelect />
+              </div>
               <div>
                 <TimeRangeSelect
                   value={timeRangeValue}
@@ -104,7 +100,9 @@ export default function DashboardPage() {
             </nav>
             <div>
               {isAuthenticated && !isTokenValid && <p>error</p>}
-              {isAuthenticated && isTokenValid && <DashboardTabs />}
+              {isAuthenticated && isTokenValid && (
+                <DashboardTabs />
+              )}
               {!isAuthenticated && <CredentialsDialog />}
             </div>
           </main>

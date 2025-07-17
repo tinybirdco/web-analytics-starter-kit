@@ -2,6 +2,7 @@ DESCRIPTION >
     Top traffic sources (domains), ordered by most visits.
     Accepts `date_from` and `date_to` date filter. Defaults to last 7 days.
     Also `skip` and `limit` parameters for pagination.
+    Supports `tenant_id` and `domain` filtering.
 
 TOKEN "dashboard" READ
 
@@ -25,6 +26,12 @@ SQL >
             <=
             {{ Date(date_to, description="Finishing day for filtering a date range", required=False) }}
         {% else %} and date <= today()
+        {% end %}
+        {% if defined(tenant_id) %}
+            and tenant_id = {{ String(tenant_id, description="Filter by tenant ID") }}
+        {% end %}
+        {% if defined(domain) %}
+            and domain = {{ String(domain, description="Filter by domain") }}
         {% end %}
     group by referrer
     order by visits desc
