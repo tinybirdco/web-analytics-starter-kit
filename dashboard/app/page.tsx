@@ -18,7 +18,6 @@ import { DomainSelect } from '@/components/ui/DomainSelect'
 import React from 'react'
 
 export default function DashboardPage() {
-  const { domain, logo } = useDomain()
   const { isAuthenticated, isTokenValid } = useAuth()
   const {
     value: timeRangeValue,
