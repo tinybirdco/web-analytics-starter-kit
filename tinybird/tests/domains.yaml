@@ -1,26 +1,21 @@
-- name: domains_tenant_14
-  description: Test domains for tenant_14 which has app.demo.io domain
-  parameters: tenant_id=tenant_14
-  expected_result: |
-    {"domain":"app.demo.io","first_seen":"2025-06-16 19:49:35","last_seen":"2025-07-16 08:01:15","total_hits":54}
 
 - name: domains_tenant_1
-  description: Test domains for tenant_1 which has example.com domain
+  description: Test domains for tenant_1 which has multiple domains
   parameters: tenant_id=tenant_1
   expected_result: |
-    {"domain":"example.com","first_seen":"2025-06-17 23:20:08","last_seen":"2025-07-15 18:41:08","total_hits":47}
+    {"domain":"test.org","first_seen":"2023-07-20 06:37:41","last_seen":"2025-07-09 06:37:41","total_hits":200}
+    {"domain":"myapp.com","first_seen":"2023-07-25 12:43:47","last_seen":"2025-07-15 00:43:47","total_hits":170}
+    {"domain":"app.demo.io","first_seen":"2023-07-23 19:02:05","last_seen":"2025-07-13 07:02:05","total_hits":166}
+    {"domain":"demo.site","first_seen":"2023-07-31 13:20:23","last_seen":"2025-07-11 01:20:23","total_hits":147}
 
-- name: domains_tenant_16
-  description: Test domains for tenant_16 which has example.com domain
-  parameters: tenant_id=tenant_16
+- name: domains_tenant_2
+  description: Test domains for tenant_2
+  parameters: tenant_id=tenant_2
   expected_result: |
-    {"domain":"example.com","first_seen":"2025-06-16 20:03:13","last_seen":"2025-07-16 03:40:13","total_hits":47}
-
-- name: domains_tenant_17
-  description: Test domains for tenant_17 which has demo.site domain
-  parameters: tenant_id=tenant_17
-  expected_result: |
-    {"domain":"demo.site","first_seen":"2025-06-18 04:15:32","last_seen":"2025-07-16 16:59:32","total_hits":50}
+    {"domain":"app.demo.io","first_seen":"2023-07-23 15:22:25","last_seen":"2025-07-13 03:22:25","total_hits":174}
+    {"domain":"test.org","first_seen":"2023-07-29 08:27:31","last_seen":"2025-07-08 20:27:31","total_hits":174}
+    {"domain":"myapp.com","first_seen":"2023-07-25 14:33:37","last_seen":"2025-07-14 21:04:07","total_hits":159}
+    {"domain":"demo.site","first_seen":"2023-07-21 08:39:43","last_seen":"2025-07-10 20:39:43","total_hits":138}
 
 - name: domains_empty_tenant
   description: Test domains for tenant with no data
@@ -30,4 +25,6 @@
 - name: domains_default_tenant
   description: Test domains endpoint with default empty tenant_id parameter
   parameters: tenant_id=
-  expected_result: ''
+  expected_result: |
+    {"domain":"","first_seen":"2023-07-27 09:16:19","last_seen":"2025-07-17 07:26:29","total_hits":524}
+    {"domain":"demo.site","first_seen":"2023-09-30 05:00:03","last_seen":"2023-09-30 05:00:03","total_hits":1}
