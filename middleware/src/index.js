@@ -11,13 +11,14 @@
   let globalAttributes = {}
   let stringifyPayload = true
 
-  let proxy, proxyUrl, token, host, domain
+  let proxy, proxyUrl, token, host, domain, tenantId
   if (document.currentScript) {
     host = document.currentScript.getAttribute('data-host')
     proxy = document.currentScript.getAttribute('data-proxy')
     proxyUrl = document.currentScript.getAttribute('data-proxy-url')
     token = document.currentScript.getAttribute('data-token')
-    domain = document.currentScript.getAttribute('data-domain')
+    domain = document.currentScript.getAttribute('data-domain') || ''
+    tenantId = document.currentScript.getAttribute('data-tenant-id') || ''
 
     // Check if both proxy and proxyUrl are specified
     if (proxy && proxyUrl) {
@@ -274,6 +275,8 @@
         action: name,
         version: '1',
         session_id,
+        tenant_id: tenantId,
+        domain,
         payload: processedPayload,
       })
     )
