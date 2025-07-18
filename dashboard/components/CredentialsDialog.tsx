@@ -138,7 +138,9 @@ export default function CredentialsDialog() {
     if (!token || (hostUrl === 'other' && !hostName)) return
     
     let jwt = token
-    jwt = await createJwt(token, tenant_id || '')
+    if (tenant_id) {
+      jwt = await createJwt(token, tenant_id)
+    }
 
     const url = new URL(window.location.href)
     url.searchParams.set('token', jwt)
