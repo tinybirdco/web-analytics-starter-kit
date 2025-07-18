@@ -2,7 +2,54 @@ import React, { forwardRef } from 'react'
 import { cn } from '@/lib/utils'
 import { motion, useTime, useTransform } from 'motion/react'
 
-export type CardVariant = 'default' | 'result' | 'error' | 'loading'
+export type CardVariant = 'default' | 'dark' | 'result' | 'error' | 'loading'
+
+const CardWrapper = ({
+  children,
+  variant,
+}: {
+  children: React.ReactNode
+  variant: CardVariant
+}) => {
+  const time = useTime()
+
+  // Animated conic-gradient for loading
+  const background = useTransform(
+    () =>
+      `conic-gradient(from ${
+        time.get() * 0.25
+      }deg, var(--border-01-color), var(--border-01-color), var(--border-02-color), var(--border-01-color))`
+  )
+
+  // Background color per variant
+  const bgColor =
+    variant === 'result'
+      ? 'bg-[var(--alternative-color)]'
+      : variant === 'error'
+      ? 'bg-[var(--error-color)]'
+      : variant === 'dark'
+      ? 'bg-[var(--border-02-color)]'
+      : 'bg-[var(--border-01-color)]'
+
+  return variant === 'loading' ? (
+    <motion.div
+      className={cn('rounded-[9px] p-px relative overflow-hidden')}
+      style={{ backgroundImage: background }}
+    >
+      {children}
+    </motion.div>
+  ) : (
+    <div
+      className={cn(
+        'relative overflow-hidden',
+        bgColor,
+        variant === 'result' ? 'p-0.5 rounded-[10px]' : 'p-px rounded-[9px]'
+      )}
+    >
+      {children}
+    </div>
+  )
+}
 
 export const Card = forwardRef<
   HTMLDivElement,
@@ -21,67 +68,26 @@ export const Card = forwardRef<
     },
     ref
   ) => {
-    const time = useTime()
-
-    // Animated conic-gradient for loading
-    const background = useTransform(
-      () =>
-        `conic-gradient(from ${
-          time.get() * 0.25
-        }deg, var(--border-01-color), var(--border-01-color), var(--border-02-color), var(--border-01-color))`
-    )
-
-    // Background color per variant
-    const bgColor =
-      variant === 'result'
-        ? 'bg-[var(--alternative-color)]'
-        : variant === 'error'
-        ? 'bg-[var(--error-color)]'
-        : 'bg-[var(--border-01-color)]'
-
-    const Wrapper = ({ children }: { children: React.ReactNode }) =>
-      variant === 'loading' ? (
-        <motion.div
-          className={cn(
-            'rounded-[9px] p-px relative overflow-hidden',
-            className
-          )}
-          style={{ backgroundImage: background }}
-          ref={ref as React.Ref<HTMLDivElement>}
-        >
-          <div
-            className={cn(
-              'bg-white p-5 rounded-lg shadow-sm relative z-10 h-full',
-              className
-            )}
-            {...props}
-          >
-            {children}
-          </div>
-        </motion.div>
-      ) : (
-        <div
-          className={cn(
-            'relative overflow-hidden',
-            bgColor,
-            variant === 'result' ? 'p-0.5 rounded-[10px]' : 'p-px rounded-[9px]',
-            className
-          )}
-          ref={ref}
-        >
-          <div
-            className={cn(
-              'bg-white rounded-lg shadow-sm relative z-10 p-5 h-full',
-              className
-            )}
-            {...props}
-          >
-              {children}
-          </div>
-        </div>
-      )
     // All other variants: static background color, no border
-    return <Wrapper>{children}</Wrapper>
+    return (
+      <CardWrapper variant={variant}>
+        <div
+          ref={ref}
+          className={cn(
+            'bg-white p-5 rounded-lg scroll-smooth shadow-sm relative z-10 h-full',
+            className
+          )}
+          style={{
+            maxHeight: maxHeight ? `${maxHeight}px` : 'auto',
+            overflow: maxHeight ? 'scroll' : 'auto',
+            ...props.style,
+          }}
+          {...props}
+        >
+          {children}
+        </div>
+      </CardWrapper>
+    )
   }
 )
 

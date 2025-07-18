@@ -4,7 +4,49 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Card } from '@/components/ui/Card'
 import { AIChatToolCall } from './AIChatToolCall'
 import Markdown from 'react-markdown'
-import { motion, useDragControls } from 'motion/react'
+import { motion } from 'motion/react'
+
+// Constants
+const OFFSET_CLOSED = 6
+const OFFSET_HOVER = 10
+const OFFSET_EXPANDED = 24
+const REASONING_HEIGHT = 220
+const CONTAINER_HEIGHT = '75vh'
+const SCALE_COMPRESSED = 0.973
+
+// Animation configurations
+const ANIMATION_CONFIG = {
+  duration: 0.1,
+  delay: 0.1,
+  scale: { type: 'inertia' as const, visualDuration: 0.2 },
+  scaleDecay: { type: 'decay' as const, visualDuration: 0.2 },
+}
+
+const REASONING_ANIMATION = {
+  initial: { opacity: 0, translateY: 6, scale: 1 },
+  exit: { opacity: 0, translateY: 6 },
+  animate: (offset: number, hasResults: boolean) => ({
+    opacity: 1,
+    translateY: 0,
+    top: 0,
+    zIndex: 0,
+    scaleX: hasResults && offset < OFFSET_EXPANDED ? SCALE_COMPRESSED : 1,
+    scaleY: hasResults && offset < OFFSET_EXPANDED ? SCALE_COMPRESSED : 1,
+  }),
+}
+
+const RESULT_ANIMATION = {
+  initial: { opacity: 0, translateY: 18 },
+  exit: { opacity: 0, translateY: 18 },
+  animate: (offset: number) => ({
+    opacity: 1,
+    translateY: 0,
+    top: offset,
+    scale: 1,
+    zIndex: 1,
+  }),
+}
+
 interface AIChatMessageProps {
   message: any
   messageIndex: number
@@ -17,8 +59,11 @@ export function AIChatMessage({ message, messageIndex }: AIChatMessageProps) {
   let hasFoundVisualization = false
 
   const scrollRef = useRef<HTMLDivElement>(null)
-  const [offset, setOffset] = useState(16)
-  const dragControls = useDragControls()
+  const listRef = useRef<HTMLDivElement>(null)
+
+  const [offset, setOffset] = useState(OFFSET_CLOSED)
+
+  console.log('niqqa', offset)
 
   message.parts.forEach((part: any) => {
     if (
@@ -43,12 +88,39 @@ export function AIChatMessage({ message, messageIndex }: AIChatMessageProps) {
 
   useEffect(() => {
     if (scrollRef?.current) {
-      scrollRef.current.children[0]?.scrollTo(0, 9999)
+      scrollRef.current.scrollTo({
+        top: 1999,
+        behavior: 'smooth',
+      })
     }
   }, [message])
 
+  const handleMouseEnter = () => {
+    if (offset === OFFSET_CLOSED) {
+      setOffset(OFFSET_HOVER)
+    }
+  }
+
+  const handleMouseLeave = () => {
+    if (offset === OFFSET_HOVER) {
+      setOffset(OFFSET_CLOSED)
+    }
+  }
+
+  const handleReasoningClick = () => {
+    const newOffset = (scrollRef?.current?.parentElement?.scrollHeight || REASONING_HEIGHT) + 8
+    setOffset(newOffset)
+    scrollRef.current?.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    })
+  }
+
   return (
     <div
+      ref={listRef}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
       style={{
         position: 'relative',
         display: 'flex',
@@ -61,33 +133,19 @@ export function AIChatMessage({ message, messageIndex }: AIChatMessageProps) {
         style={{
           position: 'relative',
           width: '100%',
-          height: '75vh',
+          height: CONTAINER_HEIGHT,
         }}
       >
         {reasoningParts.length > 0 && (
           <motion.div
-            initial={{ opacity: 0, translateY: 32, scale: 1 }}
-            exit={{ opacity: 0, translateY: 32 }}
-            onClick={() => {
-              setOffset((scrollRef?.current?.scrollHeight || 220) + 16)
-            }}
-            animate={{
-              opacity: 1,
-              translateY: 0,
-              top: 0,
-              zIndex: 0,
-              scaleX: resultParts?.length > 0 && offset < 24 ? 0.97 : 1,
-              scaleY: resultParts?.length > 0 && offset < 24 ? 0.97 : 1,
-            }}
-            transition={{
-              duration: 0.1,
-              delay: 0.1,
-              scale: { type: 'inertia', visualDuration: 0.2 },
-            }}
+            {...REASONING_ANIMATION}
+            animate={REASONING_ANIMATION.animate(offset, resultParts.length > 0)}
+            onClick={handleReasoningClick}
+            transition={ANIMATION_CONFIG}
             style={{
               position: 'absolute',
               width: '100%',
-              height: '220px',
+              height: `${REASONING_HEIGHT}px`,
               borderRadius: '8px',
               transformOrigin: 'top center',
               listStyle: 'none',
@@ -95,8 +153,9 @@ export function AIChatMessage({ message, messageIndex }: AIChatMessageProps) {
             }}
           >
             <Card
-              variant={resultParts?.length === 0 ? 'loading' : 'default'}
-              className="!max-h-[420px] overflow-y-auto scroll-smooth space-y-3"
+              variant="dark"
+              className="scroll-smooth space-y-3"
+              maxHeight={REASONING_HEIGHT + 10}
               ref={scrollRef}
             >
               {latestReasoningToolInvocation && (
@@ -120,24 +179,15 @@ export function AIChatMessage({ message, messageIndex }: AIChatMessageProps) {
 
         {resultParts.length > 0 && (
           <motion.div
-            initial={{ opacity: 0, translateY: 32 }}
-            exit={{ opacity: 0, translateY: 32 }}
-            animate={{
-              opacity: 1,
-              translateY: 0,
-              top: offset,
-              scale: 1,
-              zIndex: 1,
-            }}
+            {...RESULT_ANIMATION}
+            animate={RESULT_ANIMATION.animate(offset)}
             transition={{
-              duration: 0.1,
-              delay: 0.1,
-              scale: { type: 'decay', visualDuration: 0.2 },
+              ...ANIMATION_CONFIG,
+              scale: ANIMATION_CONFIG.scaleDecay,
             }}
             style={{
               position: 'absolute',
               width: '100%',
-              height: '220px',
               borderRadius: '8px',
               transformOrigin: 'top center',
               listStyle: 'none',

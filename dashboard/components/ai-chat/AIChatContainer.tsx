@@ -4,7 +4,6 @@ import React from 'react'
 import { useAIChat } from './AIChatProvider'
 import { AIChatForm } from './AIChatForm'
 import { AIChatMessage } from './AIChatMessage'
-import { motion } from 'motion/react'
 
 interface AIChatContainerProps {
   placeholder?: string

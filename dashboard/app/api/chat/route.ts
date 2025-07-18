@@ -72,7 +72,7 @@ export async function POST(req: Request) {
     c) sample_queries: suggest helpful SQL queries
 
   visualization rules:
-  - never print raw query data
+  - do not print json code blocks about data or props for a visualization, call the right tool instead.
   - use only SqlChart (for numeric/time series), PipeTable (for tabular), or CoreVitalGauge (for single web vital metrics)
   - always explain what you queried, what you found, and what's next before rendering
   - for single-value questions, (e.g. “how many X on day Y?” or "what is the LCP?"), if relevant, reply with a pair of

@@ -4,7 +4,7 @@ import React, { useRef } from 'react'
 import { useAIChat } from './AIChatProvider'
 import { FormatIcon } from '@/components/ui/Icons'
 import { Loader } from '../ui/Loader'
-import { motion } from 'motion/react'
+import { motion, type MotionValue, useTime, useTransform } from 'motion/react'
 import { Card } from '../ui/Card'
 import { Text } from '../ui/Text'
 
@@ -13,20 +13,67 @@ interface AIChatFormProps {
   className?: string
 }
 
+const InputWrapper = ({
+  children,
+  isLoading,
+  background,
+}: {
+  children: React.ReactNode
+  isLoading: boolean
+  background: MotionValue<string>
+}) => {
+  if (isLoading) {
+    return (
+      <motion.div
+        className="relative rounded-[13px] p-px overflow-hidden"
+        style={{ backgroundImage: background }}
+      >
+        <div className="relative bg-white rounded-xl flex min-h-[78px] py-3 px-5 pr-3.5 items-center">
+          {children}
+        </div>
+      </motion.div>
+    )
+  }
+
+  return (
+    <div className="relative bg-white rounded-xl border border-[var(--border-02-color)] focus-within:border-[var(--border-02-color)] flex min-h-20 py-3.5 px-5 pr-3.5 items-center transition-colors">
+      {children}
+    </div>
+  )
+}
+
 export function AIChatForm({
   placeholder = 'Are there any bounce rate trends for my blog pages?',
   className = '',
 }: AIChatFormProps) {
-  const { input, handleInputChange, handleSubmit, isLoading, error, setMessages, setInput } =
-    useAIChat()
+  const {
+    input,
+    handleInputChange,
+    handleSubmit,
+    isLoading,
+    error,
+    setMessages,
+    setInput,
+  } = useAIChat()
+
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const time = useTime()
+
+  // Animated conic-gradient for loading border
+  const background = useTransform(
+    () =>
+      `conic-gradient(from ${
+        time.get() * 0.25
+      }deg, var(--border-01-color), var(--border-03-color), var(--border-01-color))`
+  )
 
   const onSubmit = (e: React.FormEvent) => {
-    const savedInput = input; // Save the current input value
+    e.preventDefault()
+    const savedInput = input // Save the current input value
     setMessages([])
     handleSubmit(e)
     setTimeout(() => {
-      setInput(savedInput); // Restore the input value after handleSubmit clears it
+      setInput(savedInput) // Restore the input value after handleSubmit clears it
       messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
     }, 10)
   }
@@ -45,11 +92,11 @@ export function AIChatForm({
       }}
     >
       <div className={className}>
-        <form onSubmit={onSubmit} className="flex flex-col gap-2 mb-6">
+        <form onSubmit={onSubmit} className="flex flex-col gap-2 mb-2">
           <label htmlFor="ai-chat-input" className="font-medium mb-1 sr-only">
             Ask a question about your analytics data
           </label>
-          <div className="relative bg-white rounded-xl border border-[var(--border-01-color)] focus-within:border-[var(--border-02-color)] flex min-h-20 py-4 px-5 items-center transition-colors">
+          <InputWrapper isLoading={isLoading} background={background}>
             <input
               id="ai-chat-input"
               className="flex-1 resize-none text-lg !bg-none placeholder:text-[var(--text-02-color)] disabled:bg-white pr-3"
@@ -69,7 +116,7 @@ export function AIChatForm({
                 <FormatIcon color="white" />
               )}
             </button>
-          </div>
+          </InputWrapper>
           {error && (
             <Card variant="error">
               <Text variant="bodysemibold" color="error">
