@@ -138,9 +138,7 @@ export default function CredentialsDialog() {
     if (!token || (hostUrl === 'other' && !hostName)) return
     
     let jwt = token
-    if (tenant_id) {
-      jwt = await createJwt(token, tenant_id)
-    }
+    jwt = await createJwt(token, tenant_id || '')
     
     const url = new URL(window.location.href)
     url.searchParams.set('token', jwt)
@@ -204,7 +202,7 @@ export default function CredentialsDialog() {
             <label>Tenant ID</label>
             <Input
               name="tenant_id"
-              placeholder="Tenant ID"
+              placeholder="Leave empty for default tenant"
               value={tenantId}
               onChange={e => setTenantId(e.target.value)}
             />
