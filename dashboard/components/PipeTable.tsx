@@ -45,43 +45,52 @@ export function PipeTable({
           </tr>
         </thead>
         <tbody>
-          {data.length === 0 && columns.length > 0 ? (
-            // Show 3 skeleton rows if loading or no data
-            Array.from({ length: 3 }).map((_, i) => (
-              <tr key={i} className="border-t border-gray-100">
-                {columns.map((col, j) => (
-                  <td
-                    key={col.key}
-                    className="py-3 pr-4 border-b border-[var(--border-01-color)]"
-                    style={{ textAlign: col.align || 'left', fontWeight: j === 0 ? '600' : '400' }}
-                  >
-                    <Skeleton height={16} width={j === 0 ? '60%' : '40%'} />
-                  </td>
-                ))}
-              </tr>
-            ))
-          ) : (
-            data.map((row, i) => (
-              <tr key={i} className="border-t border-gray-100">
-                {columns.map((col, j) => {
-                  const value = row[col.key]
-                  return (
+          {data.length === 0 && columns.length > 0
+            ? // Show 3 skeleton rows if loading or no data
+              Array.from({ length: 3 }).map((_, i) => (
+                <tr key={i} className="border-t border-gray-100">
+                  {columns.map((col, j) => (
                     <td
                       key={col.key}
-                      className="py-2 pr-4 border-b border-[var(--border-01-color)]"
-                      style={{ textAlign: col.align || 'left', fontWeight: j === 0 ? '600' : '400' }}
+                      className="py-3 border-b border-[var(--border-01-color)]"
+                      style={{
+                        textAlign: col.align || 'left',
+                        fontWeight: j === 0 ? '600' : '400',
+                      }}
                     >
-                      {col.render
-                        ? col.render(row, value, i)
-                        : typeof value === 'number'
-                        ? formatNumber(value)
-                        : value || value === 0 ? value : '(none)'}
+                      <Skeleton height={16} width={j === 0 ? '60%' : '40%'} />
                     </td>
-                  )
-                })}
-              </tr>
-            ))
-          )}
+                  ))}
+                </tr>
+              ))
+            : data.map((row, i) => (
+                <tr key={i} className="border-t border-gray-100">
+                  {columns.map((col, j) => {
+                    const value = row[col.key]
+                    return (
+                      <td
+                        key={col.key}
+                        className="py-2 border-b border-[var(--border-01-color)]"
+                        style={{
+                          textAlign: col.align || 'left',
+                          fontWeight: j === 0 ? '600' : '400',
+                          justifyContent: col.align === 'right' ? 'flex-end' : 'flex-start',
+                          paddingLeft: col.align === 'left' || j === 0 ? '0px' : '16px',
+                          paddingRight: col.align === 'right' || j === columns.length - 1 ? '0px' : '16px',
+                        }}
+                      >
+                        {col.render
+                          ? col.render(row, value, i)
+                          : typeof value === 'number'
+                          ? formatNumber(value)
+                          : value || value === 0
+                          ? value
+                          : '(none)'}
+                      </td>
+                    )
+                  })}
+                </tr>
+              ))}
         </tbody>
       </table>
     </div>

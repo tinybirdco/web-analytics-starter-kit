@@ -4,9 +4,6 @@ import { PipeTable } from '@/components/PipeTable'
 import {
   TableCellText,
   TableCellMono,
-  TableCellProgress,
-  TableCellDelta,
-  TableCellCombined,
   TableCellCountry,
   TableCellBrowser,
   TableCellDevice,
@@ -86,16 +83,6 @@ export const Widgets = () => {
     useEndpoint<{ browser: string; visits: number; hits: number }[]>(
       'top_browsers'
     )
-
-  // Demo: calculate max and deltas for progress and delta columns
-  const maxVisitors =
-    topSources?.reduce((max, row) => Math.max(max, row.visits), 0) || 1
-
-  const maxViews =
-    topSources?.reduce((max, row) => Math.max(max, row.hits), 0) || 1
-
-  const getDelta = (row: any) =>
-    row.referrer === 'google.com' ? -2 : row.referrer === '(none)' ? -2 : 6
 
   return (
     <>
@@ -201,24 +188,17 @@ export const Widgets = () => {
               {
                 label: 'Visitors',
                 key: 'visits',
-                align: 'left',
+                align: 'right',
                 render: row => (
-                  <TableCellCombined>
-                    <TableCellProgress value={row.visits} max={maxVisitors} />
-                    <TableCellMono>{row.visits.toLocaleString()}</TableCellMono>
-                    <TableCellDelta delta={0} />
-                  </TableCellCombined>
+                  <TableCellMono>{row.visits.toLocaleString()}</TableCellMono>
                 ),
               },
               {
                 label: 'Views',
                 key: 'hits',
-                align: 'left',
+                align: 'right',
                 render: row => (
-                  <TableCellCombined>
-                    <TableCellMono>{row.hits.toLocaleString()}</TableCellMono>
-                    <TableCellDelta delta={1} />
-                  </TableCellCombined>
+                  <TableCellMono>{row.hits.toLocaleString()}</TableCellMono>
                 ),
               },
             ]}

@@ -66,10 +66,6 @@ export async function POST(req: Request) {
   - most kpis are already available in a kpi endpoint
   - date format is yyyy-mm-dd if Date or yyyy-mm-dd hh:mm:ss, never use other formats
   - limit to max 3 candidates if no source is specified
-  - return:
-    a) datasources: selected tables
-    b) reasoning: short explanation of your selection
-    c) sample_queries: suggest helpful SQL queries
 
   visualization rules:
   - do not print json code blocks about data or props for a visualization, call the right tool instead.
