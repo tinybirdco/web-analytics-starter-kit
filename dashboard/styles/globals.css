@@ -543,6 +543,7 @@ video {
   border: 1px solid var(--border-01-color);
   margin: 1.5rem 0;
   padding: 0.75rem 1rem;
+  overflow-x: hidden;
 }
 
 .tiptap pre code {
@@ -660,16 +661,20 @@ video {
   background: transparent;
 }
 
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
 .CustomScrollArea::-webkit-scrollbar:horizontal {
-  height: 10px;
+  height: 8px;
 }
 
 .CustomScrollArea::-webkit-scrollbar:vertical {
-  width: 10px;
+  width: 8px;
 }
 
 .CustomScrollArea::-webkit-scrollbar-thumb {
-  background: var(--neutral-24-color);
+  background: var(--neutral-12-color);
   border-radius: 8px;
   border: 2px solid var(--background-color);
 }

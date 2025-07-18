@@ -63,8 +63,6 @@ export function AIChatMessage({ message, messageIndex }: AIChatMessageProps) {
 
   const [offset, setOffset] = useState(OFFSET_CLOSED)
 
-  console.log('niqqa', offset)
-
   message.parts.forEach((part: any) => {
     if (
       part.type === 'tool-invocation' &&
@@ -199,6 +197,7 @@ export function AIChatMessage({ message, messageIndex }: AIChatMessageProps) {
             drag={'y'}
           >
             <Card variant="result">
+              <div className="CustomScrollArea space-y-4">
               {resultParts.map((part: any, partIndex: number) => {
                 if (part.type === 'text') {
                   return (
@@ -219,6 +218,7 @@ export function AIChatMessage({ message, messageIndex }: AIChatMessageProps) {
                 }
                 return null
               })}
+              </div>
             </Card>
           </motion.div>
         )}

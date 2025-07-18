@@ -78,6 +78,8 @@ export function AIChatForm({
     }, 10)
   }
 
+  const isDisabled = !input.trim() || isLoading
+
   return (
     <motion.div
       initial={{ opacity: 0, translateY: 6 }}
@@ -89,6 +91,9 @@ export function AIChatForm({
       }}
       style={{
         scale: 1,
+        position: 'sticky',
+        top: 0,
+        zIndex: 100,
       }}
     >
       <div className={className}>
@@ -108,12 +113,14 @@ export function AIChatForm({
             <button
               type="submit"
               className="aspect-square color-white bg-[var(--alternative-color)] size-12 rounded-lg inline-flex justify-center items-center hover:opacity-75 disabled:opacity-50 disabled:cursor-not-allowed"
-              disabled={!input.trim() || isLoading}
+              disabled={isDisabled}
             >
               {isLoading ? (
                 <Loader color="white" />
               ) : (
-                <FormatIcon color="white" />
+                <FormatIcon
+                  color={isDisabled ? 'var(--text-02-color)' : 'white'}
+                />
               )}
             </button>
           </InputWrapper>

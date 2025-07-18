@@ -74,12 +74,12 @@ export const Card = forwardRef<
         <div
           ref={ref}
           className={cn(
-            'bg-white p-5 rounded-lg scroll-smooth shadow-sm relative z-10 h-full',
+            'bg-white border-[2px] border-white p-5 rounded-lg scroll-smooth shadow-sm relative z-10 h-full CustomScrollArea',
             className
           )}
           style={{
             maxHeight: maxHeight ? `${maxHeight}px` : 'auto',
-            overflow: maxHeight ? 'scroll' : 'auto',
+            overflowY: maxHeight ? 'scroll' : 'auto',
             ...props.style,
           }}
           {...props}
