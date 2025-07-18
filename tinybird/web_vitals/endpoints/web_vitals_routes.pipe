@@ -1,7 +1,7 @@
 DESCRIPTION >
 	Returns routes with web vitals scores, sortable by best/worst performance. Supports both route-based analysis (first part of pathname) and full pathname analysis. Includes detailed metric descriptions, units, and scoring ranges. Accepts sort_order parameter ('asc' for best scores, 'desc' for worst scores), days parameter for time range (defaults to 1 day), optional domain filter, analysis_type parameter ('routes' for route-based, 'pathnames' for full pathnames), optional route filter for both analysis types, and skip/limit parameters for pagination (defaults to limit 10).
 
-TOKEN "dashboard" read
+TOKEN "dashboard" READ
 
 NODE filtered_vitals
 DESCRIPTION >
@@ -23,9 +23,13 @@ SQL >
         {% end %},
         metric_name,
         value,
-        score
+        score,
+        domain
     FROM web_vitals_events
     WHERE timestamp >= now() - interval {{Int32(days, 1, description="Number of days to analyze (defaults to 1 day)")}} day
+        {% if defined(tenant_id) %}
+        AND tenant_id = {{ String(tenant_id, description="Filter by tenant ID") }}
+        {% end %}
         {% if defined(domain) %}
         AND domain = {{ String(domain, description="Domain to filter web vitals for") }}
         {% end %}
@@ -49,10 +53,11 @@ SQL >
         metric_name,
         avg(value) as avg_value,
         avg(score) as avg_score,
-        count() as measurements
+        count() as measurements,
+        domain
     FROM filtered_vitals
     WHERE path_key != ''
-    GROUP BY path_key, metric_name
+    GROUP BY path_key, metric_name, domain
         {% if defined(analysis_type) and analysis_type == 'pathnames' %}
         , full_pathname, route
         {% end %}
@@ -82,9 +87,10 @@ SQL >
         round(avgIf(avg_score, metric_name = 'FCP'), 0) as fcp_score,
         round(avgIf(avg_score, metric_name = 'INP'), 0) as inp_score,
         round(avgIf(avg_score, metric_name = 'CLS'), 0) as cls_score,
-        count(DISTINCT metric_name) as metrics_count
+        count(DISTINCT metric_name) as metrics_count,
+        domain
     FROM route_metrics
-    GROUP BY path_key
+    GROUP BY path_key, domain
         {% if defined(analysis_type) and analysis_type == 'pathnames' %}
         , full_pathname, route
         {% end %}
@@ -114,6 +120,7 @@ SQL >
         inp_score,
         cls_score,
         'LCP=ms, TTFB=ms, FCP=ms, INP=ms, CLS=score' as metric_units,
+        domain,
         {% if defined(analysis_type) and analysis_type == 'pathnames' %}
             'pathnames' as analysis_type
         {% else %}

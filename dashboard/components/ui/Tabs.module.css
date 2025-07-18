@@ -1,0 +1,62 @@
+.tabs {
+  width: 100%;
+}
+
+.list {
+  display: inline-flex;
+  height: 24px;
+  align-items: center;
+  color: var(--text-01-color);
+  gap: 8px;
+}
+
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  border-radius: 4px;
+  padding: 2px 8px;
+  height: 24px;
+  font: var(--font-body);
+  color: var(--text-01-color);
+  transition: all 0.2s;
+  user-select: none;
+}
+
+.trigger:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--border-03-color);
+}
+
+.trigger:disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.trigger[data-state='active'] {
+  color: var(--text-color);
+  background-color: var(--background-02-color);
+}
+
+.content {
+  width: 100%;
+}
+
+.content:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--border-03-color);
+}
+
+.dark .trigger {
+  color: var(--text-02-color);
+}
+
+.dark .trigger[data-state='active'] {
+  background-color: var(--background-dark-01-color);
+  color: var(--text-inverse-color);
+}
+
+.code .trigger {
+  font: var(--font-code);
+}

@@ -18,9 +18,16 @@ DESCRIPTION >
     Get last 30 minutes metrics gropued by minute
 
 SQL >
+    %
     select toStartOfMinute(timestamp) as t, uniq(session_id) as visits
     from analytics_hits
     where timestamp >= (now() - interval 30 minute)
+        {% if defined(tenant_id) %}
+        AND tenant_id = {{ String(tenant_id, description="Filter by tenant ID") }}
+        {% end %}
+        {% if defined(domain) %}
+        AND domain = {{ String(domain, description="Filter by domain") }}
+        {% end %}
     group by toStartOfMinute(timestamp)
     order by toStartOfMinute(timestamp)
 

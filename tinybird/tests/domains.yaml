@@ -1,0 +1,30 @@
+
+- name: domains_tenant_1
+  description: Test domains for tenant_1 which has multiple domains
+  parameters: tenant_id=tenant_1
+  expected_result: |
+    {"domain":"test.org","first_seen":"2023-07-20 06:37:41","last_seen":"2025-07-09 06:37:41","total_hits":200}
+    {"domain":"myapp.com","first_seen":"2023-07-25 12:43:47","last_seen":"2025-07-15 00:43:47","total_hits":170}
+    {"domain":"app.demo.io","first_seen":"2023-07-23 19:02:05","last_seen":"2025-07-13 07:02:05","total_hits":166}
+    {"domain":"demo.site","first_seen":"2023-07-31 13:20:23","last_seen":"2025-07-11 01:20:23","total_hits":147}
+
+- name: domains_tenant_2
+  description: Test domains for tenant_2
+  parameters: tenant_id=tenant_2
+  expected_result: |
+    {"domain":"app.demo.io","first_seen":"2023-07-23 15:22:25","last_seen":"2025-07-13 03:22:25","total_hits":174}
+    {"domain":"test.org","first_seen":"2023-07-29 08:27:31","last_seen":"2025-07-08 20:27:31","total_hits":174}
+    {"domain":"myapp.com","first_seen":"2023-07-25 14:33:37","last_seen":"2025-07-14 21:04:07","total_hits":159}
+    {"domain":"demo.site","first_seen":"2023-07-21 08:39:43","last_seen":"2025-07-10 20:39:43","total_hits":138}
+
+- name: domains_empty_tenant
+  description: Test domains for tenant with no data
+  parameters: tenant_id=tenant_999
+  expected_result: ''
+
+- name: domains_default_tenant
+  description: Test domains endpoint with default empty tenant_id parameter
+  parameters: tenant_id=
+  expected_result: |
+    {"domain":"","first_seen":"2023-07-27 09:16:19","last_seen":"2025-07-17 07:26:29","total_hits":524}
+    {"domain":"demo.site","first_seen":"2023-09-30 05:00:03","last_seen":"2023-09-30 05:00:03","total_hits":1}
