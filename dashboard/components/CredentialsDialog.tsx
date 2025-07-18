@@ -75,17 +75,26 @@ export async function createJwt(token: string, tenant_id: string): Promise<strin
     'web_vitals_distribution',
     'web_vitals_events',
   ]
+
+  const datasources_resources = ['analytics_events', 'analytics_pages_mv', 'analytics_sessions_mv', 'analytics_sources_mv', 'tenant_actions_mv', 'tenant_domains_mv']
+
+  const datasources_scopes = datasources_resources.map(resource => ({
+    type: 'DATASOURCES:READ',
+    resource,
+    filter: `tenant_id = '${tenant_id}'`
+  }))
+
   const payload = {
     workspace_id: workspace_id,
     name: 'frontend_jwt',
     exp: expiration_time,
-    scopes: resources.map(resource => ({
+    scopes: [...resources.map(resource => ({
       type: 'PIPES:READ',
       resource,
       fixed_params: {
         tenant_id: tenant_id,
       },
-    })),
+    })), ...datasources_scopes],
   }
   const key = new TextEncoder().encode(token)
   return await new SignJWT(payload as any)
