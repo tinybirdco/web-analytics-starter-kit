@@ -39,7 +39,7 @@ SQL >
 
 NODE parsed_vitals
 DESCRIPTION >
-    Parse raw web_vital events and extract metric data
+    Parse raw web_vital events and extract metric data with validation
 
 SQL >
 %
@@ -62,6 +62,17 @@ SQL >
         AND timestamp >= now() - interval {{Int32(days, 1, description="Number of days to analyze (defaults to 1 day)")}} day
         AND JSONExtractString(payload, 'name') IN ('LCP', 'TTFB', 'FCP', 'INP', 'CLS')
         AND JSONExtractString(payload, 'pathname') != ''
+        -- Filter out unrealistic values that are clearly errors
+        AND JSONExtractFloat(payload, 'value') > 0
+        AND JSONExtractFloat(payload, 'value') < 60000  -- Max 60 seconds for any metric
+        -- Additional metric-specific validation
+        AND (
+            (JSONExtractString(payload, 'name') = 'LCP' AND JSONExtractFloat(payload, 'value') < 30000) OR
+            (JSONExtractString(payload, 'name') = 'TTFB' AND JSONExtractFloat(payload, 'value') < 30000) OR
+            (JSONExtractString(payload, 'name') = 'FCP' AND JSONExtractFloat(payload, 'value') < 30000) OR
+            (JSONExtractString(payload, 'name') = 'INP' AND JSONExtractFloat(payload, 'value') < 10000) OR
+            (JSONExtractString(payload, 'name') = 'CLS' AND JSONExtractFloat(payload, 'value') < 1)
+        )
         {% if defined(tenant_id) %}
         AND tenant_id = {{ String(tenant_id, description="Filter by tenant ID") }}
         {% end %}

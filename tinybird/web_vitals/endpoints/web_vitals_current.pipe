@@ -5,7 +5,8 @@ TOKEN "dashboard" READ
 
 NODE daily_vitals
 DESCRIPTION >
-    Get web vital metrics aggregated over the specified time period with averages and metadata
+    Get web vital metrics aggregated over the specified time period with averages and metadata.
+    Note: Unrealistic values (>60s for timing metrics, >1 for CLS) are filtered out as they indicate measurement errors.
 
 SQL >
 
@@ -13,6 +14,10 @@ SQL >
     SELECT
         metric_name,
         avg(value) as avg_value,
+        quantile(0.75)(value) as p75,
+        quantile(0.90)(value) as p90,
+        quantile(0.95)(value) as p95,
+        quantile(0.99)(value) as p99,
         avg(delta) as avg_delta,
         count() as measurements,
         any(units) as units,
@@ -39,7 +44,11 @@ SQL >
     SELECT
         metric_name,
         round(avg_value, 2) as avg_value,
-        round(avg_delta, 2) as avg_delta,
+        round(p75, 2) as p75,
+        round(p90, 2) as p90,
+        round(p90, 2) as p90,
+        round(p95, 2) as p95,
+        round(p99, 2) as p99,
         measurements,
         -- Calculate score based on thresholds (using same logic as web_vitals_events)
         CASE 
