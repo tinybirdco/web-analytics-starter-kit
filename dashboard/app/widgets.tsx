@@ -113,6 +113,8 @@ export const CoreVitals = () => {
               <CoreVitalGauge
                 key={metric}
                 metricEntries={grouped?.[metric] ?? []}
+                timeseriesData={groupedTimeseries[metric] || []}
+                selectedPercentile={selectedPercentile}
               />
               
               {/* Time Series Chart */}

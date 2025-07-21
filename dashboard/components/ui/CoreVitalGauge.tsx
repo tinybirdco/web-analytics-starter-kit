@@ -29,11 +29,28 @@ interface MetricEntry {
   domain: string;
 }
 
-interface CoreVitalGaugeProps {
-  metricEntries: MetricEntry[];
+interface TimeSeriesEntry {
+  hour: string;
+  metric_name: string;
+  p75: number;
+  p90: number;
+  p95: number;
+  p99: number;
+  measurements: number;
+  domain: string;
 }
 
-export const CoreVitalGauge: React.FC<CoreVitalGaugeProps> = ({ metricEntries }) => {
+interface CoreVitalGaugeProps {
+  metricEntries: MetricEntry[];
+  timeseriesData?: TimeSeriesEntry[];
+  selectedPercentile?: 'p75' | 'p90' | 'p95' | 'p99';
+}
+
+export const CoreVitalGauge: React.FC<CoreVitalGaugeProps> = ({ 
+  metricEntries, 
+  timeseriesData, 
+  selectedPercentile = 'p75' 
+}) => {
   // Loading/blank state
   if (!metricEntries || metricEntries.length === 0) {
     return (
@@ -55,9 +72,17 @@ export const CoreVitalGauge: React.FC<CoreVitalGaugeProps> = ({ metricEntries })
 
   const { metric_name, units, description } = metricEntries[0];
 
-  const mainEntry = metricEntries.reduce((a, b) => (a.measurement_count > b.measurement_count ? a : b));
-  const avgValue = mainEntry.avg_value;
-  const score = mainEntry.score;
+  // Get the current value based on selected percentile from timeseries data
+  let currentValue: number;
+  if (timeseriesData && timeseriesData.length > 0) {
+    // Get the most recent value for the selected percentile
+    const latestEntry = timeseriesData[timeseriesData.length - 1];
+    currentValue = latestEntry[selectedPercentile];
+  } else {
+    // Fallback to avg_value from distribution data
+    const mainEntry = metricEntries.reduce((a, b) => (a.measurement_count > b.measurement_count ? a : b));
+    currentValue = mainEntry.avg_value;
+  }
 
   const thresholds = METRIC_THRESHOLDS[metric_name.toUpperCase()] || { excellent: 1, good: 2, poor: 3 };
   const min = 0;
@@ -70,7 +95,7 @@ export const CoreVitalGauge: React.FC<CoreVitalGaugeProps> = ({ metricEntries })
     category: entry.performance_category,
   }));
 
-  let leftPercent = ((avgValue - min) / (max - min)) * 100;
+  let leftPercent = ((currentValue - min) / (max - min)) * 100;
   leftPercent = Math.max(0, Math.min(100, leftPercent));
   const triangleLeft = `calc(${leftPercent}% - 8px)`;
 
@@ -78,7 +103,7 @@ export const CoreVitalGauge: React.FC<CoreVitalGaugeProps> = ({ metricEntries })
     <div className="flex flex-col gap-2 w-full max-w-xl">
       <div className="flex items-center justify-between">
         <span className="font-semibold text-lg">{metric_name}</span>
-        <span className="text-2xl font-bold">{avgValue.toFixed(2)}<span className="text-base font-normal text-gray-500 ml-1">{units}</span></span>
+        <span className="text-2xl font-bold">{currentValue.toFixed(2)}<span className="text-base font-normal text-gray-500 ml-1">{units}</span></span>
         {/* <span className="rounded-full bg-green-50 text-green-700 px-3 py-1 text-sm font-semibold">{score}</span> */}
       </div>
       <div className="relative h-1 w-full mt-2 mb-2">
