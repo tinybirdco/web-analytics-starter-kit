@@ -39,63 +39,85 @@ export interface InsightData {
 export function useInsightsData() {
   const { value: timeRange } = useTimeRange()
   
-  // Parse time range to get date_from and date_to
-  const getDateRange = () => {
+  // Get hardcoded date ranges for each insight type
+  const getVisitorsDateRange = () => {
     const now = new Date()
-    const today = now.toISOString().split('T')[0]
-    
-    switch (timeRange) {
-      case '7d':
-        const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
-        return {
-          date_from: sevenDaysAgo.toISOString().split('T')[0],
-          date_to: today
-        }
-      case '30d':
-        const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
-        return {
-          date_from: thirtyDaysAgo.toISOString().split('T')[0],
-          date_to: today
-        }
-      case '90d':
-        const ninetyDaysAgo = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000)
-        return {
-          date_from: ninetyDaysAgo.toISOString().split('T')[0],
-          date_to: today
-        }
-      default:
-        return {
-          date_from: new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-          date_to: today
-        }
+    const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
+    const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000)
+    return {
+      date_from: sevenDaysAgo.toISOString().split('T')[0],
+      date_to: yesterday.toISOString().split('T')[0]
     }
   }
-
-  const dateRange = getDateRange()
   
-  // Fetch data for each insight
-  const { data: kpisData } = useEndpoint<{ visits: number; pageviews: number; bounce_rate: number }[]>(
+  const getPageviewsDateRange = () => {
+    const now = new Date()
+    const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
+    const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000)
+    return {
+      date_from: thirtyDaysAgo.toISOString().split('T')[0],
+      date_to: yesterday.toISOString().split('T')[0]
+    }
+  }
+  
+  const getBounceRateDateRange = () => {
+    const now = new Date()
+    const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
+    const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000)
+    return {
+      date_from: thirtyDaysAgo.toISOString().split('T')[0],
+      date_to: yesterday.toISOString().split('T')[0]
+    }
+  }
+  
+  const getOtherInsightsDateRange = () => {
+    const now = new Date()
+    const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
+    const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000)
+    return {
+      date_from: sevenDaysAgo.toISOString().split('T')[0],
+      date_to: yesterday.toISOString().split('T')[0]
+    }
+  }
+  
+  const visitorsDateRange = getVisitorsDateRange()
+  const pageviewsDateRange = getPageviewsDateRange()
+  const bounceRateDateRange = getBounceRateDateRange()
+  const otherInsightsDateRange = getOtherInsightsDateRange()
+  
+  // Fetch data for each insight with their specific date ranges
+  const { data: visitorsData } = useEndpoint<{ visits: number; pageviews: number; bounce_rate: number }[]>(
     'kpis',
-    dateRange
+    visitorsDateRange
+  )
+  
+  const { data: pageviewsData } = useEndpoint<{ visits: number; pageviews: number; bounce_rate: number }[]>(
+    'kpis',
+    pageviewsDateRange
+  )
+  
+  const { data: bounceRateData } = useEndpoint<{ visits: number; pageviews: number; bounce_rate: number }[]>(
+    'kpis',
+    bounceRateDateRange
   )
   
   const { data: topSourcesData } = useEndpoint<{ referrer: string; visits: number; hits: number }[]>(
     'top_sources',
-    { ...dateRange, limit: 5 }
+    { ...otherInsightsDateRange, limit: 5 }
   )
   
   const { data: topLocationsData } = useEndpoint<{ location: string; visits: number; hits: number }[]>(
     'top_locations',
-    { ...dateRange, limit: 5 }
+    { ...otherInsightsDateRange, limit: 5 }
   )
   
   const { data: topBrowsersData } = useEndpoint<{ browser: string; visits: number; hits: number }[]>(
     'top_browsers',
-    { ...dateRange, limit: 5 }
+    { ...otherInsightsDateRange, limit: 5 }
   )
 
   // Calculate trends by comparing with previous period
-  const getPreviousPeriod = () => {
+  const getPreviousPeriod = (dateRange: { date_from: string; date_to: string }) => {
     const { date_from, date_to } = dateRange
     const fromDate = new Date(date_from)
     const toDate = new Date(date_to)
@@ -110,11 +132,23 @@ export function useInsightsData() {
     }
   }
 
-  const prevDateRange = getPreviousPeriod()
+  const prevVisitorsDateRange = getPreviousPeriod(visitorsDateRange)
+  const prevPageviewsDateRange = getPreviousPeriod(pageviewsDateRange)
+  const prevBounceRateDateRange = getPreviousPeriod(bounceRateDateRange)
   
-  const { data: prevKpisData } = useEndpoint<{ visits: number; pageviews: number; bounce_rate: number }[]>(
+  const { data: prevVisitorsData } = useEndpoint<{ visits: number; pageviews: number; bounce_rate: number }[]>(
     'kpis',
-    prevDateRange
+    prevVisitorsDateRange
+  )
+  
+  const { data: prevPageviewsData } = useEndpoint<{ visits: number; pageviews: number; bounce_rate: number }[]>(
+    'kpis',
+    prevPageviewsDateRange
+  )
+  
+  const { data: prevBounceRateData } = useEndpoint<{ visits: number; pageviews: number; bounce_rate: number }[]>(
+    'kpis',
+    prevBounceRateDateRange
   )
 
   // Helper function to calculate trend
@@ -133,19 +167,19 @@ export function useInsightsData() {
 
   // Format the data for insights
   const formatInsightsData = (): InsightData | null => {
-    if (!kpisData || !topSourcesData || !topLocationsData || !topBrowsersData || !prevKpisData) {
+    if (!visitorsData || !pageviewsData || !bounceRateData || !topSourcesData || !topLocationsData || !topBrowsersData || !prevVisitorsData || !prevPageviewsData || !prevBounceRateData) {
       return null
     }
 
     // Calculate totals for current period
-    const currentVisits = kpisData.reduce((sum, day) => sum + day.visits, 0)
-    const currentPageviews = kpisData.reduce((sum, day) => sum + day.pageviews, 0)
-    const currentBounceRate = kpisData.reduce((sum, day) => sum + day.bounce_rate, 0) / kpisData.length
+    const currentVisits = visitorsData.reduce((sum, day) => sum + day.visits, 0)
+    const currentPageviews = pageviewsData.reduce((sum, day) => sum + day.pageviews, 0)
+    const currentBounceRate = bounceRateData.reduce((sum, day) => sum + day.bounce_rate, 0) / bounceRateData.length
 
     // Calculate totals for previous period
-    const prevVisits = prevKpisData?.reduce((sum, day) => sum + day.visits, 0) || 0
-    const prevPageviews = prevKpisData?.reduce((sum, day) => sum + day.pageviews, 0) || 0
-    const prevBounceRate = prevKpisData?.reduce((sum, day) => sum + day.bounce_rate, 0) / (prevKpisData?.length || 1) || 0
+    const prevVisits = prevVisitorsData?.reduce((sum, day) => sum + day.visits, 0) || 0
+    const prevPageviews = prevPageviewsData?.reduce((sum, day) => sum + day.pageviews, 0) || 0
+    const prevBounceRate = prevBounceRateData?.reduce((sum, day) => sum + day.bounce_rate, 0) / (prevBounceRateData?.length || 1) || 0
 
     return {
       topReferrers: topSourcesData.slice(0, 5),
@@ -178,6 +212,6 @@ export function useInsightsData() {
 
   return {
     data: formatInsightsData(),
-    isLoading: !kpisData || !topSourcesData || !topLocationsData || !topBrowsersData || !prevKpisData
+    isLoading: !visitorsData || !pageviewsData || !bounceRateData || !topSourcesData || !topLocationsData || !topBrowsersData || !prevVisitorsData || !prevPageviewsData || !prevBounceRateData
   }
 } 

@@ -5,7 +5,8 @@ import { useAIChat } from './AIChatProvider'
 import { Card } from '../ui/Card'
 import { Text } from '../ui/Text'
 import { cn } from '@/lib/utils'
-import { AskAiIcon } from '../ui/Icons'
+import { AskAiIcon, ExplorationIcon, LineChartIcon, ListTreeIcon } from '../ui/Icons'
+import { ListIcon } from 'lucide-react'
 
 export interface InsightCard {
   id: string
@@ -16,6 +17,7 @@ export interface InsightCard {
   metric?: string
   subtitle?: string
   isHighlighted?: boolean
+  type?: 'chart' | 'list' | 'metric'
 }
 
 interface InsightCardsProps {
@@ -87,7 +89,7 @@ export function InsightCards({
       className={cn(
         '!aspect-square w-40 h-40 rounded-lg transition-all duration-100',
         'flex flex-col justify-between p-3.5 items-start text-left',
-        'border-solid border-[var(--border-02-color)] focus:outline outline-2 outline-offset-4 outline-[var(--alternative-color)]',
+        'border-solid border-[var(--border-02-color)] focus:border- focus:border-[var(--border-03-color)]',
         getColorClasses(insight),
         isLoading && 'opacity-50 cursor-not-allowed'
       )}
@@ -96,7 +98,11 @@ export function InsightCards({
     >
       {/* Icon placeholder */}
       <div className="mb-2 w-8 h-8 bg-[var(--background-02-color)] rounded flex items-center justify-center">
-        <div className="w-4 h-4 bg-[var(--text-blue-color)] rounded-sm"></div>
+        {insight.type === 'list' ? (
+          <ListIcon size={18} />
+        ) : (
+          <LineChartIcon size={24} />
+        )}
       </div>
 
       <div className="space-y-1 flex flex-col">

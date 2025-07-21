@@ -152,7 +152,7 @@ export function AIChatMessage({ message, messageIndex }: AIChatMessageProps) {
           >
             <Card
               variant="dark"
-              className="scroll-smooth space-y-4"
+              className="scroll-smooth space-y-3"
               maxHeight={REASONING_HEIGHT + 10}
               ref={scrollRef}
             >
