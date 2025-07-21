@@ -9,7 +9,7 @@ const Tabs = React.forwardRef<
   React.ElementRef<typeof TabsPrimitive.Root>,
   React.ComponentPropsWithRef<typeof TabsPrimitive.Root> & {
     color?: 'dark'
-    variant?: 'code'
+    variant?: 'code' | 'pill'
   }
 >(({ className, color, variant, ...props }, ref) => {
   return (

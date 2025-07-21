@@ -62,11 +62,56 @@
   box-shadow: 0 0 0 2px var(--border-03-color);
 }
 
+/* Pill variant - restores previous styles */
+.pill .list {
+  display: inline-flex;
+  height: 24px;
+  align-items: center;
+  color: var(--text-01-color);
+  gap: 4px;
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+
+.pill .trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  border-radius: 4px;
+  padding: 4px 10px;
+  height: 32px;
+  font: var(--font-body);
+  font-weight: 500;
+  color: var(--text-02-color);
+  transition: all 0.2s;
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  user-select: none;
+}
+
+.pill .trigger[data-state='active'] {
+  color: var(--text-color);
+  border: 1px solid var(--border-02-color);
+}
+
+.pill .trigger[data-state='active']::after {
+  display: none;
+}
+
 .dark .trigger {
   color: var(--text-02-color);
 }
 
 .dark .trigger[data-state='active'] {
+  background-color: var(--background-dark-01-color);
+  color: var(--text-inverse-color);
+}
+
+.dark.pill .trigger[data-state='active'] {
   background-color: var(--background-dark-01-color);
   color: var(--text-inverse-color);
 }

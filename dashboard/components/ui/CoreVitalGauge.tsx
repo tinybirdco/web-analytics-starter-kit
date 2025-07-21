@@ -1,19 +1,11 @@
 import React from "react";
+import { METRIC_THRESHOLDS } from "@/lib/constants";
 
 // Color mapping for performance categories
 const CATEGORY_COLORS: Record<string, string> = {
   excellent: "#2a2aff", // blue
   good: "#a5a5ff",     // light blue
   poor: "#e5e7eb",     // gray
-};
-
-// Hardcoded thresholds for each metric (ms for all except CLS)
-const METRIC_THRESHOLDS: Record<string, { excellent: number; good: number; poor: number }> = {
-  TTFB: { excellent: 500, good: 1000, poor: 1000 },
-  FCP: { excellent: 1800, good: 3000, poor: 3000 },
-  LCP: { excellent: 2500, good: 4000, poor: 4000 },
-  CLS: { excellent: 0.1, good: 0.25, poor: 0.25 },
-  INP: { excellent: 200, good: 500, poor: 500 },
 };
 
 // Triangle SVG component

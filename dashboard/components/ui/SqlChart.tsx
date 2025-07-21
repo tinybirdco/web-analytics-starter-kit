@@ -247,7 +247,7 @@ export function SqlChart({
                 limits.map((limit, index) => {
                   const startX = (data?.[0]?.[xAxisKey] as number) ?? 0
                   const endX =
-                    (data?.[Math.floor(data?.length * 0.9) - 1]?.[
+                    (data?.[Math.floor(data?.length * 0.87)]?.[
                       xAxisKey
                     ] as number) ?? 0
 

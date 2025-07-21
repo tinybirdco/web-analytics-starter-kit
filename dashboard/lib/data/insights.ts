@@ -15,35 +15,45 @@ export const createInsightsFromData = (data: InsightData | null): InsightCard[] 
       {
         id: 'visitors-trend',
         title: 'Visitors Trend',
-        description: 'Loading visitors data...',
+        metric: '176k',
+        subtitle: 'Visitors in the last 7 days',
+        description: '176k Visitors ↗ 131%',
         question: 'How many visitors did I have in the last 7 days and what is the trend?',
         color: 'purple'
       },
       {
         id: 'pageviews-trend',
         title: 'Pageviews Trend',
-        description: 'Loading pageviews data...',
+        metric: '767k',
+        subtitle: 'Pageviews in the last 31 days',
+        description: '767k Pageviews ↘ 45%',
         question: 'How many pageviews did I have in the last 31 days and what is the trend?',
         color: 'orange'
       },
       {
         id: 'bounce-rate',
         title: 'Bounce Rate',
-        description: 'Loading bounce rate data...',
+        metric: '76%',
+        subtitle: 'Bounce rate during the last month',
+        description: '76% Bounce rate → 5%',
         question: 'What is my bounce rate for the last month and how does it compare to previous periods?',
         color: 'green'
       },
       {
         id: 'top-location',
         title: 'Top Location',
-        description: 'Loading location data...',
+        metric: 'Spain',
+        subtitle: 'is driving more traffic during the last month',
+        description: 'Spain is driving more traffic ↘ 12%',
         question: 'Which countries are driving the most traffic and how has this changed recently?',
         color: 'purple'
       },
       {
         id: 'top-browser',
         title: 'Top Browser',
-        description: 'Loading browser data...',
+        metric: 'Mozilla',
+        subtitle: 'is the most popular browser for your user base',
+        description: 'Mozilla is the most popular browser ↗ 8%',
         question: 'What are the most popular browsers among my users and how does this vary by time period?',
         color: 'orange'
       }
@@ -73,34 +83,42 @@ export const createInsightsFromData = (data: InsightData | null): InsightCard[] 
     {
       id: 'top-referrers',
       title: 'Top Referrers',
-      description: `${data.topReferrers[0]?.referrer || 'Unknown'} is the top referrer with ${formatNumber(data.topReferrers[0]?.visits || 0)} visits`,
+      description: 'Top five referrers in the last 6 days ordered by traffic',
       question: 'What are the top 5 referrers in the last 6 days ordered by traffic?',
       color: 'green'
     },
-    {
-      id: 'visitors-trend',
-      title: 'Visitors Trend',
-      description: `${formatNumber(data.visitorsTrend.visits)} Visitors ${getTrendArrow(data.visitorsTrend.trend)} ${formatPercentage(data.visitorsTrend.percentage)}`,
-      question: 'How many visitors did I have in the last 7 days and what is the trend?',
-      color: 'purple'
-    },
+          {
+        id: 'visitors-trend',
+        title: 'Visitors Trend',
+        metric: formatNumber(data.visitorsTrend.visits),
+        subtitle: `Visitors in the last 7 days`,
+        description: `${formatNumber(data.visitorsTrend.visits)} Visitors ${getTrendArrow(data.visitorsTrend.trend)} ${formatPercentage(data.visitorsTrend.percentage)}`,
+        question: 'How many visitors did I have in the last 7 days and what is the trend?',
+        color: 'purple'
+      },
     {
       id: 'pageviews-trend',
       title: 'Pageviews Trend',
+      metric: formatNumber(data.pageviewsTrend.pageviews),
+      subtitle: `Pageviews in the last 31 days`,
       description: `${formatNumber(data.pageviewsTrend.pageviews)} Pageviews ${getTrendArrow(data.pageviewsTrend.trend)} ${formatPercentage(data.pageviewsTrend.percentage)}`,
       question: 'How many pageviews did I have in the last 31 days and what is the trend?',
       color: 'orange'
     },
-    {
-      id: 'bounce-rate',
-      title: 'Bounce Rate',
-      description: `${formatPercentage(data.bounceRate.rate)} Bounce rate ${getTrendArrow(data.bounceRate.trend)} ${formatPercentage(data.bounceRate.percentage)}`,
-      question: 'What is my bounce rate for the last month and how does it compare to previous periods?',
-      color: 'green'
-    },
+          {
+        id: 'bounce-rate',
+        title: 'Bounce Rate',
+        metric: formatPercentage(data.bounceRate.rate),
+        subtitle: `Bounce rate during the last month`,
+        description: `${formatPercentage(data.bounceRate.rate)} Bounce rate ${getTrendArrow(data.bounceRate.trend)} ${formatPercentage(data.bounceRate.percentage)}`,
+        question: 'What is my bounce rate for the last month and how does it compare to previous periods?',
+        color: 'green'
+      },
     {
       id: 'top-location',
       title: 'Top Location',
+      metric: data.topLocation.location,
+      subtitle: `is driving more traffic during the last month`,
       description: `${data.topLocation.location} is driving more traffic ${getTrendArrow(data.topLocation.trend)} ${formatPercentage(data.topLocation.percentage)}`,
       question: 'Which countries are driving the most traffic and how has this changed recently?',
       color: 'purple'
@@ -108,6 +126,8 @@ export const createInsightsFromData = (data: InsightData | null): InsightCard[] 
     {
       id: 'top-browser',
       title: 'Top Browser',
+      metric: data.topBrowser.browser,
+      subtitle: `is the most popular browser for your user base`,
       description: `${data.topBrowser.browser} is the most popular browser ${getTrendArrow(data.topBrowser.trend)} ${formatPercentage(data.topBrowser.percentage)}`,
       question: 'What are the most popular browsers among my users and how does this vary by time period?',
       color: 'orange'

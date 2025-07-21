@@ -47,15 +47,15 @@ export default function DashboardPage() {
             <img src="/icon.svg" alt="" width={24} height={24} />
           </header>
           <div className="px-4">
-            <main className="max-w-screen-xl mx-auto space-y-10">
+            <main className="max-w-[1216px] mx-auto space-y-10">
               <div className="w-full overflow-x-auto">
-                <div className="grid grid-flow-col grid-cols-6 gap-4">
+                <div className="grid grid-flow-col auto-cols-fr gap-4 min-w-max">
                   {/* AI Chat Modal */}
                   <Dialog open={open} onOpenChange={setOpen}>
                     <DialogTrigger asChild>
                       <button
                         className={cn(
-                          'aspect-square min-w-40 min-h-40 rounded-lg bg-[var(--text-blue-color)]',
+                          'aspect-square w-40 h-40 rounded-lg bg-[var(--text-blue-color)]',
                           'hover:opacity-90 transition-opacity duration-100',
                           'flex flex-col justify-between p-5 items-start'
                         )}
@@ -69,46 +69,53 @@ export default function DashboardPage() {
                           <Text variant="body" color="inverse">
                             Ask your data anything
                           </Text>
-                          </div>
-                        </button>
-                      </DialogTrigger>
-                      {/* Empty DialogContent to keep overlay, but not use the content box */}
-                      <DialogContent className="!bg-transparent !shadow-none !border-none !p-0">
-                        <AIChatContainer className="max-h-screen max-w-2xl overflow-y-auto" />
-                      </DialogContent>
-                    </Dialog>
-                    {/* End AI Chat Modal */}
+                        </div>
+                      </button>
+                    </DialogTrigger>
+                    {/* Empty DialogContent to keep overlay, but not use the content box */}
+                    <DialogContent className="!bg-transparent !shadow-none !border-none !p-0">
+                      <AIChatContainer className="max-h-screen max-w-2xl overflow-y-auto" />
+                    </DialogContent>
+                  </Dialog>
+                  {/* End AI Chat Modal */}
 
-                    {/* Preloaded Insight Cards */}
-                    <InsightCards 
-                      insights={insights} 
-                      onCardClick={() => setOpen(true)}
-                      isLoading={insightsLoading}
-                    />
+                  {/* Preloaded Insight Cards */}
+                  <InsightCards
+                    insights={insights}
+                    onCardClick={() => setOpen(true)}
+                    isLoading={insightsLoading}
+                  />
+                </div>
+              </div>
+
+              <nav className="flex justify-between items-center">
+                <div className="flex items-center gap-4">
+                  <Text
+                    variant="displaymedium"
+                    color="default"
+                    className="tracking-tight"
+                  >
+                    Web Analytics & Insights
+                  </Text>
+                  <div>
+                    <DomainSelect />
                   </div>
                 </div>
-
-            <nav className="flex justify-between items-center">
+                <div>
+                  <TimeRangeSelect
+                    value={timeRangeValue}
+                    onChange={setTimeRangeValue}
+                    options={timeRanges}
+                  />
+                </div>
+              </nav>
               <div>
-                <DomainSelect />
+                {isAuthenticated && !isTokenValid && <p>error</p>}
+                {isAuthenticated && isTokenValid && <DashboardTabs />}
+                {!isAuthenticated && <CredentialsDialog />}
               </div>
-              <div>
-                <TimeRangeSelect
-                  value={timeRangeValue}
-                  onChange={setTimeRangeValue}
-                  options={timeRanges}
-                />
-              </div>
-            </nav>
-            <div>
-              {isAuthenticated && !isTokenValid && <p>error</p>}
-              {isAuthenticated && isTokenValid && (
-                <DashboardTabs />
-              )}
-              {!isAuthenticated && <CredentialsDialog />}
-            </div>
-          </main>
-        </div>
+            </main>
+          </div>
         </>
       </Suspense>
     </AIChatProvider>
