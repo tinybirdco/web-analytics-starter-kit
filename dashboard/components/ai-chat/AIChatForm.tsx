@@ -70,7 +70,6 @@ export function AIChatForm({
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     const savedInput = input // Save the current input value
-    setMessages([])
     handleSubmit(e)
     setTimeout(() => {
       setInput(savedInput) // Restore the input value after handleSubmit clears it
@@ -115,13 +114,9 @@ export function AIChatForm({
               className="aspect-square color-white bg-[var(--alternative-color)] size-12 rounded-lg inline-flex justify-center items-center hover:opacity-75 disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={isDisabled}
             >
-              {isLoading ? (
-                <Loader color="white" />
-              ) : (
-                <FormatIcon
-                  color={isDisabled ? 'var(--text-02-color)' : 'white'}
-                />
-              )}
+              <FormatIcon
+                color={isDisabled ? 'var(--text-02-color)' : 'white'}
+              />
             </button>
           </InputWrapper>
           {error && (

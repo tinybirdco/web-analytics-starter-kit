@@ -49,6 +49,7 @@ export function DomainSelect({ className, style }: { className?: string, style?:
       </Text>
     }
   }
+
   if (options.length === 1) {
     return <span className="block text-xs font-medium text-[var(--text-02-color)] mb-1">No domains found</span>
   }
