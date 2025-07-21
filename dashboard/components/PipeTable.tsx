@@ -61,8 +61,11 @@ export function PipeTable({
                       style={{
                         textAlign: col.align || 'left',
                         fontWeight: j === 0 ? '600' : '400',
-                        maxWidth: col.maxWidth ? `${col.maxWidth}px` : undefined,
-                        width: col.maxWidth ? `${col.maxWidth}px` : undefined,
+                        maxWidth: col.maxWidth ? `${col.maxWidth}px` : (j === 0 ? '200px' : undefined),
+                        width: col.maxWidth ? `${col.maxWidth}px` : (j === 0 ? '200px' : undefined),
+                        overflow: (col.maxWidth || j === 0) ? 'hidden' : undefined,
+                        textOverflow: (col.maxWidth || j === 0) ? 'ellipsis' : undefined,
+                        whiteSpace: (col.maxWidth || j === 0) ? 'nowrap' : undefined
                       }}
                     >
                       <Skeleton height={16} width={j === 0 ? '60%' : '40%'} />
@@ -84,11 +87,11 @@ export function PipeTable({
                           justifyContent: col.align === 'right' ? 'flex-end' : 'flex-start',
                           paddingLeft: col.align === 'left' || j === 0 ? '0px' : '16px',
                           paddingRight: col.align === 'right' || j === columns.length - 1 ? '0px' : '16px',
-                          maxWidth: col.maxWidth ? `${col.maxWidth}px` : undefined,
-                          width: col.maxWidth ? `${col.maxWidth}px` : undefined,
-                          overflow: col.maxWidth ? 'hidden' : undefined,
-                          textOverflow: col.maxWidth ? 'ellipsis' : undefined,
-                          whiteSpace: col.maxWidth ? 'nowrap' : undefined
+                          maxWidth: col.maxWidth ? `${col.maxWidth}px` : (j === 0 ? '200px' : undefined),
+                          width: col.maxWidth ? `${col.maxWidth}px` : (j === 0 ? '200px' : undefined),
+                          overflow: (col.maxWidth || j === 0) ? 'hidden' : undefined,
+                          textOverflow: (col.maxWidth || j === 0) ? 'ellipsis' : undefined,
+                          whiteSpace: (col.maxWidth || j === 0) ? 'nowrap' : undefined
                         }}
                       >
                         {col.render

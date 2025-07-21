@@ -19,6 +19,7 @@ if (process.env.GOOGLE_CREDENTIALS_JSON) {
 
   process.env.GOOGLE_APPLICATION_CREDENTIALS = credsPath;
 }
+
 const vertex = createVertex({
   location: 'europe-west1',
   project: 'gen-lang-client-0705305160'

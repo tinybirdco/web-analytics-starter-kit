@@ -18,6 +18,7 @@ import { AskAiIcon } from '@/components/ui/Icons'
 import { DomainSelect } from '@/components/ui/DomainSelect'
 import { createInsightsFromData } from '@/lib/data/insights'
 import { useInsightsData } from '@/lib/hooks/use-insights-data'
+import useCurrentVisitors from '@/lib/hooks/use-current-visitors'
 import React from 'react'
 
 export default function DashboardPage() {
@@ -88,25 +89,35 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-              <nav className="flex justify-between items-center">
+              <nav className="flex justify-between items-start">
                 <div className="flex items-center gap-4">
-                  <Text
-                    variant="displaymedium"
-                    color="default"
-                    className="tracking-tight"
-                  >
-                    Web Analytics & Insights
-                  </Text>
+                  <div className="flex flex-col gap-1">
+                    <Text
+                      variant="displaymedium"
+                      color="default"
+                      className="tracking-tight"
+                    >
+                      Web Analytics & Insights
+                    </Text>
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                      <Text variant="body" color="01">
+                        {useCurrentVisitors()} visitors online
+                      </Text>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4">
                   <div>
                     <DomainSelect />
                   </div>
-                </div>
-                <div>
-                  <TimeRangeSelect
-                    value={timeRangeValue}
-                    onChange={setTimeRangeValue}
-                    options={timeRanges}
-                  />
+                  <div>
+                    <TimeRangeSelect
+                      value={timeRangeValue}
+                      onChange={setTimeRangeValue}
+                      options={timeRanges}
+                    />
+                  </div>
                 </div>
               </nav>
               <div>

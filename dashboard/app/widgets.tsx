@@ -8,6 +8,8 @@ import {
   TableCellCountry,
   TableCellBrowser,
   TableCellDevice,
+  TableCellCombined,
+  TableCellProgress,
 } from '@/components/table/TableCells'
 import { CoreVitalGauge } from '@/components/ui/CoreVitalGauge'
 import { Card } from '@/components/ui/Card'
@@ -202,7 +204,7 @@ export const Widgets = () => {
         </Card>
 
         {/* Top Pages */}
-        <Card maxHeight={400}>
+        <Card maxHeight={400} viewAll>
           <PipeTable
             title="Top pages"
             data={topPages?.slice(0, 10) || []}
@@ -215,17 +217,23 @@ export const Widgets = () => {
               {
                 label: 'Visitors',
                 key: 'visits',
-                align: 'right',
-                maxWidth: 100,
-                render: row => (
-                  <TableCellMono>{row.visits.toLocaleString()}</TableCellMono>
-                ),
+                align: 'left',
+                maxWidth: 64,
+                render: row => {
+                  const maxVisits = Math.max(...(topPages?.slice(0, 10) || []).map(p => p.visits))
+                  return (
+                    <TableCellCombined>
+                      <TableCellProgress value={row.visits} max={maxVisits} />
+                      <TableCellMono>{row.visits.toLocaleString()}</TableCellMono>
+                    </TableCellCombined>
+                  )
+                },
               },
               {
                 label: 'Views',
                 key: 'hits',
                 align: 'right',
-                maxWidth: 100,
+                maxWidth: 64,
                 render: row => (
                   <TableCellMono>{row.hits.toLocaleString()}</TableCellMono>
                 ),
@@ -235,7 +243,7 @@ export const Widgets = () => {
         </Card>
 
         {/* Top Locations */}
-        <Card maxHeight={400}>
+        <Card maxHeight={400} viewAll>
           <PipeTable
             title="Top locations"
             data={topLocations?.slice(0, 10) || []}
@@ -248,17 +256,23 @@ export const Widgets = () => {
               {
                 label: 'Visitors',
                 key: 'visits',
-                align: 'right',
-                maxWidth: 100,
-                render: row => (
-                  <TableCellMono>{row.visits.toLocaleString()}</TableCellMono>
-                ),
+                align: 'left',
+                maxWidth: 64,
+                render: row => {
+                  const maxVisits = Math.max(...(topLocations?.slice(0, 10) || []).map(p => p.visits))
+                  return (
+                    <TableCellCombined>
+                      <TableCellProgress value={row.visits} max={maxVisits} />
+                      <TableCellMono>{row.visits.toLocaleString()}</TableCellMono>
+                    </TableCellCombined>
+                  )
+                },
               },
               {
                 label: 'Views',
                 key: 'hits',
                 align: 'right',
-                maxWidth: 100,
+                maxWidth: 64,
                 render: row => (
                   <TableCellMono>{row.hits.toLocaleString()}</TableCellMono>
                 ),
@@ -268,7 +282,7 @@ export const Widgets = () => {
         </Card>
 
         {/* Top Sources (already present) */}
-        <Card maxHeight={400}>
+        <Card maxHeight={400} viewAll>
           <PipeTable
             title="Top sources"
             data={topSources?.slice(0, 10) || []}
@@ -281,17 +295,23 @@ export const Widgets = () => {
               {
                 label: 'Visitors',
                 key: 'visits',
-                align: 'right',
-                maxWidth: 100,
-                render: row => (
-                  <TableCellMono>{row.visits.toLocaleString()}</TableCellMono>
-                ),
+                align: 'left',
+                maxWidth: 64,
+                render: row => {
+                  const maxVisits = Math.max(...(topSources?.slice(0, 10) || []).map(p => p.visits))
+                  return (
+                    <TableCellCombined>
+                      <TableCellProgress value={row.visits} max={maxVisits} />
+                      <TableCellMono>{row.visits.toLocaleString()}</TableCellMono>
+                    </TableCellCombined>
+                  )
+                },
               },
               {
                 label: 'Views',
                 key: 'hits',
                 align: 'right',
-                maxWidth: 100,
+                maxWidth: 64,
                 render: row => (
                   <TableCellMono>{row.hits.toLocaleString()}</TableCellMono>
                 ),
@@ -301,7 +321,7 @@ export const Widgets = () => {
         </Card>
 
         {/* Top Devices (already present) */}
-        <Card maxHeight={400}>
+        <Card maxHeight={400} viewAll>
           <PipeTable
             title="Top devices"
             data={topDevices?.slice(0, 10) || []}
@@ -315,7 +335,7 @@ export const Widgets = () => {
                 label: 'Visitors',
                 key: 'visits',
                 align: 'right',
-                maxWidth: 100,
+                maxWidth: 64,
                 render: row => (
                   <TableCellMono>
                     {row.visits?.toLocaleString?.()}
@@ -326,7 +346,7 @@ export const Widgets = () => {
                 label: 'Views',
                 key: 'hits',
                 align: 'right',
-                maxWidth: 100,
+                maxWidth: 64,
                 render: row => (
                   <TableCellMono>{row.hits.toLocaleString()}</TableCellMono>
                 ),
@@ -336,7 +356,7 @@ export const Widgets = () => {
         </Card>
 
         {/* Top Browsers */}
-        <Card maxHeight={400}>
+        <Card maxHeight={400} viewAll>
           <PipeTable
             title="Top browsers"
             data={topBrowsers?.slice(0, 10) || []}
@@ -350,7 +370,7 @@ export const Widgets = () => {
                 label: 'Visitors',
                 key: 'visits',
                 align: 'right',
-                maxWidth: 100,
+                maxWidth: 64,
                 render: row => (
                   <TableCellMono>{row.visits.toLocaleString()}</TableCellMono>
                 ),
@@ -359,7 +379,7 @@ export const Widgets = () => {
                 label: 'Views',
                 key: 'hits',
                 align: 'right',
-                maxWidth: 100,
+                maxWidth: 64,
                 render: row => (
                   <TableCellMono>{row.hits.toLocaleString()}</TableCellMono>
                 ),

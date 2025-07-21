@@ -59,6 +59,7 @@ export const Card = forwardRef<
   React.HTMLAttributes<HTMLDivElement> & {
     variant?: CardVariant
     maxHeight?: number
+    viewAll?: boolean
     title?: string
   }
 >(
@@ -66,6 +67,7 @@ export const Card = forwardRef<
     {
       children,
       maxHeight = undefined,
+      viewAll = false,
       className,
       variant = 'default',
       title,
@@ -78,9 +80,9 @@ export const Card = forwardRef<
     const [showSeeMore, setShowSeeMore] = useState(false)
     const contentRef = useRef<HTMLDivElement>(null)
 
-    // Check if content overflows and show fade/see more button
+    // Check if content overflows and show fade/see more button (only when viewAll is true)
     useEffect(() => {
-      if (!maxHeight || !contentRef.current) return
+      if (!maxHeight || !viewAll || !contentRef.current) return
 
       const checkOverflow = () => {
         const element = contentRef.current
@@ -102,7 +104,7 @@ export const Card = forwardRef<
           resizeObserver.unobserve(contentRef.current)
         }
       }
-    }, [maxHeight, children])
+    }, [maxHeight, viewAll, children])
 
     return (
       <>
@@ -111,7 +113,7 @@ export const Card = forwardRef<
             ref={ref}
             className={cn(
               'bg-white border-[2px] border-white p-5 rounded-lg shadow-sm relative z-10 h-full',
-              maxHeight ? 'overflow-hidden' : '',
+              maxHeight && !viewAll ? 'overflow-hidden' : '',
               className
             )}
             style={{
@@ -122,22 +124,25 @@ export const Card = forwardRef<
           >
             <div
               ref={contentRef}
-              className="h-full"
+              className={cn(
+                'h-full',
+                maxHeight && !viewAll ? 'CustomScrollArea' : ''
+              )}
               style={{
-                maxHeight: maxHeight ? `${maxHeight - 40}px` : 'auto', // Account for padding
-                overflow: 'hidden',
+                maxHeight: maxHeight && !viewAll ? `${maxHeight - 40}px` : 'auto', // Account for padding
+                overflow: maxHeight && !viewAll ? 'auto' : 'hidden',
               }}
             >
               {children}
             </div>
 
-            {/* Fade overlay */}
-            {showFade && (
+            {/* Fade overlay - only show when viewAll is true */}
+            {showFade && viewAll && (
               <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent via-white/80 pointer-events-none" />
             )}
 
-            {/* See more button */}
-            {showSeeMore && (
+            {/* See more button - only show when viewAll is true */}
+            {showSeeMore && viewAll && (
               <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
                 <Button
                   variant="outline"
@@ -154,12 +159,14 @@ export const Card = forwardRef<
           </div>
         </CardWrapper>
 
-        {/* Dialog for full content */}
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto !shadow-none !rounded-xl">
-            <div className="">{children}</div>
-          </DialogContent>
-        </Dialog>
+        {/* Dialog for full content - only when viewAll is true */}
+        {viewAll && (
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto !shadow-none !rounded-xl">
+              <div className="">{children}</div>
+            </DialogContent>
+          </Dialog>
+        )}
       </>
     )
   }
