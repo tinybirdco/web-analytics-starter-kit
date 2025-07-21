@@ -29,7 +29,6 @@ interface InsightCardsProps {
 
 export function InsightCards({
   insights,
-  className,
   onCardClick,
   isLoading = false,
 }: InsightCardsProps) {
