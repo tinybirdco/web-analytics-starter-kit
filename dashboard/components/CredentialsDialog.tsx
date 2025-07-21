@@ -67,7 +67,6 @@ export async function createJwt(token: string, tenant_id: string): Promise<strin
     'top_browsers',
     'top_pages',
     'trend',
-    'analytics_hits',
     'domain',
     'current_visitors',
     'web_vitals_current',
@@ -138,9 +137,7 @@ export default function CredentialsDialog() {
     if (!token || (hostUrl === 'other' && !hostName)) return
     
     let jwt = token
-    if (tenant_id) {
-      jwt = await createJwt(token, tenant_id)
-    }
+    jwt = await createJwt(token, tenant_id || '')
 
     const url = new URL(window.location.href)
     url.searchParams.set('token', jwt)
@@ -166,7 +163,7 @@ export default function CredentialsDialog() {
             <label>Token</label>
             <Input
               name="token"
-              placeholder="Paste your 'dashboard' token"
+              placeholder="Paste your 'admin' token to generate a scoped JWT token"
               onChange={handleTokenChange}
             />
             <Link
@@ -174,7 +171,7 @@ export default function CredentialsDialog() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              Get your dashboard token
+              Get your admin token
             </Link>
           </div>
 
