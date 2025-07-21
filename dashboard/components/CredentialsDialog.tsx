@@ -67,7 +67,6 @@ export async function createJwt(token: string, tenant_id: string): Promise<strin
     'top_browsers',
     'top_pages',
     'trend',
-    'analytics_hits',
     'domain',
     'current_visitors',
     'web_vitals_current',
@@ -138,9 +137,7 @@ export default function CredentialsDialog() {
     if (!token || (hostUrl === 'other' && !hostName)) return
     
     let jwt = token
-    if (tenant_id) {
-      jwt = await createJwt(token, tenant_id)
-    }
+    jwt = await createJwt(token, tenant_id || '')
 
     const url = new URL(window.location.href)
     url.searchParams.set('token', jwt)
