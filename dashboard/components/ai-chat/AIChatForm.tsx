@@ -54,6 +54,7 @@ export function AIChatForm({
     error,
     setMessages,
     setInput,
+    lastSubmittedQuestion,
   } = useAIChat()
 
   const messagesEndRef = useRef<HTMLDivElement>(null)
@@ -72,7 +73,6 @@ export function AIChatForm({
     const savedInput = input // Save the current input value
     handleSubmit(e)
     setTimeout(() => {
-      setInput(savedInput) // Restore the input value after handleSubmit clears it
       messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
     }, 10)
   }
@@ -104,7 +104,7 @@ export function AIChatForm({
             <input
               id="ai-chat-input"
               className="flex-1 resize-none text-lg !bg-none placeholder:text-[var(--text-02-color)] disabled:bg-white pr-3"
-              placeholder={placeholder}
+              placeholder={lastSubmittedQuestion || placeholder}
               value={input}
               onChange={handleInputChange}
               disabled={isLoading}

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { createContext, useContext, ReactNode } from 'react'
+import React, { createContext, useContext, ReactNode, useState } from 'react'
 import { useChat } from '@ai-sdk/react'
 
 interface AIChatContextType {
@@ -13,6 +13,8 @@ interface AIChatContextType {
   isLoading: boolean
   error: any
   setMessages: (messages: any[] | ((messages: any[]) => any[])) => void
+  lastSubmittedQuestion: string
+  setLastSubmittedQuestion: (question: string) => void
 }
 
 const AIChatContext = createContext<AIChatContextType | undefined>(undefined)
@@ -26,9 +28,14 @@ export function AIChatProvider({ children, maxSteps = 30 }: AIChatProviderProps)
   const chatState = useChat({
     maxSteps,
   })
+  const [lastSubmittedQuestion, setLastSubmittedQuestion] = useState('')
 
   return (
-    <AIChatContext.Provider value={{ ...chatState }}>
+    <AIChatContext.Provider value={{ 
+      ...chatState, 
+      lastSubmittedQuestion, 
+      setLastSubmittedQuestion 
+    }}>
       {children}
     </AIChatContext.Provider>
   )

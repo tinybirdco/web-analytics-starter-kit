@@ -7,6 +7,7 @@ export type PipeTableColumn = {
   label: string
   key: string
   align?: 'left' | 'right' | 'center'
+  maxWidth?: number
   render?: (
     row: Record<string, any>,
     value: any,
@@ -35,7 +36,11 @@ export function PipeTable({
               <th
                 key={col.key}
                 className="border-b border-[var(--border-01-color)] align-middle pb-1"
-                style={{ textAlign: col.align || 'left' }}
+                style={{ 
+                  textAlign: col.align || 'left',
+                  maxWidth: col.maxWidth ? `${col.maxWidth}px` : undefined,
+                  width: col.maxWidth ? `${col.maxWidth}px` : undefined
+                }}
               >
                 <Text variant="caption" color="01">
                   {col.label}
@@ -56,6 +61,8 @@ export function PipeTable({
                       style={{
                         textAlign: col.align || 'left',
                         fontWeight: j === 0 ? '600' : '400',
+                        maxWidth: col.maxWidth ? `${col.maxWidth}px` : undefined,
+                        width: col.maxWidth ? `${col.maxWidth}px` : undefined,
                       }}
                     >
                       <Skeleton height={16} width={j === 0 ? '60%' : '40%'} />
@@ -77,6 +84,11 @@ export function PipeTable({
                           justifyContent: col.align === 'right' ? 'flex-end' : 'flex-start',
                           paddingLeft: col.align === 'left' || j === 0 ? '0px' : '16px',
                           paddingRight: col.align === 'right' || j === columns.length - 1 ? '0px' : '16px',
+                          maxWidth: col.maxWidth ? `${col.maxWidth}px` : undefined,
+                          width: col.maxWidth ? `${col.maxWidth}px` : undefined,
+                          overflow: col.maxWidth ? 'hidden' : undefined,
+                          textOverflow: col.maxWidth ? 'ellipsis' : undefined,
+                          whiteSpace: col.maxWidth ? 'nowrap' : undefined
                         }}
                       >
                         {col.render

@@ -87,7 +87,7 @@ const AnalyzingCard = () => {
             </div>
             <div className="tiptap">
               <Text variant="body" color="02">
-                I'm processing your request and preparing to analyze your analytics data. This may take a few moments...
+                I&apos;m processing your request and preparing to analyze your analytics data. This may take a few moments...
               </Text>
             </div>
           </Card>
@@ -127,8 +127,8 @@ export function AIChatContainer({
           )
         })}
         
-        {/* Show analyzing card when loading */}
-        {isLoading && <AnalyzingCard />}
+        {/* Show analyzing card only when loading and no messages yet */}
+        {isLoading && cards.length === 0 && <AnalyzingCard />}
       </div>
     </div>
   )

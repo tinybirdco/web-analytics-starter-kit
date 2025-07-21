@@ -127,6 +127,7 @@ export const Widgets = () => {
                 label: 'Visitors',
                 key: 'visits',
                 align: 'right',
+                maxWidth: 100,
                 render: row => (
                   <TableCellMono>{row.visits.toLocaleString()}</TableCellMono>
                 ),
@@ -135,6 +136,7 @@ export const Widgets = () => {
                 label: 'Views',
                 key: 'hits',
                 align: 'right',
+                maxWidth: 100,
                 render: row => (
                   <TableCellMono>{row.hits.toLocaleString()}</TableCellMono>
                 ),
@@ -158,6 +160,7 @@ export const Widgets = () => {
                 label: 'Visitors',
                 key: 'visits',
                 align: 'right',
+                maxWidth: 100,
                 render: row => (
                   <TableCellMono>{row.visits.toLocaleString()}</TableCellMono>
                 ),
@@ -166,6 +169,7 @@ export const Widgets = () => {
                 label: 'Views',
                 key: 'hits',
                 align: 'right',
+                maxWidth: 100,
                 render: row => (
                   <TableCellMono>{row.hits.toLocaleString()}</TableCellMono>
                 ),
@@ -189,6 +193,7 @@ export const Widgets = () => {
                 label: 'Visitors',
                 key: 'visits',
                 align: 'right',
+                maxWidth: 100,
                 render: row => (
                   <TableCellMono>{row.visits.toLocaleString()}</TableCellMono>
                 ),
@@ -197,6 +202,7 @@ export const Widgets = () => {
                 label: 'Views',
                 key: 'hits',
                 align: 'right',
+                maxWidth: 100,
                 render: row => (
                   <TableCellMono>{row.hits.toLocaleString()}</TableCellMono>
                 ),
@@ -220,6 +226,7 @@ export const Widgets = () => {
                 label: 'Visitors',
                 key: 'visits',
                 align: 'right',
+                maxWidth: 100,
                 render: row => (
                   <TableCellMono>
                     {row.visits?.toLocaleString?.()}
@@ -230,6 +237,7 @@ export const Widgets = () => {
                 label: 'Views',
                 key: 'hits',
                 align: 'right',
+                maxWidth: 100,
                 render: row => (
                   <TableCellMono>{row.hits.toLocaleString()}</TableCellMono>
                 ),
@@ -253,6 +261,7 @@ export const Widgets = () => {
                 label: 'Visitors',
                 key: 'visits',
                 align: 'right',
+                maxWidth: 100,
                 render: row => (
                   <TableCellMono>{row.visits.toLocaleString()}</TableCellMono>
                 ),
@@ -261,6 +270,7 @@ export const Widgets = () => {
                 label: 'Views',
                 key: 'hits',
                 align: 'right',
+                maxWidth: 100,
                 render: row => (
                   <TableCellMono>{row.hits.toLocaleString()}</TableCellMono>
                 ),
