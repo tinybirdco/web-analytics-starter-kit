@@ -71,6 +71,10 @@ export function AIChatForm({
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     const savedInput = input // Save the current input value
+    
+    // Clear previous messages before submitting
+    setMessages([])
+    
     handleSubmit(e)
     setTimeout(() => {
       messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
