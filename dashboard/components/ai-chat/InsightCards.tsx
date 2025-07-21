@@ -4,6 +4,7 @@ import React, { useEffect, useRef } from 'react'
 import { useAIChat } from './AIChatProvider'
 import { Card } from '../ui/Card'
 import { Text } from '../ui/Text'
+import { Skeleton } from '../ui/Skeleton'
 import { cn } from '@/lib/utils'
 import { AskAiIcon, ExplorationIcon, LineChartIcon, ListTreeIcon } from '../ui/Icons'
 import { ListIcon } from 'lucide-react'
@@ -18,6 +19,7 @@ export interface InsightCard {
   subtitle?: string
   isHighlighted?: boolean
   type?: 'chart' | 'list' | 'metric'
+  isLoading?: boolean
 }
 
 interface InsightCardsProps {
@@ -94,37 +96,42 @@ export function InsightCards({
       )}
       aria-label={`Ask: ${insight.title}`}
       disabled={isLoading}
-    >
-      {/* Icon placeholder */}
-      <div className="mb-2 w-8 h-8 bg-[var(--background-02-color)] rounded flex items-center justify-center">
-        {insight.type === 'list' ? (
-          <ListIcon size={18} />
-        ) : (
-          <LineChartIcon size={24} />
-        )}
-      </div>
+          >
+        {/* Icon placeholder */}
+        <div className="mb-2 w-8 h-8 bg-[var(--background-02-color)] rounded flex items-center justify-center">
+          {insight.type === 'list' ? (
+            <ListIcon size={18} />
+          ) : (
+            <LineChartIcon size={24} />
+          )}
+        </div>
 
-      <div className="space-y-1 flex flex-col">
-        {insight.metric ? (
-          <>
-            <Text variant="displayxsmall" color="default" className="font-bold text-2xl">
-              {insight.metric}
-            </Text>
-            <Text variant="body" color="01" className="text-sm leading-tight line-clamp-2">
-              {insight.subtitle || insight.description}
-            </Text>
-          </>
-        ) : (
-          <>
-            <Text variant="displayxsmall" color="default" className="font-semibold">
-              {insight.title}
-            </Text>
-            <Text variant="body" color="01" className="text-sm leading-tight line-clamp-2">
-              {insight.description}
-            </Text>
-          </>
-        )}
-      </div>
-    </button>
+        <div className="space-y-1 flex flex-col">
+          {insight.isLoading ? (
+            <>
+              <Skeleton width="60px" height="24px" />
+              <Skeleton width="100px" height="16px" />
+            </>
+          ) : insight.metric ? (
+            <>
+              <Text variant="displayxsmall" color="default" className="font-bold text-2xl">
+                {insight.metric}
+              </Text>
+              <Text variant="body" color="01" className="text-sm leading-tight line-clamp-2">
+                {insight.subtitle || insight.description}
+              </Text>
+            </>
+          ) : (
+            <>
+              <Text variant="displayxsmall" color="default" className="font-semibold">
+                {insight.title}
+              </Text>
+              <Text variant="body" color="01" className="text-sm leading-tight line-clamp-2">
+                {insight.description}
+              </Text>
+            </>
+          )}
+        </div>
+      </button>
   ))
 }

@@ -7,7 +7,7 @@ import {
   SelectRoot,
   SelectSeparator,
   SelectTrigger,
-  SelectValue
+  SelectValue,
 } from './Select'
 
 export function TimeRangeSelect({
@@ -15,7 +15,7 @@ export function TimeRangeSelect({
   onChange,
   options,
   className,
-  style
+  style,
 }: {
   value: string
   onChange: (value: string) => void
@@ -23,7 +23,8 @@ export function TimeRangeSelect({
   className?: string
   style?: React.CSSProperties
 }) {
-  const defaultValue = (options.find(tr => tr.value === value) || options[2]).value
+  const defaultValue = (options.find(tr => tr.value === value) || options[2])
+    .value
   return (
     <SelectRoot
       defaultValue={defaultValue}
@@ -32,7 +33,8 @@ export function TimeRangeSelect({
     >
       <SelectTrigger className={className} style={{ minWidth: 160, ...style }}>
         <span>
-          Last <SelectValue placeholder="Select time range" />
+          {['today', 'yesterday'].includes(value) ? '' : 'Last '}
+          <SelectValue placeholder="Select time range" />
         </span>
       </SelectTrigger>
       <SelectContent sideOffset={8}>
