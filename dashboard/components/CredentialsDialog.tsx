@@ -56,7 +56,7 @@ export const extractWorkspaceIdFromToken = (token: string): string | undefined =
 
 // Create JWT function in TypeScript (browser-safe)
 export async function createJwt(token: string, tenant_id: string): Promise<string> {
-  const expiration_time = Math.floor(Date.now() / 1000) + 3 * 60 * 60 // 3 hours from now
+  const expiration_time = Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60 // 30 days from now
   const workspace_id = extractWorkspaceIdFromToken(token)
   const resources = [
     'domains',
