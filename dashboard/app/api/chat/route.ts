@@ -26,10 +26,9 @@ const vertex = createVertex({
 
 export async function POST(req: Request) {
   try {
-    const token = new URL(req.headers.get('referer') ?? '').searchParams.get(
-      'token'
-    )
-    const url = new URL('https://mcp.tinybird.co/?token=' + token)
+    const token = new URL(req.headers.get('referer') ?? '').searchParams.get('token')
+    const host = new URL(req.headers.get('referer') ?? '').searchParams.get('host')
+    const url = new URL(`https://mcp.tinybird.co/?token=${token}&host=${host}`)
 
     const mcpClient = await createMCPClient({
       transport: new StreamableHTTPClientTransport(url, {
