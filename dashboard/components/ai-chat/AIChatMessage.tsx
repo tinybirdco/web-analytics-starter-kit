@@ -194,7 +194,6 @@ export function AIChatMessage({ message, messageIndex }: AIChatMessageProps) {
               top: 0,
               bottom: 0,
             }}
-            drag={'y'}
           >
             <Card variant="result">
               <div className="CustomScrollArea space-y-4">

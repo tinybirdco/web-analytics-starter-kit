@@ -43,7 +43,7 @@ export default function DashboardPage() {
             />
           )}
 
-          <header className="bg-[var(--background-01-color)] p-6 border-b border-[var(--border-01-color)] pb-[408px] -mb-[380px]">
+          <header className="bg-[var(--background-01-color)] p-6 border-b border-[var(--border-01-color)] pb-[516px] -mb-[492px]">
             <img src="/icon.svg" alt="" width={24} height={24} />
           </header>
           <div className="px-4">

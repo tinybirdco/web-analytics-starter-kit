@@ -1,6 +1,9 @@
-import React, { forwardRef } from 'react'
+import React, { forwardRef, useState, useRef, useEffect } from 'react'
 import { cn } from '@/lib/utils'
 import { motion, useTime, useTransform } from 'motion/react'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from './Dialog'
+import { Button } from './Button'
+import { FullscreenIcon } from 'lucide-react'
 
 export type CardVariant = 'default' | 'dark' | 'result' | 'error' | 'loading'
 
@@ -56,6 +59,7 @@ export const Card = forwardRef<
   React.HTMLAttributes<HTMLDivElement> & {
     variant?: CardVariant
     maxHeight?: number
+    title?: string
   }
 >(
   (
@@ -64,29 +68,99 @@ export const Card = forwardRef<
       maxHeight = undefined,
       className,
       variant = 'default',
+      title,
       ...props
     },
     ref
   ) => {
-    // All other variants: static background color, no border
+    const [isDialogOpen, setIsDialogOpen] = useState(false)
+    const [showFade, setShowFade] = useState(false)
+    const [showSeeMore, setShowSeeMore] = useState(false)
+    const contentRef = useRef<HTMLDivElement>(null)
+
+    // Check if content overflows and show fade/see more button
+    useEffect(() => {
+      if (!maxHeight || !contentRef.current) return
+
+      const checkOverflow = () => {
+        const element = contentRef.current
+        if (!element) return
+
+        const isOverflowing = element.scrollHeight > element.clientHeight
+        setShowFade(isOverflowing)
+        setShowSeeMore(isOverflowing)
+      }
+
+      checkOverflow()
+
+      // Re-check on window resize
+      const resizeObserver = new ResizeObserver(checkOverflow)
+      resizeObserver.observe(contentRef.current)
+
+      return () => {
+        if (contentRef.current) {
+          resizeObserver.unobserve(contentRef.current)
+        }
+      }
+    }, [maxHeight, children])
+
     return (
-      <CardWrapper variant={variant}>
-        <div
-          ref={ref}
-          className={cn(
-            'bg-white border-[2px] border-white p-5 rounded-lg scroll-smooth shadow-sm relative z-10 h-full CustomScrollArea',
-            className
-          )}
-          style={{
-            maxHeight: maxHeight ? `${maxHeight}px` : 'auto',
-            overflowY: maxHeight ? 'scroll' : 'auto',
-            ...props.style,
-          }}
-          {...props}
-        >
-          {children}
-        </div>
-      </CardWrapper>
+      <>
+        <CardWrapper variant={variant}>
+          <div
+            ref={ref}
+            className={cn(
+              'bg-white border-[2px] border-white p-5 rounded-lg shadow-sm relative z-10 h-full',
+              maxHeight ? 'overflow-hidden' : '',
+              className
+            )}
+            style={{
+              maxHeight: maxHeight ? `${maxHeight}px` : 'auto',
+              ...props.style,
+            }}
+            {...props}
+          >
+            <div
+              ref={contentRef}
+              className="h-full"
+              style={{
+                maxHeight: maxHeight ? `${maxHeight - 40}px` : 'auto', // Account for padding
+                overflow: 'hidden',
+              }}
+            >
+              {children}
+            </div>
+
+            {/* Fade overlay */}
+            {showFade && (
+              <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent via-white/80 pointer-events-none" />
+            )}
+
+            {/* See more button */}
+            {showSeeMore && (
+              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
+                <Button
+                  variant="outline"
+                  className="!rounded-full"
+                  color="secondary"
+                  size="medium"
+                  onClick={() => setIsDialogOpen(true)}
+                >
+                  View all
+                  <FullscreenIcon />
+                </Button>
+              </div>
+            )}
+          </div>
+        </CardWrapper>
+
+        {/* Dialog for full content */}
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto !shadow-none !rounded-xl">
+            <div className="">{children}</div>
+          </DialogContent>
+        </Dialog>
+      </>
     )
   }
 )

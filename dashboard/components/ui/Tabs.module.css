@@ -3,11 +3,12 @@
 }
 
 .list {
-  display: inline-flex;
-  height: 24px;
+  display: flex;
   align-items: center;
-  color: var(--text-01-color);
-  gap: 8px;
+  gap: 32px;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 8px;
+  margin-bottom: 16px;
 }
 
 .trigger {
@@ -15,12 +16,15 @@
   align-items: center;
   justify-content: center;
   white-space: nowrap;
-  border-radius: 4px;
-  padding: 2px 8px;
-  height: 24px;
-  font: var(--font-body);
-  color: var(--text-01-color);
-  transition: all 0.2s;
+  padding: 8px 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: #6b7280;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  position: relative;
   user-select: none;
 }
 
@@ -35,8 +39,18 @@
 }
 
 .trigger[data-state='active'] {
-  color: var(--text-color);
-  background-color: var(--background-02-color);
+  color: #111827;
+}
+
+.trigger[data-state='active']::after {
+  content: '';
+  position: absolute;
+  bottom: -9px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: #374151;
+  border-radius: 1px;
 }
 
 .content {
