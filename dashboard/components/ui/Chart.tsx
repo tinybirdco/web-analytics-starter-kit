@@ -183,27 +183,6 @@ const ChartTooltipContent = React.forwardRef<
                 )}
               >
                 <>
-                  {itemConfig?.icon ? (
-                    <itemConfig.icon />
-                  ) : (
-                    !hideIndicator && (
-                      <div
-                        className={cn(styles.tooltipIndicator, {
-                          [styles.tooltipIndicatorDot]: indicator === 'dot',
-                          [styles.tooltipIndicatorLine]: indicator === 'line',
-                          [styles.tooltipIndicatorDashed]: indicator === 'dashed',
-                          [styles.tooltipIndicatorDashedNested]:
-                            nestLabel && indicator === 'dashed'
-                        })}
-                        style={
-                          {
-                            '--color-bg': indicatorColor,
-                            '--color-border': indicatorColor
-                          } as React.CSSProperties
-                        }
-                      />
-                    )
-                  )}
                   <div
                     className={cn(
                       styles.tooltipContent,
