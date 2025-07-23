@@ -20,6 +20,7 @@ import { createInsightsFromData } from '@/lib/data/insights'
 import { useInsightsData } from '@/lib/hooks/use-insights-data'
 import useCurrentVisitors from '@/lib/hooks/use-current-visitors'
 import React from 'react'
+import { Header } from '@/components/Header'
 
 export default function DashboardPage() {
   const { isAuthenticated, isTokenValid } = useAuth()
@@ -43,10 +44,8 @@ export default function DashboardPage() {
               data-token={config.trackerToken}
             />
           )}
-
-          <header className="bg-[var(--background-01-color)] p-6 border-b border-[var(--border-01-color)] pb-[516px] -mb-[492px]">
-            <img src="/icon.svg" alt="" width={24} height={24} />
-          </header>
+          <Header onAskAiClick={() => setOpen(true)} />
+          <div className="bg-[var(--background-01-color)] p-6 border-b border-[var(--border-01-color)] pb-[532px] -mb-[492px]" />
           <div className="px-4">
             <main className="max-w-[1216px] mx-auto space-y-10">
               <div className="w-full overflow-x-auto">
