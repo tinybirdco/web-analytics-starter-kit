@@ -5,6 +5,7 @@ import { Card } from '@/components/ui/Card'
 import { AIChatToolCall } from './AIChatToolCall'
 import Markdown from 'react-markdown'
 import { motion } from 'motion/react'
+import { cn } from '@/lib/utils'
 
 // Constants
 const OFFSET_CLOSED = 6
@@ -166,7 +167,7 @@ export function AIChatMessage({ message, messageIndex }: AIChatMessageProps) {
 
               {reasoningParts.map((part: any, partIndex: number) =>
                 part.type === 'text' ? (
-                  <div key={partIndex} className="tiptap">
+                  <div key={partIndex} className={"tiptap pt-2"}>
                     <Markdown>{part.text}</Markdown>
                   </div>
                 ) : null

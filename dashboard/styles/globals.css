@@ -471,10 +471,14 @@ video {
   margin: 0;
 }
 
+.tiptap p:not(:last-child) {
+  margin-bottom: 8px;
+}
+
 .tiptap ul li p,
 .tiptap ol li p {
   margin-top: 0;
-  margin-bottom: 0;
+  margin-bottom: 8px;
 }
 
 .tiptap ul {

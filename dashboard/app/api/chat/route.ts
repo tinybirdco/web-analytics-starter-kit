@@ -57,6 +57,8 @@ export async function POST(req: Request) {
   - Use execute_query select now() to get the current date and calculate date ranges
   - text_to_sql(question) → returns a SQL query to answer the question
   - explore_data: use it as a last resort when all else fails
+  
+  Remember: you DO have access to the tables content via the necessary tools.
 
   instructions:
   - analyze the user's question
@@ -66,7 +68,7 @@ export async function POST(req: Request) {
   - most kpis are already available in a kpi endpoint
   - date format is yyyy-mm-dd if Date or yyyy-mm-dd hh:mm:ss, never use other formats
   - limit to max 3 candidates if no source is specified
-  - do not ask for follow-up questions, the user can not answer them
+  - do not ask the user for extra actions, context, or clarifications: the user cannot reply to you. Just go with your best guess, or END the conversation inmediately.
 
   visualization rules:
   - do not print json code blocks about data or props for a visualization, call the right tool instead.

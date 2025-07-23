@@ -102,7 +102,10 @@ export function AIChatContainer({
   className = '',
   showForm = true,
 }: AIChatContainerProps) {
-  const { messages, isLoading } = useAIChat()
+  const { messages, isLoading, error } = useAIChat()
+
+  console.log(error)
+  console.log(messages)
 
   const cards = messages
     .filter(
