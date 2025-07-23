@@ -128,6 +128,14 @@ export default function DashboardPage() {
             </main>
           </div>
         </>
+        <footer className="px-4 pt-24 pb-12">
+          <div className="max-w-[1216px] mx-auto flex items-center gap-2">
+            <img src="/icon.svg" alt="" width={16} height={16} />
+            <Text variant="caption" color="01">
+              This is a Tinybird template. Feel free to customize it.
+            </Text>
+          </div>
+        </footer>
       </Suspense>
     </AIChatProvider>
   )
