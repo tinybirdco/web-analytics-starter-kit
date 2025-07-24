@@ -35,7 +35,7 @@ export function SqlChart({
   summaryValueColor,
   unit = '',
   tooltipDateFormat = 'yyyy-MM-dd HH:mm',
-  axisDateFormat = 'HH:mm',
+  axisDateFormat = 'MMM d',
   style,
   type = 'line',
   height = 240,

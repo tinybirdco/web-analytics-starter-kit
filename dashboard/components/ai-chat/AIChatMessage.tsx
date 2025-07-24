@@ -76,6 +76,9 @@ export function AIChatMessage({ message }: AIChatMessageProps) {
     } else if (hasFoundVisualization) {
       resultParts.push(part)
     } else {
+      if (part.type === 'text' && part.text.trim().endsWith('.')) {
+        part.text = part.text.trim().slice(0, -1) + '...'
+      }
       reasoningParts.push(part)
     }
   })
