@@ -4,17 +4,18 @@ import '../styles/globals.css'
 import { Suspense } from 'react'
 import { Inter } from 'next/font/google'
 import localFont from 'next/font/local'
+import { TooltipProvider } from '@/components/ui/Tooltip'
 
 const sans = Inter({
   variable: '--font-family-sans',
   subsets: ['latin'],
-  fallback: ['system-ui']
+  fallback: ['system-ui'],
 })
 
 const mono = localFont({
   variable: '--font-family-iawriter',
   src: '../assets/fonts/iawritermonos-regular.woff2',
-  display: 'swap'
+  display: 'swap',
 })
 
 export const metadata: Metadata = {
@@ -32,7 +33,9 @@ export default function RootLayout({
     <html lang="en" className={`${sans.variable} ${mono.variable}`}>
       <Suspense>
         <body>
-          <AnalyticsProvider>{children}</AnalyticsProvider>
+          <TooltipProvider>
+            <AnalyticsProvider>{children}</AnalyticsProvider>
+          </TooltipProvider>
         </body>
       </Suspense>
     </html>

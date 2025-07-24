@@ -3,7 +3,6 @@
 import React, { useRef } from 'react'
 import { useAIChat } from './AIChatProvider'
 import { FormatIcon } from '@/components/ui/Icons'
-import { Loader } from '../ui/Loader'
 import { motion, type MotionValue, useTime, useTransform } from 'motion/react'
 import { Card } from '../ui/Card'
 import { Text } from '../ui/Text'
@@ -76,7 +75,10 @@ export function AIChatForm({
     setMessages([])
     
     handleSubmit(e)
+    
+    // Restore the input value after submission to prevent clearing
     setTimeout(() => {
+      setInput(savedInput)
       messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
     }, 10)
   }

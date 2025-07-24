@@ -82,12 +82,7 @@ const AnalyzingCard = () => {
             <div className="text-xs flex items-center gap-x-2.5 py-0.5">
               <Loader className={'text-[var(--icon-color)]'} />
               <Text variant="body" color="01">
-                Analyzing your question...
-              </Text>
-            </div>
-            <div className="tiptap">
-              <Text variant="body" color="02">
-                I&apos;m processing your request and preparing to analyze your analytics data. This may take a few moments...
+                Analyzing your question…
               </Text>
             </div>
           </Card>
@@ -103,9 +98,6 @@ export function AIChatContainer({
   showForm = true,
 }: AIChatContainerProps) {
   const { messages, isLoading, error } = useAIChat()
-
-  console.log(error)
-  console.log(messages)
 
   const cards = messages
     .filter(

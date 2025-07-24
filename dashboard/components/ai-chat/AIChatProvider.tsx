@@ -41,8 +41,6 @@ export function AIChatProvider({
         }?token=${encodeURIComponent(token)}&host=${encodeURIComponent(host)}`
       : `${process.env.NEXT_PUBLIC_ASK_TINYBIRD_ENDPOINT}`
 
-  console.log('apiUrl', apiUrl)
-
   const chatState = useChat({
     api: apiUrl,
     maxSteps,

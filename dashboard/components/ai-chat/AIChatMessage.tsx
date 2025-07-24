@@ -5,7 +5,8 @@ import { Card } from '@/components/ui/Card'
 import { AIChatToolCall } from './AIChatToolCall'
 import Markdown from 'react-markdown'
 import { motion } from 'motion/react'
-import { cn } from '@/lib/utils'
+import { Text } from '../ui/Text'
+import { Loader } from '../ui/Loader'
 
 // Constants
 const OFFSET_CLOSED = 6
@@ -53,7 +54,7 @@ interface AIChatMessageProps {
   messageIndex: number
 }
 
-export function AIChatMessage({ message, messageIndex }: AIChatMessageProps) {
+export function AIChatMessage({ message }: AIChatMessageProps) {
   const reasoningParts: typeof message.parts = []
   const resultParts: typeof message.parts = []
 
@@ -79,11 +80,12 @@ export function AIChatMessage({ message, messageIndex }: AIChatMessageProps) {
     }
   })
 
-  const latestReasoningToolInvocation = reasoningParts.findLast(
-    (part: any) =>
-      part.type === 'tool-invocation' &&
-      !part.toolInvocation.toolName.includes('render')
-  )
+  const latestReasoningToolInvocation =
+    reasoningParts.findLast(
+      (part: any) =>
+        part.type === 'tool-invocation' &&
+        !part.toolInvocation.toolName.includes('render')
+    ) || null
 
   useEffect(() => {
     if (scrollRef?.current) {
@@ -107,12 +109,20 @@ export function AIChatMessage({ message, messageIndex }: AIChatMessageProps) {
   }
 
   const handleReasoningClick = () => {
-    const newOffset = (scrollRef?.current?.parentElement?.scrollHeight || REASONING_HEIGHT) + 8
-    setOffset(newOffset)
-    scrollRef.current?.scrollTo({
-      top: 0,
-      behavior: 'smooth',
-    })
+    if (offset === OFFSET_CLOSED || offset === OFFSET_HOVER) {
+      // Expand the reasoning card
+      const newOffset =
+        (scrollRef?.current?.parentElement?.scrollHeight || REASONING_HEIGHT) +
+        8
+      setOffset(newOffset)
+      scrollRef.current?.scrollTo({
+        top: 0,
+        behavior: 'smooth',
+      })
+    } else {
+      // Collapse the reasoning card
+      setOffset(OFFSET_CLOSED)
+    }
   }
 
   return (
@@ -138,7 +148,10 @@ export function AIChatMessage({ message, messageIndex }: AIChatMessageProps) {
         {reasoningParts.length > 0 && (
           <motion.div
             {...REASONING_ANIMATION}
-            animate={REASONING_ANIMATION.animate(offset, resultParts.length > 0)}
+            animate={REASONING_ANIMATION.animate(
+              offset,
+              resultParts.length > 0
+            )}
             onClick={handleReasoningClick}
             transition={ANIMATION_CONFIG}
             style={{
@@ -157,17 +170,24 @@ export function AIChatMessage({ message, messageIndex }: AIChatMessageProps) {
               maxHeight={REASONING_HEIGHT + 10}
               ref={scrollRef}
             >
-              {latestReasoningToolInvocation && (
+              {latestReasoningToolInvocation ? (
                 <AIChatToolCall
                   part={latestReasoningToolInvocation}
                   partIndex={0}
                   isResult={false}
                 />
+              ) : (
+                <div className="text-xs flex items-center gap-x-2.5 py-0.5">
+                  <Loader className={'text-[var(--icon-color)]'} />
+                  <Text variant="body" color="01">
+                    Querying your data
+                  </Text>
+                </div>
               )}
 
               {reasoningParts.map((part: any, partIndex: number) =>
                 part.type === 'text' ? (
-                  <div key={partIndex} className={"tiptap pt-2"}>
+                  <div key={partIndex} className={'tiptap pt-2'}>
                     <Markdown>{part.text}</Markdown>
                   </div>
                 ) : null
@@ -198,26 +218,26 @@ export function AIChatMessage({ message, messageIndex }: AIChatMessageProps) {
           >
             <Card variant="result">
               <div className="CustomScrollArea space-y-4">
-              {resultParts.map((part: any, partIndex: number) => {
-                if (part.type === 'text') {
-                  return (
-                    <div key={partIndex} className="tiptap">
-                      <Markdown>{part.text}</Markdown>
-                    </div>
-                  )
-                }
-                if (part.type === 'tool-invocation') {
-                  return (
-                    <AIChatToolCall
-                      key={partIndex}
-                      part={part}
-                      partIndex={partIndex}
-                      isResult={true}
-                    />
-                  )
-                }
-                return null
-              })}
+                {resultParts.map((part: any, partIndex: number) => {
+                  if (part.type === 'text') {
+                    return (
+                      <div key={partIndex} className="tiptap">
+                        <Markdown>{part.text}</Markdown>
+                      </div>
+                    )
+                  }
+                  if (part.type === 'tool-invocation') {
+                    return (
+                      <AIChatToolCall
+                        key={partIndex}
+                        part={part}
+                        partIndex={partIndex}
+                        isResult={true}
+                      />
+                    )
+                  }
+                  return null
+                })}
               </div>
             </Card>
           </motion.div>
