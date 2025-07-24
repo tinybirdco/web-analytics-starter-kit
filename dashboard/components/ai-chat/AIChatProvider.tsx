@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, ReactNode, useState } from 'react'
 import { useChat } from '@ai-sdk/react'
+import { useSearchParams } from 'next/navigation'
 
 interface AIChatContextType {
   messages: any[]
@@ -24,18 +25,38 @@ interface AIChatProviderProps {
   maxSteps?: number
 }
 
-export function AIChatProvider({ children, maxSteps = 30 }: AIChatProviderProps) {
+export function AIChatProvider({
+  children,
+  maxSteps = 30,
+}: AIChatProviderProps) {
+  const searchParams = useSearchParams()
+  const token = searchParams?.get('token')
+  const host = searchParams?.get('host')
+
+  // Build the API URL with query parameters
+  const apiUrl =
+    token && host
+      ? `${
+          process.env.NEXT_PUBLIC_ASK_TINYBIRD_ENDPOINT
+        }?token=${encodeURIComponent(token)}&host=${encodeURIComponent(host)}`
+      : `${process.env.NEXT_PUBLIC_ASK_TINYBIRD_ENDPOINT}`
+
+  console.log('apiUrl', apiUrl)
+
   const chatState = useChat({
+    api: apiUrl,
     maxSteps,
   })
   const [lastSubmittedQuestion, setLastSubmittedQuestion] = useState('')
 
   return (
-    <AIChatContext.Provider value={{ 
-      ...chatState, 
-      lastSubmittedQuestion, 
-      setLastSubmittedQuestion 
-    }}>
+    <AIChatContext.Provider
+      value={{
+        ...chatState,
+        lastSubmittedQuestion,
+        setLastSubmittedQuestion,
+      }}
+    >
       {children}
     </AIChatContext.Provider>
   )
@@ -47,4 +68,4 @@ export function useAIChat() {
     throw new Error('useAIChat must be used within an AIChatProvider')
   }
   return context
-} 
+}
