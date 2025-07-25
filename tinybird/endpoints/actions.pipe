@@ -1,5 +1,6 @@
 DESCRIPTION >
     Returns distinct actions for a given tenant with domain, last payload sample, and occurrence count
+    Use to understand the different action types (page_hit, web_vital, etc.) and a sample payload for each tenant and domain
 
 TOKEN "dashboard" READ
 
