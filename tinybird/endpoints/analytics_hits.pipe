@@ -32,6 +32,10 @@ SQL >
         {% if defined(domain) %}
         AND domain = {{ String(domain, description="Filter by domain") }}
         {% end %}
+    {% if defined(limit) %}
+        LIMIT {{Int32(limit, 100)}}
+        OFFSET {{Int32(page, 0) * Int32(limit, 100)}}
+    {% end %}
 
 NODE endpoint
 SQL >
