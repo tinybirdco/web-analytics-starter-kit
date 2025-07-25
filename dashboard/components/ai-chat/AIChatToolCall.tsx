@@ -52,6 +52,7 @@ export function AIChatToolCall({
           title={result.title}
           unit={result.unit}
           style={isResult ? { border: 'none', padding: 0 } : undefined}
+          type={result.type}
         />
       )
     }
