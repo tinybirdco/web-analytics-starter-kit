@@ -1,14 +1,13 @@
 import { useState } from 'react'
 import useSWR from 'swr'
 import { querySQL, queryPipe, getConfig } from '../api'
-import { DomainData, DomainQueryData } from '../types/domain'
 
-async function getDomain(): Promise<DomainData> {
+async function getDomain(): Promise<any> {
   const { token } = getConfig();
   let data;
   if (token && token.startsWith('p.ey')) {
     // Use SQL for 'dashboard' tokens
-    ({ data } = await querySQL<DomainQueryData>(`
+    ({ data } = await querySQL<any>(`
       with (
         SELECT nullif(domainWithoutWWW(href),'') as domain
         FROM analytics_hits
@@ -27,7 +26,7 @@ async function getDomain(): Promise<DomainData> {
     `));
   } else {
     // Use pipe for non-dashboard tokens
-    ({ data } = await queryPipe<DomainQueryData>('domain'));
+    ({ data } = await queryPipe<any>('domain'));
   }
   const domain = data[0]['domain'];
   const logo = domain

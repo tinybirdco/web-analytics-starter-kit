@@ -5,6 +5,8 @@ DESCRIPTION >
 SQL >
     SELECT
         toDate(timestamp) AS date,
+        tenant_id,
+        domain,
         device,
         browser,
         location,
@@ -12,7 +14,7 @@ SQL >
         uniqState(session_id) AS visits,
         countState() AS hits
     FROM analytics_hits
-    GROUP BY date, device, browser, location, pathname
+    GROUP BY date, tenant_id, domain, device, browser, location, pathname
 
 TYPE MATERIALIZED
 DATASOURCE analytics_pages_mv
