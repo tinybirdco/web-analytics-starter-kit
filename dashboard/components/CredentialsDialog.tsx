@@ -75,6 +75,7 @@ export async function createJwt(token: string, tenant_id: string): Promise<strin
     'web_vitals_events',
     'web_vitals_timeseries',
     'analytics_hits',
+    'actions',
   ]
 
   const datasources_resources = ['analytics_events', 'tenant_actions_mv', 'tenant_domains_mv']
