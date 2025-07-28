@@ -3,6 +3,7 @@
 import React from 'react'
 import { SqlChart } from '@/components/ui/SqlChart'
 import { PipeTable } from '@/components/PipeTable'
+import { CoreVitalGauge } from '@/components/ui/CoreVitalGauge'
 import { Loader } from '@/components/ui/Loader'
 import { CheckIcon } from '@/components/ui/Icons'
 import { Text } from '@/components/ui/Text'
@@ -72,7 +73,11 @@ export function AIChatToolCall({
 
     if (toolName === 'renderCoreVitalGauge' && result) {
       return (
-        <div className="my-2 flex justify-center">{JSON.stringify(result)}</div>
+        <CoreVitalGauge
+          metricEntries={result.metricEntries}
+          timeseriesData={result.timeseriesData}
+          selectedPercentile={result.selectedPercentile}
+        />
       )
     }
 

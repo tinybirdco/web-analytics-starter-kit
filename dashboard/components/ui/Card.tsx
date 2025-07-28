@@ -1,7 +1,7 @@
 import React, { forwardRef, useState, useRef, useEffect } from 'react'
 import { cn } from '@/lib/utils'
 import { motion, useTime, useTransform } from 'motion/react'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from './Dialog'
+import { Dialog, DialogContent } from './Dialog'
 import { Button } from './Button'
 import { FullscreenIcon } from 'lucide-react'
 
@@ -124,12 +124,10 @@ export const Card = forwardRef<
           >
             <div
               ref={contentRef}
-              className={cn(
-                'h-full',
-                maxHeight && !viewAll ? 'CustomScrollArea' : ''
-              )}
+              className={"h-full"}
               style={{
-                maxHeight: maxHeight && !viewAll ? `${maxHeight - 40}px` : 'auto', // Account for padding
+                maxHeight:
+                  maxHeight && !viewAll ? `${maxHeight - 40}px` : 'auto', // Account for padding
                 overflow: maxHeight && !viewAll ? 'auto' : 'hidden',
               }}
             >
@@ -162,7 +160,7 @@ export const Card = forwardRef<
         {/* Dialog for full content - only when viewAll is true */}
         {viewAll && (
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto !shadow-none !rounded-xl">
+            <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto CustomScrollArea !shadow-none !rounded-xl">
               <div className="">{children}</div>
             </DialogContent>
           </Dialog>

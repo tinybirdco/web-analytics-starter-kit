@@ -1,21 +1,22 @@
 import { SqlChart } from '@/components/ui/SqlChart'
 import { useEndpoint } from '@/lib/hooks/use-endpoint'
 import { useTimeRange } from '@/lib/hooks/use-time-range'
-import { PipeTable } from '@/components/PipeTable'
-import {
-  TableCellText,
-  TableCellMono,
-  TableCellCountry,
-  TableCellBrowser,
-  TableCellDevice,
-  TableCellCombined,
-  TableCellProgress,
-} from '@/components/table/TableCells'
 import { CoreVitalGauge } from '@/components/ui/CoreVitalGauge'
 import { Card } from '@/components/ui/Card'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/Tabs'
 import { getMetricLimits } from '@/lib/constants'
 import React, { useState } from 'react'
+
+// Import all the individual widgets
+import {
+  Visitors,
+  Pageviews,
+  TopPages,
+  TopLocations,
+  TopSources,
+  TopDevices,
+  TopBrowsers,
+} from './widgets/index'
 
 // Helper function to determine date format based on time range
 const getAxisDateFormat = (timeRange: string): string => {
@@ -143,250 +144,17 @@ export const CoreVitals = () => {
 }
 
 export const Widgets = () => {
-  const { value: timeRange } = useTimeRange()
-  const { data, error, isLoading } =
-    useEndpoint<{ visits: number; pageviews: number }[]>('kpis')
-
-  const { data: topSources } =
-    useEndpoint<{ referrer: string; visits: number; hits: number }[]>(
-      'top_sources'
-    )
-
-  const { data: topDevices } =
-    useEndpoint<{ device: string; visits: number; hits: number }[]>(
-      'top_devices'
-    )
-
-  // New endpoints
-  const { data: topPages } =
-    useEndpoint<{ pathname: string; visits: number; hits: number }[]>(
-      'top_pages'
-    )
-
-  const { data: topLocations } =
-    useEndpoint<{ location: string; visits: number; hits: number }[]>(
-      'top_locations'
-    )
-
-  const { data: topBrowsers } =
-    useEndpoint<{ browser: string; visits: number; hits: number }[]>(
-      'top_browsers'
-    )
-
   return (
     <>
       <div className="grid grid-cols-2 gap-4">
-        {/* Core Vitals moved to CoreVitals component */}
-        <Card>
-          <SqlChart
-            title={'Visitors'}
-            data={data || []}
-            error={error?.message}
-            isLoading={isLoading}
-            summaryValue={'visits'}
-            xAxisKey="date"
-            yAxisKey="visits"
-            axisDateFormat={getAxisDateFormat(timeRange)}
-          />
-        </Card>
-
-        <Card>
-          <SqlChart
-            title={'Pageviews'}
-            data={data || []}
-            error={error?.message}
-            isLoading={isLoading}
-            summaryValue={'pageviews'}
-            xAxisKey="date"
-            yAxisKey="pageviews"
-            axisDateFormat={getAxisDateFormat(timeRange)}
-          />
-        </Card>
-
-        {/* Top Pages */}
-        <Card maxHeight={400} viewAll>
-          <PipeTable
-            title="Top pages"
-            data={topPages?.slice(0, 10) || []}
-            columns={[
-              {
-                label: 'Pathname',
-                key: 'pathname',
-                render: row => <TableCellText>{row.pathname}</TableCellText>,
-              },
-              {
-                label: 'Visitors',
-                key: 'visits',
-                align: 'left',
-                maxWidth: 64,
-                render: row => {
-                  const maxVisits = Math.max(...(topPages?.slice(0, 10) || []).map(p => p.visits))
-                  return (
-                    <TableCellCombined>
-                      <TableCellProgress value={row.visits} max={maxVisits} />
-                      <TableCellMono>{row.visits.toLocaleString()}</TableCellMono>
-                    </TableCellCombined>
-                  )
-                },
-              },
-              {
-                label: 'Views',
-                key: 'hits',
-                align: 'right',
-                maxWidth: 64,
-                render: row => (
-                  <TableCellMono>{row.hits.toLocaleString()}</TableCellMono>
-                ),
-              },
-            ]}
-          />
-        </Card>
-
-        {/* Top Locations */}
-        <Card maxHeight={400} viewAll>
-          <PipeTable
-            title="Top locations"
-            data={topLocations?.slice(0, 10) || []}
-            columns={[
-              {
-                label: 'Location',
-                key: 'location',
-                render: row => <TableCellCountry code={row.location} />,
-              },
-              {
-                label: 'Visitors',
-                key: 'visits',
-                align: 'left',
-                maxWidth: 64,
-                render: row => {
-                  const maxVisits = Math.max(...(topLocations?.slice(0, 10) || []).map(p => p.visits))
-                  return (
-                    <TableCellCombined>
-                      <TableCellProgress value={row.visits} max={maxVisits} />
-                      <TableCellMono>{row.visits.toLocaleString()}</TableCellMono>
-                    </TableCellCombined>
-                  )
-                },
-              },
-              {
-                label: 'Views',
-                key: 'hits',
-                align: 'right',
-                maxWidth: 64,
-                render: row => (
-                  <TableCellMono>{row.hits.toLocaleString()}</TableCellMono>
-                ),
-              },
-            ]}
-          />
-        </Card>
-
-        {/* Top Sources (already present) */}
-        <Card maxHeight={400} viewAll>
-          <PipeTable
-            title="Top sources"
-            data={topSources?.slice(0, 10) || []}
-            columns={[
-              {
-                label: 'Path',
-                key: 'referrer',
-                render: row => <TableCellText>{row.referrer}</TableCellText>,
-              },
-              {
-                label: 'Visitors',
-                key: 'visits',
-                align: 'left',
-                maxWidth: 64,
-                render: row => {
-                  const maxVisits = Math.max(...(topSources?.slice(0, 10) || []).map(p => p.visits))
-                  return (
-                    <TableCellCombined>
-                      <TableCellProgress value={row.visits} max={maxVisits} />
-                      <TableCellMono>{row.visits.toLocaleString()}</TableCellMono>
-                    </TableCellCombined>
-                  )
-                },
-              },
-              {
-                label: 'Views',
-                key: 'hits',
-                align: 'right',
-                maxWidth: 64,
-                render: row => (
-                  <TableCellMono>{row.hits.toLocaleString()}</TableCellMono>
-                ),
-              },
-            ]}
-          />
-        </Card>
-
-        {/* Top Devices (already present) */}
-        <Card maxHeight={400} viewAll>
-          <PipeTable
-            title="Top devices"
-            data={topDevices?.slice(0, 10) || []}
-            columns={[
-              {
-                label: 'Device',
-                key: 'device',
-                render: row => <TableCellDevice code={row.device} />,
-              },
-              {
-                label: 'Visitors',
-                key: 'visits',
-                align: 'right',
-                maxWidth: 64,
-                render: row => (
-                  <TableCellMono>
-                    {row.visits?.toLocaleString?.()}
-                  </TableCellMono>
-                ),
-              },
-              {
-                label: 'Views',
-                key: 'hits',
-                align: 'right',
-                maxWidth: 64,
-                render: row => (
-                  <TableCellMono>{row.hits.toLocaleString()}</TableCellMono>
-                ),
-              },
-            ]}
-          />
-        </Card>
-
-        {/* Top Browsers */}
-        <Card maxHeight={400} viewAll>
-          <PipeTable
-            title="Top browsers"
-            data={topBrowsers?.slice(0, 10) || []}
-            columns={[
-              {
-                label: 'Browser',
-                key: 'browser',
-                render: row => <TableCellBrowser code={row.browser} />,
-              },
-              {
-                label: 'Visitors',
-                key: 'visits',
-                align: 'right',
-                maxWidth: 64,
-                render: row => (
-                  <TableCellMono>{row.visits.toLocaleString()}</TableCellMono>
-                ),
-              },
-              {
-                label: 'Views',
-                key: 'hits',
-                align: 'right',
-                maxWidth: 64,
-                render: row => (
-                  <TableCellMono>{row.hits.toLocaleString()}</TableCellMono>
-                ),
-              },
-            ]}
-          />
-        </Card>
+        {/* Import widgets from the new structure */}
+        <Visitors />
+        <Pageviews />
+        <TopPages />
+        <TopLocations />
+        <TopSources />
+        <TopDevices />
+        <TopBrowsers />
       </div>
     </>
   )

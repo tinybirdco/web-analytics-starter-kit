@@ -1,4 +1,4 @@
-import { formatNumber } from '@/lib/utils'
+import { cn, formatNumber } from '@/lib/utils'
 import { CSSProperties } from 'react'
 import { Text } from './ui/Text'
 import { Skeleton } from './ui/Skeleton'
@@ -20,35 +20,41 @@ export function PipeTable({
   columns,
   title,
   style,
+  maxHeight,
 }: {
   data: Record<string, any>[]
   columns: PipeTableColumn[]
   title?: string
   style?: CSSProperties
+  maxHeight?: number
 }) {
   return (
     <div style={style} className="bg-white rounded-xl">
       {title && <h2 className="text-xl font-semibold mb-4">{title}</h2>}
-      <table className="w-full text-left">
-        <thead>
-          <tr>
-            {columns.map(col => (
-              <th
-                key={col.key}
-                className="border-b border-[var(--border-01-color)] align-middle pb-1"
-                style={{ 
-                  textAlign: col.align || 'left',
-                  maxWidth: col.maxWidth ? `${col.maxWidth}px` : undefined,
-                  width: col.maxWidth ? `${col.maxWidth}px` : undefined
-                }}
-              >
-                <Text variant="caption" color="01">
-                  {col.label}
-                </Text>
-              </th>
-            ))}
-          </tr>
-        </thead>
+      <div 
+        className={maxHeight ? "overflow-auto CustomScrollArea relative" : ""}
+        style={maxHeight ? { maxHeight: `${maxHeight}px` } : undefined}
+      >
+        <table className="w-full text-left">
+          <thead className={cn("bg-white z-20", maxHeight ? "sticky top-0" : "")}>
+            <tr>
+              {columns.map(col => (
+                <th
+                  key={col.key}
+                  className="border-b border-[var(--border-01-color)] align-middle pb-1 bg-white"
+                  style={{ 
+                    textAlign: col.align || 'left',
+                    maxWidth: col.maxWidth ? `${col.maxWidth}px` : undefined,
+                    width: col.maxWidth ? `${col.maxWidth}px` : undefined
+                  }}
+                >
+                  <Text variant="caption" color="01">
+                    {col.label}
+                  </Text>
+                </th>
+              ))}
+            </tr>
+          </thead>
         <tbody>
           {data.length === 0 && columns.length > 0
             ? // Show 3 skeleton rows if loading or no data
@@ -57,7 +63,7 @@ export function PipeTable({
                   {columns.map((col, j) => (
                     <td
                       key={col.key}
-                      className="py-3 border-b border-[var(--border-01-color)]"
+                      className="py-3 border-b border-[var(--border-01-color)] bg-white"
                       style={{
                         textAlign: col.align || 'left',
                         fontWeight: j === 0 ? '600' : '400',
@@ -80,7 +86,7 @@ export function PipeTable({
                     return (
                       <td
                         key={col.key}
-                        className="py-2 border-b border-[var(--border-01-color)]"
+                        className="py-2 border-b border-[var(--border-01-color)] bg-white"
                         style={{
                           textAlign: col.align || 'left',
                           fontWeight: j === 0 ? '600' : '400',
@@ -108,6 +114,7 @@ export function PipeTable({
               ))}
         </tbody>
       </table>
+      </div>
     </div>
   )
 }
