@@ -1,5 +1,9 @@
 DESCRIPTION >
     Parsed `page_hit` events, implementing `browser` and `device` detection logic.
+    Use always with a limit and date_from, date_to filters
+    Use like_filter for arbitrary text filter over the payload column which contains information about each page_hit
+    Use the SQL of this endpoint to extract information from analytics_events for other actions
+    Use the actions tool for a list of available action types, filter by 'action_filter' for arbitrary actions
 
 TOKEN "dashboard" READ
 
@@ -46,8 +50,8 @@ SQL >
             AND payload like {{String(filter, description="Filter to apply to the payload JSON string", example="%utm_%")}}
         {% end %}
     {% if defined(limit) %}
-        LIMIT {{Int32(limit, 100)}}
-        OFFSET {{Int32(page, 0) * Int32(limit, 100)}}
+        LIMIT {{Int32(limit, 20)}}
+        OFFSET {{Int32(page, 0) * Int32(limit, 20)}}
     {% end %}
 
 NODE endpoint
