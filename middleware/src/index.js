@@ -146,6 +146,31 @@
     return _setSessionIdFromCookie(sessionId)
   }
 
+  function _isValidUserAgent(userAgent) {
+    // empty is fine
+    if (!userAgent || typeof userAgent !== 'string') {
+      return true
+    }
+
+    if (userAgent.length > 500) {
+      return false
+    }
+
+    return true
+  }
+
+  function _isValidPayload(payloadStr) {
+    if (!payloadStr || typeof payloadStr !== 'string') {
+      return false
+    }
+    
+    if (payloadStr.length < 2 || payloadStr.length > 10240) {
+      return false
+    }
+
+    return true
+  }
+
   /**
    * Try to mask PPI and potential sensible attributes
    *
@@ -197,6 +222,11 @@
    */
   async function _sendEvent(name, payload) {
     _setSessionId()
+
+    if (!_isValidUserAgent(window.navigator.userAgent)) {
+      return
+    }
+
     let url
 
     // Use public Tinybird url if no custom endpoint is provided
@@ -218,9 +248,18 @@
       processedPayload = _maskSuspiciousAttributes(payload)
       processedPayload = Object.assign({}, JSON.parse(processedPayload), globalAttributes)
       processedPayload = JSON.stringify(processedPayload)
+
+      if (!_isValidPayload(processedPayload)) {
+        return
+      }
     } else {
       processedPayload = Object.assign({}, payload, globalAttributes)
       const maskedStr = _maskSuspiciousAttributes(processedPayload)
+
+      if (!_isValidPayload(maskedStr)) {
+        return
+      }
+
       processedPayload = JSON.parse(maskedStr)
     }
 
