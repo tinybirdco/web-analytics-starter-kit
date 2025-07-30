@@ -63,6 +63,7 @@ export const createInsightsFromData = (
       color: 'purple',
       type: 'metric',
       isLoading: !data,
+      delta: data ? data.visitorsTrend.percentage : undefined,
     },
     {
       id: 'pageviews-trend',
@@ -77,6 +78,7 @@ export const createInsightsFromData = (
       color: 'orange',
       type: 'metric',
       isLoading: !data,
+      delta: data ? data.pageviewsTrend.percentage : undefined,
     },
     {
       id: 'bounce-rate',
@@ -91,6 +93,7 @@ export const createInsightsFromData = (
       color: 'green',
       type: 'metric',
       isLoading: !data,
+      delta: data ? data.bounceRate.percentage : undefined,
     },
     {
       id: 'top-location',
@@ -105,6 +108,7 @@ export const createInsightsFromData = (
       color: 'purple',
       type: 'list',
       isLoading: !data,
+      delta: data ? data.topLocation.percentage : undefined,
     },
     {
       id: 'top-browser',
@@ -119,6 +123,7 @@ export const createInsightsFromData = (
       color: 'orange',
       type: 'list',
       isLoading: !data,
+      delta: data ? data.topBrowser.percentage : undefined,
     },
   ]
 }

@@ -7,6 +7,8 @@ import { Skeleton } from '../ui/Skeleton'
 import { cn } from '@/lib/utils'
 import {
   InsightIncreaseIcon,
+  InsightDecreaseIcon,
+  InsightTrendIcon,
   InsightListIcon,
 } from '../ui/Icons'
 
@@ -21,6 +23,7 @@ export interface InsightCard {
   isHighlighted?: boolean
   type?: 'chart' | 'list' | 'metric'
   isLoading?: boolean
+  delta?: number
 }
 
 interface InsightCardsProps {
@@ -102,8 +105,14 @@ export function InsightCards({
       <div>
         {insight.type === 'list' ? (
           <InsightListIcon />
+        ) : insight.delta !== undefined ? (
+          insight.delta > 0 ? (
+            <InsightIncreaseIcon />
+          ) : (
+            <InsightDecreaseIcon />
+          )
         ) : (
-          <InsightIncreaseIcon />
+          <InsightTrendIcon />
         )}
       </div>
 

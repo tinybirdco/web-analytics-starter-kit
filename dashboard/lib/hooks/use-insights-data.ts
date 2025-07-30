@@ -9,28 +9,33 @@ export interface InsightData {
   }[]
   visitorsTrend: {
     visits: number
+    previousVisits: number
     trend: 'up' | 'down' | 'stable'
     percentage: number
   }
   pageviewsTrend: {
     pageviews: number
+    previousPageviews: number
     trend: 'up' | 'down' | 'stable'
     percentage: number
   }
   bounceRate: {
     rate: number
+    previousRate: number
     trend: 'up' | 'down' | 'stable'
     percentage: number
   }
   topLocation: {
     location: string
     visits: number
+    previousVisits: number
     trend: 'up' | 'down' | 'stable'
     percentage: number
   }
   topBrowser: {
     browser: string
     visits: number
+    previousVisits: number
     trend: 'up' | 'down' | 'stable'
     percentage: number
   }
@@ -185,25 +190,30 @@ export function useInsightsData() {
       topReferrers: topSourcesData.slice(0, 5),
       visitorsTrend: {
         visits: currentVisits,
+        previousVisits: prevVisits,
         ...calculateTrend(currentVisits, prevVisits)
       },
       pageviewsTrend: {
         pageviews: currentPageviews,
+        previousPageviews: prevPageviews,
         ...calculateTrend(currentPageviews, prevPageviews)
       },
       bounceRate: {
         rate: currentBounceRate,
+        previousRate: prevBounceRate,
         ...calculateTrend(prevBounceRate, currentBounceRate) // Inverted because lower bounce rate is better
       },
       topLocation: {
         location: topLocationsData[0]?.location || 'Unknown',
         visits: topLocationsData[0]?.visits || 0,
+        previousVisits: 0, // TODO: Add previous period data for locations
         trend: 'up', // Default trend
         percentage: 0
       },
       topBrowser: {
         browser: topBrowsersData[0]?.browser || 'Unknown',
         visits: topBrowsersData[0]?.visits || 0,
+        previousVisits: 0, // TODO: Add previous period data for browsers
         trend: 'up', // Default trend
         percentage: 0
       }
