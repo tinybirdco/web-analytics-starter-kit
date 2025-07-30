@@ -520,8 +520,10 @@ video {
 }
 
 .tiptap h3 {
-  font-size: 1.1rem;
+  font-size: 1.125rem;
   margin-bottom: 0.25rem;
+  font-weight: 500;
+  margin-top: 1.5rem !important;
 }
 
 .tiptap h4,
