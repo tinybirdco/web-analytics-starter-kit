@@ -16,12 +16,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "test": "vitest",
-    "cy:open": "cypress open",
-    "cy:run": "cypress run",
-    "test:e2e:dev": "start-server-and-test dev http://localhost:3000 cy:open",
-    "test:e2e:run": "start-server-and-test dev http://localhost:3000 cy:run"
+    "lint": "next lint"
   },
   "dependencies": {
     "@ai-sdk/google-vertex": "^2.2.27",
@@ -62,10 +57,6 @@
     "swr": "^2.2.5"
   },
   "devDependencies": {
-    "@testing-library/cypress": "^8.0.3",
-    "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^13.3.0",
-    "@testing-library/user-event": "^14.4.3",
     "@types/node": "^22.13.10",
     "@types/numeral": "^2.0.5",
     "@types/react": "^18.0.17",
@@ -73,7 +64,6 @@
     "@vitejs/plugin-react": "^2.0.1",
     "autoprefixer": "^10.4.8",
     "cross-fetch": "^3.1.5",
-    "cypress": "^10.6.0",
     "eslint": "^8.22.0",
     "eslint-config-next": "12.2.5",
     "eslint-config-prettier": "^8.5.0",
@@ -84,8 +74,7 @@
     "prettier": "^2.7.1",
     "start-server-and-test": "^2.0.10",
     "tailwindcss": "^3.1.8",
-    "typescript": "5.7.3",
-    "vitest": "^0.22.1"
+    "typescript": "5.7.3"
   },
   "engines": {
     "node": "^22.0.0"

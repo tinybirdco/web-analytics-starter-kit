@@ -73,7 +73,7 @@ export const Text = forwardRef<HTMLSpanElement, TextProps>(
           styles[variant],
           styles[`color-${color}`],
           styles[`align-${align}`],
-          decoration && styles[`decoration-${decoration}`],
+          decoration ? styles[`decoration-${decoration}`] : undefined,
           truncate && styles.truncate,
           Component === 'label' && styles.label,
           className
@@ -124,7 +124,7 @@ export function TextInput({
         styles[variant],
         styles[`color-${color}`],
         styles[`align-${align}`],
-        decoration && styles[`decoration-${decoration}`],
+        decoration ? styles[`decoration-${decoration}`] : undefined,
         truncate && styles.truncate,
         className
       )}

@@ -85,14 +85,15 @@ ${prefix} [data-chart=${id}] {
 ${colorConfig
   .map(([key, itemConfig]) => {
     const color =
-      itemConfig.theme?.[theme as keyof typeof itemConfig.theme] || itemConfig.color
+      itemConfig.theme?.[theme as keyof typeof itemConfig.theme] ||
+      itemConfig.color
     return color ? `  --color-${key}: ${color};` : null
   })
   .join('\n')}
 }
 `
           )
-          .join('\n')
+          .join('\n'),
       }}
     />
   )
@@ -109,6 +110,8 @@ const ChartTooltipContent = React.forwardRef<
       indicator?: 'line' | 'dot' | 'dashed'
       nameKey?: string
       labelKey?: string
+      label?: string
+      payload?: any[]
     }
 >(
   (
@@ -125,7 +128,7 @@ const ChartTooltipContent = React.forwardRef<
       formatter,
       color,
       nameKey,
-      labelKey
+      labelKey,
     },
     ref
   ) => {
@@ -157,7 +160,15 @@ const ChartTooltipContent = React.forwardRef<
       }
 
       return <div className={labelClassName}>{value}</div>
-    }, [label, labelFormatter, payload, hideLabel, labelClassName, config, labelKey])
+    }, [
+      label,
+      labelFormatter,
+      payload,
+      hideLabel,
+      labelClassName,
+      config,
+      labelKey,
+    ])
 
     if (!active || !payload?.length) {
       return null
@@ -193,10 +204,15 @@ const ChartTooltipContent = React.forwardRef<
                   >
                     <div className={styles.tooltipContentGrid}>
                       {nestLabel ? tooltipLabel : null}
-                      <Text variant="caption">{itemConfig?.label || item.name}</Text>
+                      <Text variant="caption">
+                        {itemConfig?.label || item.name}
+                      </Text>
                     </div>
                     {item.value !== undefined && item.value !== null && (
-                      <Text variant="captioncode" className={styles.tooltipValue}>
+                      <Text
+                        variant="captioncode"
+                        className={styles.tooltipValue}
+                      >
                         {formatter && item?.value !== undefined && item.name
                           ? formatter(
                               item.value,
@@ -225,8 +241,9 @@ const ChartLegend = RechartsPrimitive.Legend
 const ChartLegendContent = React.forwardRef<
   HTMLDivElement,
   React.ComponentProps<'div'> &
-    Pick<RechartsPrimitive.LegendProps, 'payload' | 'verticalAlign'> & {
+    RechartsPrimitive.LegendProps & {
       hideIcon?: boolean
+      payload?: any[]
       nameKey?: string
     }
 >(
@@ -261,7 +278,7 @@ const ChartLegendContent = React.forwardRef<
                 <div
                   className={styles.legendIndicator}
                   style={{
-                    backgroundColor: item.color
+                    backgroundColor: item.color,
                   }}
                 />
               )}
@@ -294,14 +311,19 @@ function getPayloadConfigFromPayload(
 
   let configLabelKey: string = key
 
-  if (key in payload && typeof payload[key as keyof typeof payload] === 'string') {
+  if (
+    key in payload &&
+    typeof payload[key as keyof typeof payload] === 'string'
+  ) {
     configLabelKey = payload[key as keyof typeof payload] as string
   } else if (
     payloadPayload &&
     key in payloadPayload &&
     typeof payloadPayload[key as keyof typeof payloadPayload] === 'string'
   ) {
-    configLabelKey = payloadPayload[key as keyof typeof payloadPayload] as string
+    configLabelKey = payloadPayload[
+      key as keyof typeof payloadPayload
+    ] as string
   }
 
   return configLabelKey in config
@@ -315,5 +337,5 @@ export {
   ChartTooltipContent,
   ChartLegend,
   ChartLegendContent,
-  ChartStyle
+  ChartStyle,
 }

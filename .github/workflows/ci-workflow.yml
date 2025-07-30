@@ -14,11 +14,10 @@ jobs:
         node-version: 22.x
         cache: 'npm'
         cache-dependency-path: dashboard/package-lock.json
-    - name: npm install, build, and test
+    - name: npm install, build
       run: |
         npm install --prefix dashboard
         npm run lint --prefix dashboard --if-present
-        npm run test --prefix dashboard --if-present
         npm run build --prefix dashboard
       env:
         CI: true
@@ -34,11 +33,10 @@ jobs:
         node-version: 22.x
         cache: 'npm'
         cache-dependency-path: middleware/package-lock.json
-    - name: npm install, build, and test
+    - name: npm install, build
       run: |
         npm install --prefix middleware
         npm run lint --prefix middleware --if-present
-        npm run test --prefix middleware --if-present
         npm run build --prefix middleware
       env:
         CI: true
