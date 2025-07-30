@@ -1216,3 +1216,72 @@ export function StopIcon({ size = 16 }: { size?: number }) {
     </svg>
   )
 }
+
+export function InsightListIcon() {
+  return (
+    <svg
+      width="54"
+      height="34"
+      viewBox="0 0 54 34"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="M34 0V2H0V0H34Z" fill="#2D27F7" />
+      <path d="M44 8V10H0V8H44Z" fill="#2D27F7" />
+      <path d="M54 16V18H0V16H54Z" fill="#2D27F7" />
+      <path d="M34 24V26H0V24H34Z" fill="#2D27F7" />
+      <path d="M30 32V34H0V32H30Z" fill="#2D27F7" />
+    </svg>
+  )
+}
+
+export function InsightIncreaseIcon() {
+  return (
+    <svg
+      width="129"
+      height="49"
+      viewBox="0 0 129 49"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M129 16H127V3.9668C104.279 32.8514 62.4462 49 0 49V47C62.7085 47 103.957 30.6409 125.996 2H112V0H129V16Z"
+        fill="#2D27F7"
+      />
+    </svg>
+  )
+}
+
+export function InsightDecreaseIcon() {
+  return (
+    <svg
+      width="129"
+      height="49"
+      viewBox="0 0 129 49"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M129 33H127V45.0332C104.279 16.1486 62.4462 0 0 0V2C62.7085 2 103.957 18.3591 125.996 47H112V49H129V33Z"
+        fill="#2D27F7"
+      />
+    </svg>
+  )
+}
+
+export function InsightTrendIcon() {
+  return (
+    <svg
+      width="128"
+      height="48"
+      viewBox="0 0 128 21"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M128 2C95.6348 2 79.9885 6.72228 64.2891 11.457C48.4886 16.2222 32.6345 21 0 21V19C32.3652 19 48.0115 14.2777 63.7109 9.54297C79.5114 4.77776 95.3655 0 128 0V2Z"
+        fill="#2D27F7"
+      />
+    </svg>
+  )
+}

@@ -48,7 +48,7 @@ export default function DashboardPage() {
           <div className="bg-[var(--background-01-color)] p-6 border-b border-[var(--border-01-color)] pb-[532px] -mb-[492px]" />
           <div className="px-4">
             <main className="max-w-[1216px] mx-auto space-y-10">
-              <div className="w-full overflow-x-auto">
+              <div className="w-full">
                 <div className="grid grid-flow-col auto-cols-fr gap-4 min-w-max">
                   {/* AI Chat Modal */}
                   <Dialog open={open} onOpenChange={setOpen}>
