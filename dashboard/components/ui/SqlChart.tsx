@@ -21,6 +21,7 @@ import styles from './SqlChart.module.css'
 import { Stack } from './Stack'
 import { Text, TextColor } from './Text'
 import { Tooltip } from './Tooltip'
+import { Badge } from './Badge'
 
 export function SqlChart({
   data,
@@ -33,6 +34,7 @@ export function SqlChart({
   summaryValue,
   summaryValueLong,
   summaryValueColor,
+  deltaValueKey,
   unit = '',
   tooltipDateFormat = 'yyyy-MM-dd HH:mm',
   axisDateFormat = 'MMM d',
@@ -53,6 +55,7 @@ export function SqlChart({
   summaryValue?: string | number
   summaryValueLong?: string | number
   summaryValueColor?: string
+  deltaValueKey?: string
   unit?: string
   variant?: 'table' | 'widget'
   tooltipDateFormat?: string
@@ -120,6 +123,11 @@ export function SqlChart({
     }, 0)
   }
 
+  const deltaValue =
+    deltaValueKey && typeof data?.[0]?.[deltaValueKey] === 'number'
+      ? data?.[0]?.[deltaValueKey]
+      : undefined
+
   return (
     <Stack
       direction="column"
@@ -153,36 +161,35 @@ export function SqlChart({
                 </Text>
               </Tooltip>
             )}
-            {computedSummaryValue !== undefined && (
-              <Tooltip content={summaryValueLong} side="top">
-                <Text
-                  variant="displayxsmall"
-                  color={summaryValueColor as TextColor}
-                  style={{ marginInlineStart: 'auto' }}
+
+            <Stack direction="row" gap={8}>
+              {computedSummaryValue !== undefined && (
+                <Tooltip content={summaryValueLong} side="top">
+                  <Text
+                    variant="displayxsmall"
+                    color={summaryValueColor as TextColor}
+                    style={{ marginInlineStart: 'auto' }}
+                  >
+                    {computedSummaryValue?.toLocaleString()}
+                  </Text>
+                </Tooltip>
+              )}
+
+              {deltaValue && deltaValue !== 0 ? (
+                <Badge
+                  delta={deltaValue}
+                  variant={
+                    deltaValue > 0
+                      ? 'success'
+                      : deltaValue < 0
+                      ? 'error'
+                      : undefined
+                  }
                 >
-                  {(() => {
-                    if (computedSummaryValue === '--') return '--'
-                    if (unit === '%') {
-                      return `${formatNumber(Number(computedSummaryValue), '0.[00]a')}%`
-                    }
-                    if (unit === 'ms') {
-                      return formatMilliseconds(Number(computedSummaryValue))
-                    }
-                    if (unit === 'bytes') {
-                      return formatBytes(Number(computedSummaryValue))
-                    }
-                    if (
-                      typeof computedSummaryValue === 'number' &&
-                      computedSummaryValue > 0 &&
-                      computedSummaryValue < 0.001
-                    ) {
-                      return formatNumber(computedSummaryValue, '.[00000]')
-                    }
-                    return `${formatNumber(Number(computedSummaryValue), '0.[000]a')}${unit || ''}`
-                  })()}
-                </Text>
-              </Tooltip>
-            )}
+                  {deltaValue}%
+                </Badge>
+              ) : null}
+            </Stack>
           </Stack>
         </Stack>
       )}

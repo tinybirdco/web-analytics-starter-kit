@@ -21,8 +21,8 @@ export function TableCellBold({ children, href }: { children: React.ReactNode; h
 }
 
 // Monospaced number cell
-export function TableCellMono({ children }: { children: React.ReactNode }) {
-  return <Text as="span" variant="code">{children}</Text>
+export function TableCellMono({ children, width }: { children: React.ReactNode, width?: number }) {
+  return <Text as="span" variant="code" style={{ width: width ? `${width}px` : 'auto' }}>{children}</Text>
 }
 
 // Progress bar cell
@@ -45,9 +45,7 @@ export function TableCellDelta({ delta }: { delta: number }) {
   const sign = isPositive ? '+' : ''
   return (
     <span className={cn(styles.delta, color)}>
-      {isPositive && '▲'}
-      {isNegative && '▼'}
-      {sign}{delta}%
+      {sign}{delta?.toLocaleString()}%
     </span>
   )
 }

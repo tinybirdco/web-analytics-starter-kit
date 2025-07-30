@@ -43,3 +43,15 @@ export function formatMilliseconds(ms: number): string {
   const hours = Math.floor(minutes / 60)
   return `${formatNumber(hours, '0.[00]a')}h`
 }
+
+type NumericKeys<T> = {
+  [K in keyof T]: T[K] extends number ? K : never
+}[keyof T]
+
+export const maxCellWidth = <T extends Record<string, any>>(
+  k: NumericKeys<T>,
+  arr: T[]
+) => {
+  const max = Math.max(...(arr || []).map(p => (p[k!] as number) || 0))
+  return max.toLocaleString().length * 8.4
+}

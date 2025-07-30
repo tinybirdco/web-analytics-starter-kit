@@ -1,5 +1,5 @@
 import React from 'react'
-import { METRIC_THRESHOLDS } from '@/lib/constants'
+import { METRIC_THRESHOLDS, METRIC_DESCRIPTIONS } from '@/lib/constants'
 import { Tooltip } from './Tooltip'
 
 // Color mapping for performance categories
@@ -112,10 +112,12 @@ export const CoreVitalGauge: React.FC<CoreVitalGaugeProps> = ({
   leftPercent = Math.max(0, Math.min(100, leftPercent))
   const triangleLeft = `calc(${leftPercent}% - 8px)`
 
+  const metricDescription = METRIC_DESCRIPTIONS[metric_name as keyof typeof METRIC_DESCRIPTIONS]
+
   return (
     <div className="flex flex-col gap-2 w-full max-w-xl">
       <div className="flex items-center justify-between">
-        <span className="font-semibold text-lg">{metric_name}</span>
+        <span className="font-semibold text-lg">{metricDescription?.name ?? metric_name}</span>
         <span className="text-2xl font-bold">
           {currentValue.toFixed(2)}
           <span className="text-base font-normal text-gray-500 ml-1">
@@ -157,7 +159,7 @@ export const CoreVitalGauge: React.FC<CoreVitalGaugeProps> = ({
           <Triangle color="#a5a5ff" />
         </div>
       </div>
-      <div className="text-gray-500 text-sm mt-1">{description}</div>
+      <div className="text-gray-500 text-sm mt-1">{metricDescription?.description ?? description}</div>
     </div>
   )
 }

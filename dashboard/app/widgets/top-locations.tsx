@@ -5,14 +5,29 @@ import {
   TableCellCountry,
   TableCellCombined,
   TableCellProgress,
+  TableCellDelta,
 } from '@/components/table/TableCells'
 import { Card } from '@/components/ui/Card'
+import { maxCellWidth } from '@/lib/utils'
+
+type TopLocationsData = {
+  location: string
+  visits: number
+  hits: number
+  previous_visits?: number
+  previous_hits?: number
+  visits_growth_percentage?: number
+  hits_growth_percentage?: number
+}
 
 export const TopLocations = () => {
   const { data: topLocations } =
-    useEndpoint<{ location: string; visits: number; hits: number }[]>(
-      'top_locations'
-    )
+    useEndpoint<TopLocationsData[]>('top_locations', {
+      include_previous_period: true,
+    })
+
+  const maxVisitsWidth = maxCellWidth('visits', topLocations || [])
+  const maxHitsWidth = maxCellWidth('hits', topLocations || [])
 
   return (
     <Card maxHeight={400} viewAll>
@@ -29,13 +44,18 @@ export const TopLocations = () => {
             label: 'Visitors',
             key: 'visits',
             align: 'left',
-            maxWidth: 64,
+            maxWidth: 128,
             render: row => {
               const maxVisits = Math.max(...(topLocations || []).map(p => p.visits))
               return (
                 <TableCellCombined>
                   <TableCellProgress value={row.visits} max={maxVisits} />
-                  <TableCellMono>{row.visits.toLocaleString()}</TableCellMono>
+                  <TableCellMono width={maxVisitsWidth}>{row.visits.toLocaleString()}</TableCellMono>
+                  {row.visits_growth_percentage !== undefined && (
+                    <TableCellDelta
+                      delta={Math.round(row.visits_growth_percentage)}
+                    />
+                  )}
                 </TableCellCombined>
               )
             },
@@ -43,10 +63,17 @@ export const TopLocations = () => {
           {
             label: 'Views',
             key: 'hits',
-            align: 'right',
-            maxWidth: 64,
+            align: 'left',
+            maxWidth: 80,
             render: row => (
-              <TableCellMono>{row.hits.toLocaleString()}</TableCellMono>
+              <TableCellCombined>
+                <TableCellMono width={maxHitsWidth}>{row.hits.toLocaleString()}</TableCellMono>
+                {row.hits_growth_percentage !== undefined && (
+                  <TableCellDelta
+                    delta={Math.round(row.hits_growth_percentage)}
+                  />
+                )}
+              </TableCellCombined>
             ),
           },
         ]}

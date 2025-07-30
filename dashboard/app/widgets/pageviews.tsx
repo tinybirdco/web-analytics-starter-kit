@@ -15,8 +15,9 @@ const getAxisDateFormat = (timeRange: string): string => {
 
 export const Pageviews = () => {
   const { value: timeRange } = useTimeRange()
-  const { data, error, isLoading } =
-    useEndpoint<{ visits: number; pageviews: number }[]>('kpis')
+  const { data, error, isLoading } = useEndpoint<
+    { visits: number; pageviews: number }[]
+  >('kpis', { include_previous_period: true })
 
   return (
     <Card>
@@ -26,10 +27,11 @@ export const Pageviews = () => {
         error={error?.message}
         isLoading={isLoading}
         summaryValue={'pageviews'}
+        deltaValueKey={'pageviews_growth_percentage'}
         xAxisKey="date"
         yAxisKey="pageviews"
         axisDateFormat={getAxisDateFormat(timeRange)}
       />
     </Card>
   )
-} 
+}
