@@ -147,6 +147,25 @@
   }
 
   /**
+   * Validate user agent string to filter out bots and invalid requests
+   *
+   * @param  { string } userAgent User agent string
+   * @return { boolean } True if user agent is valid, false otherwise
+   */
+  function _isValidUserAgent(userAgent) {
+    // empty is fine
+    if (!userAgent || typeof userAgent !== 'string') {
+      return true
+    }
+
+    if (userAgent.length < 10 || userAgent.length > 500) {
+      return false
+    }
+
+    return true
+  }
+
+  /**
    * Try to mask PPI and potential sensible attributes
    *
    * @param  { object } payload Event payload
@@ -197,6 +216,12 @@
    */
   async function _sendEvent(name, payload) {
     _setSessionId()
+
+    // Validate user agent if enabled - this will catch ALL events
+    if (!_isValidUserAgent(window.navigator.userAgent)) {
+      return
+    }
+
     let url
 
     // Use public Tinybird url if no custom endpoint is provided
