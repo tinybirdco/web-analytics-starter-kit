@@ -15,7 +15,7 @@ To deploy this template on Tinybird:
 ```bash
 curl -sSL https://tinybird.co | bash
 tb login
-tb --cloud deploy --template https://github.com/tinybirdco/web-analytics-starter-kit/tree/main/tinybird
+tb --cloud deploy --template https://github.com/tinybirdco/web-analytics-starter-kit/tree/beta/tinybird
 ```
 
 ### Track web events
@@ -111,9 +111,9 @@ These are the different metrics tracked and their meaning:
 
 ## Visualize the metrics on a readymade dashboard
 
-Go to https://analytics.tinybird.co and paste your `dashboard` token.
+Go to https://analytics.tinybird.live and paste your **Workspace admin token**.
 
-Get your `dashboard` token from https://cloud.tinybird.co/tokens
+Get your `dashboard` token from https://cloud.tinybird.co/tokens.
 
 ## Advanced
 
