@@ -8,6 +8,7 @@ export type PipeTableColumn = {
   key: string
   align?: 'left' | 'right' | 'center'
   maxWidth?: number
+  isNumeric?: boolean
   render?: (
     row: Record<string, any>,
     value: any,
@@ -97,7 +98,8 @@ export function PipeTable({
                           width: col.maxWidth ? `${col.maxWidth}px` : (j === 0 ? '200px' : undefined),
                           overflow: (col.maxWidth || j === 0) ? 'hidden' : undefined,
                           textOverflow: (col.maxWidth || j === 0) ? 'ellipsis' : undefined,
-                          whiteSpace: (col.maxWidth || j === 0) ? 'nowrap' : undefined
+                          whiteSpace: (col.maxWidth || j === 0) ? 'nowrap' : undefined,
+                          fontFamily: col.isNumeric ? 'var(--font-family-mono)' : undefined
                         }}
                       >
                         {col.render
