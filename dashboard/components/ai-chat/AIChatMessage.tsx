@@ -51,10 +51,11 @@ const RESULT_ANIMATION = {
 
 interface AIChatMessageProps {
   message: any
-  messageIndex: number
+  messageIndex: number,
+  status: string
 }
 
-export function AIChatMessage({ message }: AIChatMessageProps) {
+export function AIChatMessage({ message, status }: AIChatMessageProps) {
   const reasoningParts: typeof message.parts = []
   const resultParts: typeof message.parts = []
 
@@ -168,7 +169,7 @@ export function AIChatMessage({ message }: AIChatMessageProps) {
             }}
           >
             <Card
-              variant="dark"
+              variant={status === 'streaming' && !resultParts?.length ? 'loading' : 'dark'}
               className="scroll-smooth space-y-3"
               maxHeight={REASONING_HEIGHT + 10}
               ref={scrollRef}
@@ -178,6 +179,7 @@ export function AIChatMessage({ message }: AIChatMessageProps) {
                   part={latestReasoningToolInvocation}
                   partIndex={0}
                   isResult={false}
+                  status={status}
                 />
               ) : (
                 <div className="text-xs flex items-center gap-x-2.5 py-0.5">
@@ -219,7 +221,7 @@ export function AIChatMessage({ message }: AIChatMessageProps) {
               bottom: 0,
             }}
           >
-            <Card variant="result">
+            <Card variant={status === 'streaming' ? 'loading' : 'result'}>
               <div className="CustomScrollArea space-y-4">
                 {resultParts.map((part: any, partIndex: number) => {
                   if (part.type === 'text') {
@@ -236,6 +238,7 @@ export function AIChatMessage({ message }: AIChatMessageProps) {
                         part={part}
                         partIndex={partIndex}
                         isResult={true}
+                        status={status}
                       />
                     )
                   }

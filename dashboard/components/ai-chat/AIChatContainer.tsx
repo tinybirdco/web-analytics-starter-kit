@@ -75,7 +75,7 @@ const AnalyzingCard = () => {
           }}
         >
           <Card
-            variant="dark"
+            variant="loading"
             className="scroll-smooth space-y-3"
             maxHeight={REASONING_HEIGHT + 10}
           >
@@ -97,7 +97,7 @@ export function AIChatContainer({
   className = '',
   showForm = true,
 }: AIChatContainerProps) {
-  const { messages, isLoading, error } = useAIChat()
+  const { messages, isLoading,  error, status } = useAIChat()
 
   const cards = messages
     .filter(
@@ -118,7 +118,7 @@ export function AIChatContainer({
       <div>
         {cards.map(({ message, index }) => {
           return (
-            <AIChatMessage key={index} message={message} messageIndex={index} />
+            <AIChatMessage key={index} message={message} messageIndex={index} status={status} />
           )
         })}
         

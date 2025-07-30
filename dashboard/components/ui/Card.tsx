@@ -16,12 +16,12 @@ const CardWrapper = ({
 }) => {
   const time = useTime()
 
-  // Animated conic-gradient for loading
+   // Animated conic-gradient for loading border
   const background = useTransform(
     () =>
       `conic-gradient(from ${
         time.get() * 0.25
-      }deg, var(--border-01-color), var(--border-01-color), var(--border-02-color), var(--border-01-color))`
+      }deg, var(--border-01-color), #848587, var(--border-01-color))`
   )
 
   // Background color per variant
@@ -44,7 +44,7 @@ const CardWrapper = ({
   ) : (
     <div
       className={cn(
-        'relative overflow-hidden',
+        'relative overflow-hidden transition-all duration-100',
         bgColor,
         variant === 'result' ? 'p-0.5 rounded-[10px]' : 'p-px rounded-[9px]'
       )}

@@ -12,11 +12,13 @@ interface AIChatToolCallProps {
   part: any
   partIndex: number
   isResult?: boolean
+  status: string
 }
 
 export function AIChatToolCall({
   part,
   isResult = false,
+  status,
 }: AIChatToolCallProps) {
   const getToolLabel = (tool: string) => {
     switch (tool) {
@@ -40,7 +42,6 @@ export function AIChatToolCall({
   if (part.type === 'tool-invocation') {
     const toolName = part.toolInvocation.toolName
     const result = part.toolInvocation?.result
-    const state = part.toolInvocation?.state
 
     if (toolName === 'renderSqlChart' && result) {
       return (
@@ -84,7 +85,7 @@ export function AIChatToolCall({
 
     return (
       <div className="text-xs flex items-center gap-x-2.5 py-0.5">
-        {state !== 'result' ? (
+        {status !== 'ready' ? (
           <Loader className={'text-[var(--icon-color)]'} />
         ) : (
           <CheckIcon className={'text-[var(--icon-color)]'} />

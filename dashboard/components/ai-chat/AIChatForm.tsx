@@ -106,7 +106,7 @@ export function AIChatForm({
           <label htmlFor="ai-chat-input" className="font-medium mb-1 sr-only">
             Ask a question about your analytics data
           </label>
-          <InputWrapper isLoading={isLoading} background={background}>
+          <InputWrapper isLoading={false} background={background}>
             <input
               id="ai-chat-input"
               className="flex-1 resize-none text-lg !bg-none placeholder:text-[var(--text-02-color)] disabled:bg-white pr-3"
