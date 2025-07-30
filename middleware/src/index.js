@@ -152,7 +152,7 @@
       return true
     }
 
-    if (userAgent.length < 10 || userAgent.length > 500) {
+    if (userAgent.length > 500) {
       return false
     }
 
