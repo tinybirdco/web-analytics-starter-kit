@@ -151,7 +151,7 @@ SQL >
             group by toStartOfHour(timestamp), session_id, tenant_id, domain
         {% else %}
             select
-                timestampAdd(date, interval (SELECT period_days FROM date_calculations) day) as date,
+                date,
                 session_id,
                 uniq(session_id) as visits,
                 countMerge(hits) as pageviews,
@@ -183,7 +183,7 @@ SQL >
     %
     {% if defined(include_previous_period) and include_previous_period == 'true' %}
     select
-        date,
+        timestampAdd(date, interval (SELECT period_days FROM date_calculations) day) as date,
         uniq(session_id) as previous_visits,
         sum(pageviews) as previous_pageviews,
         sum(case when latest_hit_aux = first_hit_aux then 1 end) / uniq(session_id) as previous_bounce_rate,
@@ -203,7 +203,7 @@ SQL >
     %
     {% if defined(include_previous_period) and include_previous_period == 'true' %}
     SELECT 
-        a.date, 
+        a.date date, 
         coalesce(b.current_visits, 0) as visits,
         coalesce(b.current_pageviews, 0) as pageviews, 
         coalesce(b.current_bounce_rate, 0) as bounce_rate, 
@@ -237,7 +237,7 @@ SQL >
     LEFT JOIN previous_period_data p USING date
     {% else %}
     SELECT 
-        a.date, 
+        a.date date, 
         coalesce(b.current_visits, 0) as visits,
         coalesce(b.current_pageviews, 0) as pageviews, 
         coalesce(b.current_bounce_rate, 0) as bounce_rate, 
