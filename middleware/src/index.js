@@ -159,6 +159,18 @@
     return true
   }
 
+  function _isValidPayload(payloadStr) {
+    if (!payloadStr || typeof payloadStr !== 'string') {
+      return false
+    }
+    
+    if (payloadStr.length < 2 || payloadStr.length > 10240) {
+      return false
+    }
+
+    return true
+  }
+
   /**
    * Try to mask PPI and potential sensible attributes
    *
@@ -236,9 +248,18 @@
       processedPayload = _maskSuspiciousAttributes(payload)
       processedPayload = Object.assign({}, JSON.parse(processedPayload), globalAttributes)
       processedPayload = JSON.stringify(processedPayload)
+
+      if (!_isValidPayload(processedPayload)) {
+        return
+      }
     } else {
       processedPayload = Object.assign({}, payload, globalAttributes)
       const maskedStr = _maskSuspiciousAttributes(processedPayload)
+
+      if (!_isValidPayload(maskedStr)) {
+        return
+      }
+
       processedPayload = JSON.parse(maskedStr)
     }
 
