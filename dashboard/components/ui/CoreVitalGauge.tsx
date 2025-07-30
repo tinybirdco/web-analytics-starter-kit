@@ -61,7 +61,7 @@ export const CoreVitalGauge: React.FC<CoreVitalGaugeProps> = ({
   // Loading/blank state
   if (!metricEntries || metricEntries.length === 0) {
     return (
-      <div className="flex flex-col gap-2 w-full max-w-xl animate-pulse">
+      <div className="flex flex-col gap-2 w-full max-w-2xl animate-pulse">
         <div className="flex items-center justify-between">
           <span className="font-semibold text-lg bg-gray-200 rounded w-16 h-6" />
           <span className="text-2xl font-bold bg-gray-200 rounded w-20 h-8" />
@@ -112,12 +112,15 @@ export const CoreVitalGauge: React.FC<CoreVitalGaugeProps> = ({
   leftPercent = Math.max(0, Math.min(100, leftPercent))
   const triangleLeft = `calc(${leftPercent}% - 8px)`
 
-  const metricDescription = METRIC_DESCRIPTIONS[metric_name as keyof typeof METRIC_DESCRIPTIONS]
+  const metricDescription =
+    METRIC_DESCRIPTIONS[metric_name as keyof typeof METRIC_DESCRIPTIONS]
 
   return (
-    <div className="flex flex-col gap-2 w-full max-w-xl">
+    <div className="flex flex-col gap-2 w-full max-w-2xl">
       <div className="flex items-center justify-between">
-        <span className="font-semibold text-lg">{metricDescription?.name ?? metric_name}</span>
+        <span className="font-semibold text-lg">
+          {metricDescription?.name ?? metric_name}
+        </span>
         <span className="text-2xl font-bold">
           {currentValue.toFixed(2)}
           <span className="text-base font-normal text-gray-500 ml-1">
@@ -155,11 +158,13 @@ export const CoreVitalGauge: React.FC<CoreVitalGaugeProps> = ({
             <Triangle color="#2a2aff" />
           </div>
         </Tooltip>
-        <div style={{ position: 'absolute', left: triangleLeft, bottom: -12 }}>
+        {/* <div style={{ position: 'absolute', left: triangleLeft, bottom: -12 }}>
           <Triangle color="#a5a5ff" />
-        </div>
+        </div> */}
       </div>
-      <div className="text-gray-500 text-sm mt-1">{metricDescription?.description ?? description}</div>
+      <div className="text-gray-500 text-sm mt-1">
+        {metricDescription?.description ?? description}
+      </div>
     </div>
   )
 }
