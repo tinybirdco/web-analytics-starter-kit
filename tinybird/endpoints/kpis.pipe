@@ -183,7 +183,7 @@ SQL >
     %
     {% if defined(include_previous_period) and include_previous_period == 'true' %}
     select
-        timestampAdd(date, interval (SELECT period_days FROM date_calculations) day) as date,
+        date,
         uniq(session_id) as previous_visits,
         sum(pageviews) as previous_pageviews,
         sum(case when latest_hit_aux = first_hit_aux then 1 end) / uniq(session_id) as previous_bounce_rate,
