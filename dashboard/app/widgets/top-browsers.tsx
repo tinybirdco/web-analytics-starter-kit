@@ -43,7 +43,7 @@ export const TopBrowsers = () => {
             label: 'Visitors',
             key: 'visits',
             align: 'left',
-            maxWidth: 128,
+            maxWidth: 80,
             render: row => (
               <TableCellCombined>
                 <TableCellMono width={maxVisitsWidth}>{row.visits.toLocaleString()}</TableCellMono>
