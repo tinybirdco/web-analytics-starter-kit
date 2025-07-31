@@ -59,7 +59,12 @@ SQL >
         JSONExtractString(payload, 'href') as href
     FROM analytics_events
     WHERE action = 'web_vital'
-        AND timestamp >= now() - interval {{Int32(days, 1, description="Number of days to analyze (defaults to 1 day)")}} day
+        {% if defined(from_date) %}
+            AND timestamp >= {{ Date(from_date, description="Starting date for filtering a date range", required=False) }}
+        {% end %}
+        {% if defined(to_date) %}
+            AND timestamp <= {{ Date(to_date, description="Finishing date for filtering a date range", required=False) }}
+        {% end %}
         AND JSONExtractString(payload, 'name') IN ('LCP', 'TTFB', 'FCP', 'INP', 'CLS')
         AND JSONExtractString(payload, 'pathname') != ''
         -- Filter out unrealistic values that are clearly errors
