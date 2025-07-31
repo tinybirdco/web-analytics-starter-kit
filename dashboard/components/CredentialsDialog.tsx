@@ -39,7 +39,9 @@ const extractHostFromToken = (token: string): string | undefined => {
 }
 
 // Helper to decode JWT and extract workspace id (u attribute)
-export const extractWorkspaceIdFromToken = (token: string): string | undefined => {
+export const extractWorkspaceIdFromToken = (
+  token: string
+): string | undefined => {
   try {
     const payload = token.split('.')[1]
     if (!payload) return undefined
@@ -55,7 +57,10 @@ export const extractWorkspaceIdFromToken = (token: string): string | undefined =
 }
 
 // Create JWT function in TypeScript (browser-safe)
-export async function createJwt(token: string, tenant_id: string): Promise<string> {
+export async function createJwt(
+  token: string,
+  tenant_id: string
+): Promise<string> {
   const expiration_time = Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60 // 30 days from now
   const workspace_id = extractWorkspaceIdFromToken(token)
   const resources = [
@@ -78,25 +83,32 @@ export async function createJwt(token: string, tenant_id: string): Promise<strin
     'actions',
   ]
 
-  const datasources_resources = ['analytics_events', 'tenant_actions_mv', 'tenant_domains_mv']
+  const datasources_resources = [
+    'analytics_events',
+    'tenant_actions_mv',
+    'tenant_domains_mv',
+  ]
 
   const datasources_scopes = datasources_resources.map(resource => ({
     type: 'DATASOURCES:READ',
     resource,
-    filter: `tenant_id = '${tenant_id}'`
+    filter: `tenant_id = '${tenant_id}'`,
   }))
 
   const payload = {
     workspace_id: workspace_id,
     name: 'frontend_jwt',
     exp: expiration_time,
-    scopes: [...resources.map(resource => ({
-      type: 'PIPES:READ',
-      resource,
-      fixed_params: {
-        tenant_id: tenant_id,
-      },
-    })), ...datasources_scopes],
+    scopes: [
+      ...resources.map(resource => ({
+        type: 'PIPES:READ',
+        resource,
+        fixed_params: {
+          tenant_id: tenant_id,
+        },
+      })),
+      ...datasources_scopes,
+    ],
   }
   const key = new TextEncoder().encode(token)
   return await new SignJWT(payload as any)
@@ -109,18 +121,24 @@ export default function CredentialsDialog() {
   const [hostUrl, setHostUrl] = useState(regionValues[0])
   const [hostName, setHostName] = useState('')
   const [tenantId, setTenantId] = useState('')
+  const [tokenHasHost, setTokenHasHost] = useState(true)
 
   const handleTokenChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const token = e.target.value
     const hostKey = extractHostFromToken(token)
-    if (hostKey && regionMap[hostKey]) {
-      setHostUrl(regionMap[hostKey])
-      setHostName('')
-    } else if (hostKey) {
-      setHostUrl('other')
-      setHostName(hostKey)
+
+    if (hostKey) {
+      setTokenHasHost(true)
+      if (regionMap[hostKey]) {
+        setHostUrl(regionMap[hostKey])
+        setHostName('')
+      } else {
+        setHostUrl('other')
+        setHostName(hostKey)
+      }
     } else {
-      setHostUrl('other')
+      setTokenHasHost(false)
+      setHostUrl(regionValues[0])
       setHostName('')
     }
   }
@@ -136,9 +154,9 @@ export default function CredentialsDialog() {
     const token = formData.get('token') as string
     const host = hostUrl === 'other' ? hostName : hostUrl
     const tenant_id = formData.get('tenant_id') as string
-    
+
     if (!token || (hostUrl === 'other' && !hostName)) return
-    
+
     let jwt = token
     jwt = await createJwt(token, tenant_id || '')
 
@@ -166,42 +184,48 @@ export default function CredentialsDialog() {
             <label>Token</label>
             <Input
               name="token"
-              placeholder="Paste your 'admin' token to generate a scoped JWT token"
+              required={true}
+              placeholder="Paste your 'workspace admin' token to generate a scoped JWT token"
               onChange={handleTokenChange}
             />
             <Link
               href="https://cloud.tinybird.co/tokens"
               target="_blank"
               rel="noopener noreferrer"
+              className="block"
             >
               Get your admin token
             </Link>
           </div>
 
-          <div className="space-y-1">
-            <label>Host</label>
-            <Select
-              options={hostOptions}
-              value={hostUrl}
-              onValueChange={setHostUrl}
-              width="full"
-            />
-          </div>
+          {!tokenHasHost && (
+            <>
+              <div className="space-y-1">
+                <label>Host</label>
+                <Select
+                  options={hostOptions}
+                  value={hostUrl}
+                  onValueChange={setHostUrl}
+                  width="full"
+                />
+              </div>
 
-          {hostUrl === 'other' && (
-            <div className="space-y-1">
-              <label>Host name</label>
-              <Input
-                name="hostName"
-                placeholder="Host name"
-                value={hostName}
-                onChange={handleHostNameChange}
-              />
-            </div>
+              {hostUrl === 'other' && (
+                <div className="space-y-1">
+                  <label>Host name</label>
+                  <Input
+                    name="hostName"
+                    placeholder="Host name"
+                    value={hostName}
+                    onChange={handleHostNameChange}
+                  />
+                </div>
+              )}
+            </>
           )}
 
-          <div className="space-y-1">
-            <label>Tenant ID</label>
+          <div className="space-y-1 pb-5">
+            <label>Tenant ID (optional)</label>
             <Input
               name="tenant_id"
               placeholder="Leave empty for default tenant"
