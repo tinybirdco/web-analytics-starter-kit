@@ -1,35 +1,11 @@
 DESCRIPTION >
-	Hourly time series of web vitals quantile values (0.75, 0.9, 0.95, 0.99) for each metric. Shows performance distribution over time with configurable time period and optional domain/tenant filtering. Set include_previous_period=true to get both current and previous period timeseries data.
+	Hourly time series of web vitals quantile values (0.75, 0.9, 0.95, 0.99) for each metric. Shows performance distribution over time with configurable time period and optional domain/tenant filtering.
 
 TOKEN "dashboard" READ
 
-NODE date_calculations
-DESCRIPTION >
-    Calculate current and previous period date ranges
-
-SQL >
-    %
-    WITH
-        {% if defined(date_from) and defined(date_to) %}
-            toDate({{ String(date_from) }}) as current_start,
-            toDate({{ String(date_to) }}) as current_end,
-        {% else %}
-            toDate(timestampAdd(today(), interval -1 day)) as current_start,
-            toDate(today()) as current_end,
-        {% end %}
-        dateDiff('day', current_start, current_end) + 1 as period_days,
-        timestampAdd(current_start, interval -period_days day) as previous_start,
-        timestampAdd(current_end, interval -period_days day) as previous_end
-    SELECT
-        current_start,
-        current_end,
-        previous_start,
-        previous_end,
-        period_days
-
 NODE filtered_vitals
 DESCRIPTION >
-    Filter web vitals data for both current and previous periods, domain, and tenant
+    Filter web vitals data for the specified period
 
 SQL >
     %
@@ -38,28 +14,15 @@ SQL >
         metric_name,
         value,
         domain,
-        tenant_id,
-        -- Mark which period this data belongs to
-        CASE 
-            WHEN timestamp >= toDateTime(concat(toString((SELECT current_start FROM date_calculations)), ' 00:00:00'))
-                 AND timestamp <= toDateTime(concat(toString((SELECT current_end FROM date_calculations)), ' 23:59:59'))
-            THEN 'current'
-            {% if defined(include_previous_period) and include_previous_period == 'true' %}
-            WHEN timestamp >= toDateTime(concat(toString((SELECT previous_start FROM date_calculations)), ' 00:00:00'))
-                 AND timestamp <= toDateTime(concat(toString((SELECT previous_end FROM date_calculations)), ' 23:59:59'))
-            THEN 'previous'
-            {% end %}
-            ELSE 'excluded'
-        END as period_type
+        tenant_id
     FROM web_vitals_events
-    WHERE (
-            (timestamp >= toDateTime(concat(toString((SELECT current_start FROM date_calculations)), ' 00:00:00'))
-             AND timestamp <= toDateTime(concat(toString((SELECT current_end FROM date_calculations)), ' 23:59:59')))
-            {% if defined(include_previous_period) and include_previous_period == 'true' %}
-            OR (timestamp >= toDateTime(concat(toString((SELECT previous_start FROM date_calculations)), ' 00:00:00'))
-                AND timestamp <= toDateTime(concat(toString((SELECT previous_end FROM date_calculations)), ' 23:59:59')))
-            {% end %}
-        )
+    WHERE 1=1
+        {% if defined(date_from) %}
+        AND timestamp >= toDateTime(concat(toString({{ Date(date_from) }}), ' 00:00:00'))
+        {% end %}
+        {% if defined(date_to) %}
+        AND timestamp <= toDateTime(concat(toString({{ Date(date_to) }}), ' 23:59:59'))
+        {% end %}
         {% if defined(tenant_id) %}
         AND tenant_id = {{ String(tenant_id, description="Filter by tenant ID") }}
         {% end %}
@@ -69,7 +32,7 @@ SQL >
 
 NODE endpoint
 DESCRIPTION >
-    Calculate quantiles for each metric per hour with period information
+    Calculate quantiles for each metric per hour
 
 SQL >
     SELECT
@@ -80,12 +43,10 @@ SQL >
         quantile(0.95)(value) as p95,
         quantile(0.99)(value) as p99,
         count() as measurements,
-        period_type,
         domain
     FROM filtered_vitals
-    WHERE period_type != 'excluded'
-    GROUP BY hour, metric_name, period_type, domain
+    GROUP BY hour, metric_name, domain
     HAVING measurements >= 5
-    ORDER BY period_type ASC, hour ASC, metric_name ASC
+    ORDER BY hour ASC, metric_name ASC
 
 TYPE endpoint
