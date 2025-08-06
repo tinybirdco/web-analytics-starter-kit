@@ -1,0 +1,58 @@
+.base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  border-radius: 48px;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+  font-family: var(--font-family-mono);
+}
+
+/* Size variants */
+.sizeSmall {
+  padding: 2px 6px;
+  font-size: 11px;
+  line-height: 14px;
+}
+
+.sizeMedium {
+  padding: 4px 8px;
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.sizeLarge {
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 18px;
+}
+
+/* Color variants */
+.default {
+  background-color: var(--background-02-color, #f3f4f6);
+  color: var(--text-02-color, #6b7280);
+}
+
+.success {
+  background-color: #f0fdf4;
+  color: var(--text-brand-dark-color);
+}
+
+.warning {
+  background-color: #fffbeb;
+  color: #d97706;
+}
+
+.error {
+  background-color: #fef2f2;
+  color: var(--text-error-color);
+}
+
+.info {
+  background-color: #eff6ff;
+  color: #2563eb;
+}

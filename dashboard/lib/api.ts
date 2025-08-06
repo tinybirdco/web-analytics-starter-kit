@@ -15,8 +15,8 @@ export function getConfig(search?: string) {
   // Use provided search param, or window.location.search if in browser, or empty string if on server
   const searchParams = new URLSearchParams(search || (isBrowser ? window.location.search : ''))
   
-  const token = config.authToken ?? searchParams.get('token')
-  const host = config.host ?? searchParams.get('host')
+  const token = config.authToken ?? searchParams?.get('token')
+  const host = config.host ?? searchParams?.get('host')
   
   return {
     token,
@@ -83,7 +83,7 @@ export function queryPipe<T>(
   const searchParams = new URLSearchParams()
   Object.entries(params).forEach(([key, value]) => {
     if (!value) return
-    searchParams.set(key, value)
+    searchParams.set(key, value as string)
   })
 
   return client(`/pipes/${name}.json?${searchParams}`)

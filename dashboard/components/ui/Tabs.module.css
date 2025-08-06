@@ -1,0 +1,121 @@
+.tabs {
+  width: 100%;
+}
+
+.list {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 8px;
+  margin-bottom: 16px;
+}
+
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  padding: 8px 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: #6b7280;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  position: relative;
+  user-select: none;
+}
+
+.trigger:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--border-03-color);
+}
+
+.trigger:disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.trigger[data-state='active'] {
+  color: #111827;
+}
+
+.trigger[data-state='active']::after {
+  content: '';
+  position: absolute;
+  bottom: -9px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: #374151;
+  border-radius: 1px;
+}
+
+.content {
+  width: 100%;
+}
+
+.content:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--border-03-color);
+}
+
+/* Pill variant - restores previous styles */
+.pill .list {
+  display: inline-flex;
+  height: 24px;
+  align-items: center;
+  color: var(--text-01-color);
+  gap: 4px;
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+
+.pill .trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  border-radius: 4px;
+  padding: 4px 10px;
+  height: 32px;
+  font: var(--font-body);
+  font-weight: 500;
+  color: var(--text-02-color);
+  transition: all 0.2s;
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  user-select: none;
+}
+
+.pill .trigger[data-state='active'] {
+  color: var(--text-color);
+  border: 1px solid var(--border-02-color);
+}
+
+.pill .trigger[data-state='active']::after {
+  display: none;
+}
+
+.dark .trigger {
+  color: var(--text-02-color);
+}
+
+.dark .trigger[data-state='active'] {
+  background-color: var(--background-dark-01-color);
+  color: var(--text-inverse-color);
+}
+
+.dark.pill .trigger[data-state='active'] {
+  background-color: var(--background-dark-01-color);
+  color: var(--text-inverse-color);
+}
+
+.code .trigger {
+  font: var(--font-code);
+}

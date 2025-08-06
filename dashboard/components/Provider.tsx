@@ -1,3 +1,5 @@
+'use client'
+
 import { createContext, ReactNode, useContext, useMemo, useState } from 'react'
 import { SWRConfig } from 'swr'
 import { QueryError } from '../lib/types/api'
