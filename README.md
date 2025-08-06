@@ -15,7 +15,7 @@ To deploy this template on Tinybird:
 ```bash
 curl -sSL https://tinybird.co | bash
 tb login
-tb --cloud deploy --template https://github.com/tinybirdco/web-analytics-starter-kit/tree/beta/tinybird
+tb --cloud deploy --template https://github.com/tinybirdco/web-analytics-starter-kit/tree/main/tinybird
 ```
 
 ### Track web events
