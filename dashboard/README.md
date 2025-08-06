@@ -81,12 +81,6 @@ Also, you can [open an issue](https://github.com/tinybirdco/web-analytics-starte
 
 We encourage you to [fork](https://docs.github.com/es/get-started/quickstart/fork-a-repo) the repo and customize the dashboard adapting it to your needs and to your branding image.
 
-## Authors
-
-[Rafa Moreno](https://github.com/rmorehig)
-
-[Raquel Yuste](https://github.com/raqyuste)
-
 ## Licence
 
 MIT License
