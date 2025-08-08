@@ -233,8 +233,8 @@ SQL >
             ELSE round(((coalesce(b.current_avg_session_sec, 0) - coalesce(p.previous_avg_session_sec, 0)) * 100.0) / p.previous_avg_session_sec, 2)
         END as avg_session_sec_growth_percentage
     FROM timeseries a
-    LEFT JOIN current_period_data b USING date
-    LEFT JOIN previous_period_data p USING date
+    LEFT JOIN current_period_data b ON a.date = b.date
+    LEFT JOIN previous_period_data p ON a.date = p.date
     {% else %}
     SELECT 
         a.date date, 
