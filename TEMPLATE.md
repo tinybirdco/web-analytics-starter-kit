@@ -17,7 +17,7 @@ tb --cloud deploy --template https://github.com/tinybirdco/web-analytics-starter
 tb --cloud token copy dashboard
 ```
 
-[Deploy the dashboard](https://github.com/tinybirdco/web-analytics-starter-kit/blob/main/dashboard/README.md) to Vercel or use the hosted dashboard at https://analytics.tinybird.co/ using the Workspace `dashboard` [token](https://cloud.tinybird.co/tokens).
+[Deploy the dashboard](https://github.com/tinybirdco/web-analytics-starter-kit/blob/main/dashboard/README.md) to Vercel or use the hosted dashboard at https://analytics.tinybird.live/ using the Workspace `dashboard` [token](https://cloud.tinybird.co/tokens).
 
 
 ## Send events from your site
