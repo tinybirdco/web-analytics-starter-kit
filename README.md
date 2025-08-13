@@ -68,13 +68,36 @@ These parameters can be used with the tracker snippet:
 <script
   src="https://unpkg.com/@tinybirdco/flock.js"
   data-token="YOUR_TRACKER_TOKEN"
-  data-tb-customer-id="CUSTOMER_ID"
+  data-tb-my-custom-attr="custom-attr-value"
 ></script>
 ```
 
-Would append `"customer_id":"<CUSTOMER_ID>"` to the rest of variables saved in payload column.
+Would append `"my_custom_attr":"<custom-attr-value>"` to the rest of variables saved in payload column.
 
-Use custom attributes for multi-tenant support.
+### Multi-tenancy and multi-domain
+
+The `analytics_events` table has support to gather data from multiple tenants and domains. Add `data-domain` and `data-tenant-id` to your script:
+
+```js
+<script
+  src="https://unpkg.com/@tinybirdco/flock.js"
+  data-token="YOUR_TRACKER_TOKEN"
+  data-domain="project_domain"
+  data-tenant-id="project_tenant_id"
+></script>
+```
+
+All project endpoints can be filtered by `tenant_id` and `domain` or you can use JWT tokens including the required scopes and `fixed_params`.
+
+To filter endpoints for a tenant, use this as fixed params in the JWT token:
+
+```json
+"fixed_params": {
+    "tenant_id": "your-tenant-id"
+}
+```
+
+Learn [how to create JWT tokens](https://www.tinybird.co/docs/forward/administration/tokens/jwt?create-a-jwt-in-production#create-a-jwt-in-production)
 
 ### Web vitals
 
