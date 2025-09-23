@@ -16,6 +16,7 @@ import {
   TopSources,
   TopDevices,
   TopBrowsers,
+  ButtonPressAnalytics,
 } from './widgets/index'
 
 // Helper function to determine date format based on time range
@@ -155,6 +156,7 @@ export const Widgets = () => {
         <TopSources />
         <TopDevices />
         <TopBrowsers />
+        <ButtonPressAnalytics />
       </div>
     </>
   )

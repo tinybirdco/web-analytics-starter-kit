@@ -1,0 +1,118 @@
+DESCRIPTION >
+    Button press analytics for film pages showing button name, page, and press count.
+    Accepts `date_from` and `date_to` date filter. Defaults to last 7 days.
+    Also `skip` and `limit` parameters for pagination.
+
+TOKEN "dashboard" READ
+
+NODE date_calculations
+DESCRIPTION >
+    Calculate current and previous period date ranges
+
+SQL >
+    %
+    WITH
+        {% if defined(date_from) and defined(date_to) %}
+            toDate({{ String(date_from) }}) as current_start,
+            toDate({{ String(date_to) }}) as current_end,
+        {% else %}
+            toDate(timestampAdd(today(), interval -7 day)) as current_start,
+            toDate(today()) as current_end,
+        {% end %}
+        dateDiff('day', current_start, current_end) + 1 as period_days,
+        timestampAdd(current_start, interval -period_days day) as previous_start,
+        timestampAdd(current_end, interval -period_days day) as previous_end
+    SELECT
+        current_start,
+        current_end,
+        previous_start,
+        previous_end,
+        period_days
+
+NODE current_period_data
+DESCRIPTION >
+    Get button press metrics for the current period
+
+SQL >
+    %
+    SELECT 
+        toDate(timestamp) as date,
+        JSONExtractString(payload, 'page') as film_page,
+        JSONExtractString(payload, 'button_name') as button_name,
+        count() as press_count
+    FROM analytics_events 
+    WHERE (action = 'button_press' OR action = 'button_click') 
+        AND timestamp >= (SELECT current_start FROM date_calculations)
+        AND timestamp <= (SELECT current_end FROM date_calculations)
+        AND JSONExtractString(payload, 'page') LIKE '%/films/%'
+        {% if defined(tenant_id) %}
+        AND tenant_id = {{ String(tenant_id, description="Filter by tenant ID") }}
+        {% end %}
+        {% if defined(domain) %}
+        AND domain = {{ String(domain, description="Filter by domain") }}
+        {% end %}
+    GROUP BY date, film_page, button_name
+    ORDER BY date DESC, film_page, press_count DESC
+
+NODE previous_period_data
+DESCRIPTION >
+    Get button press metrics for the previous period (only when include_previous_period is true)
+
+SQL >
+    %
+    {% if defined(include_previous_period) and include_previous_period == 'true' %}
+    SELECT 
+        toDate(timestamp) as date,
+        JSONExtractString(payload, 'page') as film_page,
+        JSONExtractString(payload, 'button_name') as button_name,
+        count() as press_count
+    FROM analytics_events 
+    WHERE (action = 'button_press' OR action = 'button_click') 
+        AND timestamp >= (SELECT previous_start FROM date_calculations)
+        AND timestamp <= (SELECT previous_end FROM date_calculations)
+        AND JSONExtractString(payload, 'page') LIKE '%/films/%'
+        {% if defined(tenant_id) %}
+        AND tenant_id = {{ String(tenant_id, description="Filter by tenant ID") }}
+        {% end %}
+        {% if defined(domain) %}
+        AND domain = {{ String(domain, description="Filter by domain") }}
+        {% end %}
+    GROUP BY date, film_page, button_name
+    {% else %}
+    SELECT '' as date, '' as film_page, '' as button_name, 0 as press_count WHERE 1=0
+    {% end %}
+
+NODE endpoint
+DESCRIPTION >
+    Combine current and previous period data with growth calculations
+
+SQL >
+    %
+    {% if defined(include_previous_period) and include_previous_period == 'true' %}
+    SELECT
+        c.date,
+        c.film_page,
+        c.button_name,
+        c.press_count,
+        coalesce(p.press_count, 0) as previous_press_count,
+        CASE 
+            WHEN coalesce(p.press_count, 0) = 0 AND c.press_count > 0 THEN 100.0
+            WHEN coalesce(p.press_count, 0) = 0 THEN 0.0
+            ELSE round(((c.press_count - coalesce(p.press_count, 0)) * 100.0) / p.press_count, 2)
+        END as press_count_growth_percentage
+    FROM current_period_data c
+    LEFT JOIN previous_period_data p ON c.date = p.date AND c.film_page = p.film_page AND c.button_name = p.button_name
+    ORDER BY c.date DESC, c.film_page, c.press_count DESC
+    LIMIT {{ Int32(skip, 0) }}, {{ Int32(limit, 50) }}
+    {% else %}
+    SELECT
+        date,
+        film_page,
+        button_name,
+        press_count
+    FROM current_period_data
+    ORDER BY date DESC, film_page, press_count DESC
+    LIMIT {{ Int32(skip, 0) }}, {{ Int32(limit, 50) }}
+    {% end %}
+
+TYPE endpoint
