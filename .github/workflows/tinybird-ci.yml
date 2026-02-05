@@ -1,4 +1,3 @@
-
 name: Tinybird - CI Workflow
 
 on:
@@ -26,7 +25,21 @@ jobs:
         ports:
           - 7181:7181
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - name: Use Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install
+        working-directory: '.'
+      - name: Build TypeScript
+        run: pnpm run build:ts
       - name: Install Tinybird CLI
         run: curl https://tinybird.co | sh
       - name: Build project
