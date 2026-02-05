@@ -1,7 +1,10 @@
 {
   "include": [
-    "lib/client.ts"
+    "lib/datasources.ts",
+    "lib/endpoints.ts",
+    "lib/pipes.ts",
+    "lib/materializations.ts",
+    "lib/web-vitals.ts"
   ],
-  "token": "${TINYBIRD_TOKEN}",
   "baseUrl": "https://api.tinybird.co"
 }
