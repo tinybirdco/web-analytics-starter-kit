@@ -11,7 +11,7 @@
     "tinybird:deploy": "pnpm --filter @tinybirdco/web-analytics-tinybird deploy"
   },
   "engines": {
-    "node": "^22.0.0"
+    "node": ">=22"
   },
   "packageManager": "pnpm@9.15.0"
 }
