@@ -5,22 +5,20 @@
 import {
   defineEndpoint,
   definePipe,
-  defineToken,
   node,
   t,
   p,
   type InferParams,
   type InferOutputRow,
 } from "@tinybirdco/sdk";
-
-// Define the dashboard token for read access to all endpoints
-const dashboardToken = defineToken("dashboard");
+import { dashboardToken } from "./tokens.js";
 
 /**
  * Web vitals events - parsed web_vital events with metadata
  */
 export const webVitalsEvents = definePipe("web_vitals_events", {
-  description: "Parsed web_vital events with metadata lookup and metric extraction",
+  description:
+    "Parsed web_vital events with metadata lookup and metric extraction",
   tokens: [{ token: dashboardToken, scope: "READ" }],
   nodes: [
     node({
@@ -148,7 +146,8 @@ export const webVitalsEvents = definePipe("web_vitals_events", {
  * Web vitals current - current metrics with scores
  */
 export const webVitalsCurrent = defineEndpoint("web_vitals_current", {
-  description: "Current web vitals metrics with average values, scores, and descriptions",
+  description:
+    "Current web vitals metrics with average values, scores, and descriptions",
   tokens: [{ token: dashboardToken, scope: "READ" }],
   nodes: [
     node({
@@ -259,7 +258,8 @@ export type WebVitalsCurrentOutput = InferOutputRow<typeof webVitalsCurrent>;
  * Web vitals distribution - performance distribution across ranges
  */
 export const webVitalsDistribution = defineEndpoint("web_vitals_distribution", {
-  description: "Web vitals performance distribution with optional previous period comparison",
+  description:
+    "Web vitals performance distribution with optional previous period comparison",
   tokens: [{ token: dashboardToken, scope: "READ" }],
   nodes: [
     node({
@@ -372,7 +372,10 @@ export const webVitalsDistribution = defineEndpoint("web_vitals_distribution", {
     date_to: p.string().optional().describe("End date"),
     tenant_id: p.string().optional().describe("Filter by tenant ID"),
     domain: p.string().optional().describe("Domain to filter"),
-    include_previous_period: p.string().optional().describe("Include previous period"),
+    include_previous_period: p
+      .string()
+      .optional()
+      .describe("Include previous period"),
   },
   output: {
     metric_name: t.string(),
@@ -391,8 +394,12 @@ export const webVitalsDistribution = defineEndpoint("web_vitals_distribution", {
   },
 });
 
-export type WebVitalsDistributionParams = InferParams<typeof webVitalsDistribution>;
-export type WebVitalsDistributionOutput = InferOutputRow<typeof webVitalsDistribution>;
+export type WebVitalsDistributionParams = InferParams<
+  typeof webVitalsDistribution
+>;
+export type WebVitalsDistributionOutput = InferOutputRow<
+  typeof webVitalsDistribution
+>;
 
 /**
  * Web vitals routes - routes with vitals scores
@@ -531,7 +538,10 @@ export const webVitalsRoutes = defineEndpoint("web_vitals_routes", {
     domain: p.string().optional().describe("Domain to filter"),
     route: p.string().optional().describe("Route to filter by"),
     analysis_type: p.string().optional().describe("'routes' or 'pathnames'"),
-    sort_order: p.string().optional().describe("'asc' for best, 'desc' for worst"),
+    sort_order: p
+      .string()
+      .optional()
+      .describe("'asc' for best, 'desc' for worst"),
     skip: p.int32().optional(0).describe("Skip for pagination"),
     limit: p.int32().optional(10).describe("Limit for pagination"),
   },
@@ -627,4 +637,6 @@ export const webVitalsTimeseries = defineEndpoint("web_vitals_timeseries", {
 });
 
 export type WebVitalsTimeseriesParams = InferParams<typeof webVitalsTimeseries>;
-export type WebVitalsTimeseriesOutput = InferOutputRow<typeof webVitalsTimeseries>;
+export type WebVitalsTimeseriesOutput = InferOutputRow<
+  typeof webVitalsTimeseries
+>;

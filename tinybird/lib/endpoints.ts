@@ -4,16 +4,13 @@
 
 import {
   defineEndpoint,
-  defineToken,
   node,
   t,
   p,
   type InferParams,
   type InferOutputRow,
 } from "@tinybirdco/sdk";
-
-// Define the dashboard token for read access to all endpoints
-const dashboardToken = defineToken("dashboard");
+import { dashboardToken } from "./tokens.js";
 
 // ============================================================================
 // Core Endpoints
@@ -90,7 +87,8 @@ export type DomainOutput = InferOutputRow<typeof domain>;
  * Domains - list domains for a tenant
  */
 export const domains = defineEndpoint("domains", {
-  description: "Returns domains for a tenant with first/last seen and total hits",
+  description:
+    "Returns domains for a tenant with first/last seen and total hits",
   tokens: [{ token: dashboardToken, scope: "READ" }],
   nodes: [
     node({
@@ -127,7 +125,8 @@ export type DomainsOutput = InferOutputRow<typeof domains>;
  * Actions - get distinct actions for a tenant
  */
 export const actions = defineEndpoint("actions", {
-  description: "Get distinct action types with sample payload for each tenant/domain",
+  description:
+    "Get distinct action types with sample payload for each tenant/domain",
   tokens: [{ token: dashboardToken, scope: "READ" }],
   nodes: [
     node({
@@ -399,7 +398,10 @@ export const kpis = defineEndpoint("kpis", {
     date_to: p.string().optional().describe("Finishing day"),
     tenant_id: p.string().optional().describe("Filter by tenant ID"),
     domain: p.string().optional().describe("Filter by domain"),
-    include_previous_period: p.string().optional().describe("Include previous period comparison"),
+    include_previous_period: p
+      .string()
+      .optional()
+      .describe("Include previous period comparison"),
   },
   output: {
     date: t.date(),
@@ -417,7 +419,8 @@ export type KpisOutput = InferOutputRow<typeof kpis>;
  * Trend - realtime visits trend for last 30 minutes
  */
 export const trend = defineEndpoint("trend", {
-  description: "Visits trend over time for the last 30 minutes - great for realtime chart",
+  description:
+    "Visits trend over time for the last 30 minutes - great for realtime chart",
   tokens: [{ token: dashboardToken, scope: "READ" }],
   nodes: [
     node({
@@ -475,7 +478,8 @@ export type TrendOutput = InferOutputRow<typeof trend>;
  * Top browsers - ordered by most visits
  */
 export const topBrowsers = defineEndpoint("top_browsers", {
-  description: "Top browsers ordered by most visits with optional previous period comparison",
+  description:
+    "Top browsers ordered by most visits with optional previous period comparison",
   tokens: [{ token: dashboardToken, scope: "READ" }],
   nodes: [
     node({
@@ -582,7 +586,10 @@ export const topBrowsers = defineEndpoint("top_browsers", {
     date_to: p.string().optional().describe("End date"),
     tenant_id: p.string().optional().describe("Filter by tenant ID"),
     domain: p.string().optional().describe("Filter by domain"),
-    include_previous_period: p.string().optional().describe("Include previous period"),
+    include_previous_period: p
+      .string()
+      .optional()
+      .describe("Include previous period"),
     skip: p.int32().optional(0).describe("Skip for pagination"),
     limit: p.int32().optional(50).describe("Limit for pagination"),
   },
@@ -600,7 +607,8 @@ export type TopBrowsersOutput = InferOutputRow<typeof topBrowsers>;
  * Top devices - ordered by most visits
  */
 export const topDevices = defineEndpoint("top_devices", {
-  description: "Top device types ordered by most visits with optional previous period comparison",
+  description:
+    "Top device types ordered by most visits with optional previous period comparison",
   tokens: [{ token: dashboardToken, scope: "READ" }],
   nodes: [
     node({
@@ -703,7 +711,10 @@ export const topDevices = defineEndpoint("top_devices", {
     date_to: p.string().optional().describe("End date"),
     tenant_id: p.string().optional().describe("Filter by tenant ID"),
     domain: p.string().optional().describe("Filter by domain"),
-    include_previous_period: p.string().optional().describe("Include previous period"),
+    include_previous_period: p
+      .string()
+      .optional()
+      .describe("Include previous period"),
     skip: p.int32().optional(0).describe("Skip for pagination"),
     limit: p.int32().optional(50).describe("Limit for pagination"),
   },
@@ -721,7 +732,8 @@ export type TopDevicesOutput = InferOutputRow<typeof topDevices>;
  * Top locations - countries ordered by most visits
  */
 export const topLocations = defineEndpoint("top_locations", {
-  description: "Top visiting countries ordered by most visits with optional previous period comparison",
+  description:
+    "Top visiting countries ordered by most visits with optional previous period comparison",
   tokens: [{ token: dashboardToken, scope: "READ" }],
   nodes: [
     node({
@@ -824,7 +836,10 @@ export const topLocations = defineEndpoint("top_locations", {
     date_to: p.string().optional().describe("End date"),
     tenant_id: p.string().optional().describe("Filter by tenant ID"),
     domain: p.string().optional().describe("Filter by domain"),
-    include_previous_period: p.string().optional().describe("Include previous period"),
+    include_previous_period: p
+      .string()
+      .optional()
+      .describe("Include previous period"),
     skip: p.int32().optional(0).describe("Skip for pagination"),
     limit: p.int32().optional(50).describe("Limit for pagination"),
   },
@@ -945,7 +960,10 @@ export const topPages = defineEndpoint("top_pages", {
     date_to: p.string().optional().describe("End date"),
     tenant_id: p.string().optional().describe("Filter by tenant ID"),
     domain: p.string().optional().describe("Filter by domain"),
-    include_previous_period: p.string().optional().describe("Include previous period"),
+    include_previous_period: p
+      .string()
+      .optional()
+      .describe("Include previous period"),
     skip: p.int32().optional(0).describe("Skip for pagination"),
     limit: p.int32().optional(50).describe("Limit for pagination"),
   },
@@ -963,7 +981,8 @@ export type TopPagesOutput = InferOutputRow<typeof topPages>;
  * Top sources - traffic sources ordered by most visits
  */
 export const topSources = defineEndpoint("top_sources", {
-  description: "Top traffic sources ordered by most visits with optional previous period comparison",
+  description:
+    "Top traffic sources ordered by most visits with optional previous period comparison",
   tokens: [{ token: dashboardToken, scope: "READ" }],
   nodes: [
     node({
@@ -1066,7 +1085,10 @@ export const topSources = defineEndpoint("top_sources", {
     date_to: p.string().optional().describe("End date"),
     tenant_id: p.string().optional().describe("Filter by tenant ID"),
     domain: p.string().optional().describe("Filter by domain"),
-    include_previous_period: p.string().optional().describe("Include previous period"),
+    include_previous_period: p
+      .string()
+      .optional()
+      .describe("Include previous period"),
     skip: p.int32().optional(0).describe("Skip for pagination"),
     limit: p.int32().optional(50).describe("Limit for pagination"),
   },
