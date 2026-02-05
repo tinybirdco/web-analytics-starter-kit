@@ -3,9 +3,33 @@
   "version": "1.0.0",
   "private": true,
   "description": "Tinybird resources for web analytics starter kit",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/client.d.ts",
+      "import": "./dist/client.js"
+    },
+    "./datasources": {
+      "types": "./dist/datasources.d.ts",
+      "import": "./dist/datasources.js"
+    },
+    "./endpoints": {
+      "types": "./dist/endpoints.d.ts",
+      "import": "./dist/endpoints.js"
+    },
+    "./web-vitals": {
+      "types": "./dist/web-vitals.d.ts",
+      "import": "./dist/web-vitals.js"
+    }
+  },
+  "files": [
+    "dist",
+    "lib"
+  ],
   "scripts": {
     "dev": "tinybird dev",
-    "build": "tinybird build",
+    "build": "tsc && tinybird build",
+    "build:ts": "tsc",
     "deploy": "tinybird deploy"
   },
   "dependencies": {
