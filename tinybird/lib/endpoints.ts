@@ -4,12 +4,16 @@
 
 import {
   defineEndpoint,
+  defineToken,
   node,
   t,
   p,
   type InferParams,
   type InferOutputRow,
 } from "@tinybirdco/sdk";
+
+// Define the dashboard token for read access to all endpoints
+const dashboardToken = defineToken("dashboard");
 
 // ============================================================================
 // Core Endpoints
@@ -19,6 +23,7 @@ import {
  * Current visitors - realtime visitor count
  */
 export const currentVisitors = defineEndpoint("current_visitors", {
+  tokens: [{ token: dashboardToken, scope: "READ" }],
   nodes: [
     node({
       name: "get_current_visitors",
@@ -51,6 +56,7 @@ export type CurrentVisitorsOutput = InferOutputRow<typeof currentVisitors>;
  * Domain - get the current active domain
  */
 export const domain = defineEndpoint("domain", {
+  tokens: [{ token: dashboardToken, scope: "READ" }],
   nodes: [
     node({
       name: "get_current_domain",
@@ -85,6 +91,7 @@ export type DomainOutput = InferOutputRow<typeof domain>;
  */
 export const domains = defineEndpoint("domains", {
   description: "Returns domains for a tenant with first/last seen and total hits",
+  tokens: [{ token: dashboardToken, scope: "READ" }],
   nodes: [
     node({
       name: "endpoint",
@@ -121,6 +128,7 @@ export type DomainsOutput = InferOutputRow<typeof domains>;
  */
 export const actions = defineEndpoint("actions", {
   description: "Get distinct action types with sample payload for each tenant/domain",
+  tokens: [{ token: dashboardToken, scope: "READ" }],
   nodes: [
     node({
       name: "endpoint",
@@ -163,6 +171,7 @@ export type ActionsOutput = InferOutputRow<typeof actions>;
  */
 export const kpis = defineEndpoint("kpis", {
   description: "Summary KPIs per date with optional previous period comparison",
+  tokens: [{ token: dashboardToken, scope: "READ" }],
   nodes: [
     node({
       name: "date_calculations",
@@ -409,6 +418,7 @@ export type KpisOutput = InferOutputRow<typeof kpis>;
  */
 export const trend = defineEndpoint("trend", {
   description: "Visits trend over time for the last 30 minutes - great for realtime chart",
+  tokens: [{ token: dashboardToken, scope: "READ" }],
   nodes: [
     node({
       name: "timeseries",
@@ -466,6 +476,7 @@ export type TrendOutput = InferOutputRow<typeof trend>;
  */
 export const topBrowsers = defineEndpoint("top_browsers", {
   description: "Top browsers ordered by most visits with optional previous period comparison",
+  tokens: [{ token: dashboardToken, scope: "READ" }],
   nodes: [
     node({
       name: "date_calculations",
@@ -590,6 +601,7 @@ export type TopBrowsersOutput = InferOutputRow<typeof topBrowsers>;
  */
 export const topDevices = defineEndpoint("top_devices", {
   description: "Top device types ordered by most visits with optional previous period comparison",
+  tokens: [{ token: dashboardToken, scope: "READ" }],
   nodes: [
     node({
       name: "date_calculations",
@@ -710,6 +722,7 @@ export type TopDevicesOutput = InferOutputRow<typeof topDevices>;
  */
 export const topLocations = defineEndpoint("top_locations", {
   description: "Top visiting countries ordered by most visits with optional previous period comparison",
+  tokens: [{ token: dashboardToken, scope: "READ" }],
   nodes: [
     node({
       name: "date_calculations",
@@ -830,6 +843,7 @@ export type TopLocationsOutput = InferOutputRow<typeof topLocations>;
  */
 export const topPages = defineEndpoint("top_pages", {
   description: "Most visited pages with optional previous period comparison",
+  tokens: [{ token: dashboardToken, scope: "READ" }],
   nodes: [
     node({
       name: "date_calculations",
@@ -950,6 +964,7 @@ export type TopPagesOutput = InferOutputRow<typeof topPages>;
  */
 export const topSources = defineEndpoint("top_sources", {
   description: "Top traffic sources ordered by most visits with optional previous period comparison",
+  tokens: [{ token: dashboardToken, scope: "READ" }],
   nodes: [
     node({
       name: "date_calculations",

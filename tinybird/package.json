@@ -33,7 +33,7 @@
     "deploy": "tinybird deploy"
   },
   "dependencies": {
-    "@tinybirdco/sdk": "^0.0.10"
+    "@tinybirdco/sdk": "^0.0.11"
   },
   "devDependencies": {
     "typescript": "^5"

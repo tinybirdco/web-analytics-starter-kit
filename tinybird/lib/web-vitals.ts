@@ -5,6 +5,7 @@
 import {
   defineEndpoint,
   definePipe,
+  defineToken,
   node,
   t,
   p,
@@ -12,11 +13,15 @@ import {
   type InferOutputRow,
 } from "@tinybirdco/sdk";
 
+// Define the dashboard token for read access to all endpoints
+const dashboardToken = defineToken("dashboard");
+
 /**
  * Web vitals events - parsed web_vital events with metadata
  */
 export const webVitalsEvents = definePipe("web_vitals_events", {
   description: "Parsed web_vital events with metadata lookup and metric extraction",
+  tokens: [{ token: dashboardToken, scope: "READ" }],
   nodes: [
     node({
       name: "web_vitals_metadata",
@@ -144,6 +149,7 @@ export const webVitalsEvents = definePipe("web_vitals_events", {
  */
 export const webVitalsCurrent = defineEndpoint("web_vitals_current", {
   description: "Current web vitals metrics with average values, scores, and descriptions",
+  tokens: [{ token: dashboardToken, scope: "READ" }],
   nodes: [
     node({
       name: "daily_vitals",
@@ -254,6 +260,7 @@ export type WebVitalsCurrentOutput = InferOutputRow<typeof webVitalsCurrent>;
  */
 export const webVitalsDistribution = defineEndpoint("web_vitals_distribution", {
   description: "Web vitals performance distribution with optional previous period comparison",
+  tokens: [{ token: dashboardToken, scope: "READ" }],
   nodes: [
     node({
       name: "date_calculations",
@@ -392,6 +399,7 @@ export type WebVitalsDistributionOutput = InferOutputRow<typeof webVitalsDistrib
  */
 export const webVitalsRoutes = defineEndpoint("web_vitals_routes", {
   description: "Routes with web vitals scores, sortable by performance",
+  tokens: [{ token: dashboardToken, scope: "READ" }],
   nodes: [
     node({
       name: "filtered_vitals",
@@ -554,6 +562,7 @@ export type WebVitalsRoutesOutput = InferOutputRow<typeof webVitalsRoutes>;
  */
 export const webVitalsTimeseries = defineEndpoint("web_vitals_timeseries", {
   description: "Hourly time series of web vitals quantile values",
+  tokens: [{ token: dashboardToken, scope: "READ" }],
   nodes: [
     node({
       name: "filtered_vitals",
