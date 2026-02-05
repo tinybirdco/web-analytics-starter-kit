@@ -4,12 +4,14 @@
 
 ```
 web-analytics-starter-kit/tinybird/
-├── datasources
+├── lib
+│   └── tinybird.ts           # TypeScript SDK definitions
+├── datasources               # Legacy .datasource files
 │   ├── analytics_events.datasource
 │   ├── analytics_pages_mv.datasource
 │   ├── analytics_sessions_mv.datasource
 │   └── analytics_sources_mv.datasource
-├── endpoints
+├── endpoints                 # Legacy .pipe files
 │   ├── analytics_hits.pipe
 │   ├── current_visitors.pipe
 │   ├── domain.pipe
@@ -25,36 +27,93 @@ web-analytics-starter-kit/tinybird/
 │   ├── analytics_sessions.pipe
 │   └── analytics_sources.pipe
 ├── web_vitals
-│   ├── web_vitals_current.pipe
-│   ├── web_vitals_distribution.pipe
-│   └── web_vitals_routes.pipe
+│   └── endpoints/
 ├── fixtures
 │   ├── analytics_events.ndjson
 │   └── analytics_events.sql
-├── tests
-├── .gitignore
-├── .cursorrules
-├── CLAUDE.md
+├── package.json
+├── tinybird.json
+├── tsconfig.json
 └── README.md
 ```
 
-### Folder descriptions
+## TypeScript SDK (Recommended)
 
-- **datasources/**: Contains all datasource definitions, including the main analytics_events datasource and materialized view datasources.
-- **endpoints/**: Contains all API pipes/endpoints for web analytics, such as analytics_hits, kpis, top_browsers, top_devices, top_locations, top_pages, top_sources, trend, current_visitors, and domain.
-- **materializations/**: Contains materialized view pipes for analytics_pages, analytics_sessions, and analytics_sources.
-- **web_vitals/**: Contains API pipes/endpoints for web vitals metrics.
-- **tests/**: Contains tests.
-- **fixtures/**: Contains data and SQL for analytics_events.
-- **.gitignore, .cursorrules, CLAUDE.md, README.md**: Project configuration and documentation files.
+This project now supports the **Tinybird TypeScript SDK** for fully-typed datasource and endpoint definitions.
 
-## Project description
+### Setup
 
-The Tinybird data project for web analytics includes datasources, endpoints, and materializations to power analytics dashboards and APIs. The main datasource, `analytics_events`, collects events from the tracker script. Endpoints provide parsed and aggregated analytics, and materializations enable efficient querying for dashboards.
+```bash
+cd tinybird
+npm install
+```
 
-`web_vitals` metrics are stored in `analytics_events` with `action=web_vital`. See `web_vitals` folder for example endpoints.
+### Development
 
-## Local development
+```bash
+# Start development mode with hot reload
+npm run dev
+
+# Build and deploy to a branch
+npm run build
+
+# Deploy to production
+npm run deploy
+```
+
+### Benefits
+
+- **Full type safety** for datasources, pipes, and endpoints
+- **IntelliSense** for params and output types
+- **Single source of truth** - all definitions in `lib/tinybird.ts`
+- **Automatic generation** of .datasource and .pipe files
+
+### Resources Defined
+
+The `lib/tinybird.ts` file defines:
+
+**Datasources (6):**
+- `analyticsEvents` - Landing data source for all analytics events
+- `analyticsPagesMv` - Aggregated page metrics
+- `analyticsSessionsMv` - Aggregated session metrics
+- `analyticsSourcesMv` - Aggregated referrer/source metrics
+- `tenantActionsMv` - Distinct actions by tenant
+- `tenantDomainsMv` - Domains per tenant
+
+**Materialized Views (5):**
+- `analyticsPages`, `analyticsSessions`, `analyticsSources`, `tenantActions`, `tenantDomains`
+
+**Endpoints (14):**
+- `currentVisitors`, `domain`, `domains`, `actions`, `kpis`
+- `topBrowsers`, `topDevices`, `topLocations`, `topPages`, `topSources`
+- `trend`, `webVitalsCurrent`, `webVitalsDistribution`, `webVitalsRoutes`, `webVitalsTimeseries`
+
+### Using Types in Your App
+
+```typescript
+import {
+  tinybird,
+  type KpisParams,
+  type KpisOutput,
+  type TopPagesParams,
+  type TopPagesOutput
+} from './lib/tinybird';
+
+// Query with full type safety
+const result = await tinybird.pipes.kpis.query({
+  date_from: '2024-01-01',
+  date_to: '2024-01-31',
+  tenant_id: 'my-tenant'
+});
+```
+
+---
+
+## Legacy CLI Approach
+
+You can still use the traditional Tinybird CLI with `.datasource` and `.pipe` files.
+
+### Local development
 
 ```bash
 # install the tinybird CLI
@@ -71,6 +130,14 @@ tb token ls  # copy the local admin token
 
 Use `http://localhost:7181` as NEXT_PUBLIC_TINYBIRD_HOST and the admin token in the [dashboard](../dashboard/README.md).
 
-## Cloud deployment
+### Cloud deployment
 
 After validating your changes use `tb --cloud deploy`
+
+---
+
+## Project description
+
+The Tinybird data project for web analytics includes datasources, endpoints, and materializations to power analytics dashboards and APIs. The main datasource, `analytics_events`, collects events from the tracker script. Endpoints provide parsed and aggregated analytics, and materializations enable efficient querying for dashboards.
+
+`web_vitals` metrics are stored in `analytics_events` with `action=web_vital`. See `web_vitals` folder for example endpoints.

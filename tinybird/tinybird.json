@@ -1,0 +1,7 @@
+{
+  "include": [
+    "lib/tinybird.ts"
+  ],
+  "token": "${TINYBIRD_TOKEN}",
+  "baseUrl": "https://api.tinybird.co"
+}

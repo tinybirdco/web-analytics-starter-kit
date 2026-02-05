@@ -1,0 +1,17 @@
+{
+  "name": "@tinybirdco/web-analytics-tinybird",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Tinybird resources for web analytics starter kit",
+  "scripts": {
+    "dev": "tinybird dev",
+    "build": "tinybird build",
+    "deploy": "tinybird deploy"
+  },
+  "dependencies": {
+    "@tinybirdco/sdk": "^0.0.9"
+  },
+  "devDependencies": {
+    "typescript": "^5"
+  }
+}
