@@ -6,24 +6,23 @@
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/client.d.ts",
-      "import": "./dist/client.js"
+      "types": "./lib/client.ts",
+      "import": "./lib/client.ts"
     },
     "./datasources": {
-      "types": "./dist/datasources.d.ts",
-      "import": "./dist/datasources.js"
+      "types": "./lib/datasources.ts",
+      "import": "./lib/datasources.ts"
     },
     "./endpoints": {
-      "types": "./dist/endpoints.d.ts",
-      "import": "./dist/endpoints.js"
+      "types": "./lib/endpoints.ts",
+      "import": "./lib/endpoints.ts"
     },
     "./web-vitals": {
-      "types": "./dist/web-vitals.d.ts",
-      "import": "./dist/web-vitals.js"
+      "types": "./lib/web-vitals.ts",
+      "import": "./lib/web-vitals.ts"
     }
   },
   "files": [
-    "dist",
     "lib"
   ],
   "scripts": {

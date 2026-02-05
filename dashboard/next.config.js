@@ -2,6 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
+  transpilePackages: ['@tinybirdco/analytics-client'],
   i18n: {
     locales: ['en'],
     defaultLocale: 'en',
