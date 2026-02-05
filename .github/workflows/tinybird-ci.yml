@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: 'tinybird'
+        working-directory: '.'
     services:
       tinybird:
         image: tinybirdco/tinybird-local:latest
@@ -37,8 +37,5 @@ jobs:
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install
-        working-directory: '.'
-      - name: Build TypeScript
-        run: pnpm run build:ts
       - name: Build project
         run: pnpm run client:build
