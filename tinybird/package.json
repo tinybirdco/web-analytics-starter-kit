@@ -9,7 +9,7 @@
     "deploy": "tinybird deploy"
   },
   "dependencies": {
-    "@tinybirdco/sdk": "^0.0.9"
+    "@tinybirdco/sdk": "^0.0.10"
   },
   "devDependencies": {
     "typescript": "^5"

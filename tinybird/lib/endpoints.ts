@@ -1,390 +1,19 @@
 /**
- * Tinybird Web Analytics Definitions
- *
- * Migrated from web-analytics-starter-kit to TypeScript SDK
+ * Tinybird Endpoint Definitions
  */
 
 import {
-  defineDatasource,
   defineEndpoint,
   definePipe,
-  defineMaterializedView,
-  createTinybirdClient,
   node,
   t,
   p,
-  engine,
-  type InferRow,
   type InferParams,
   type InferOutputRow,
 } from "@tinybirdco/sdk";
 
 // ============================================================================
-// Datasources
-// ============================================================================
-
-/**
- * Analytics events - landing data source for all analytics events
- */
-export const analyticsEvents = defineDatasource("analytics_events", {
-  description: "Analytics events landing data source",
-  schema: {
-    timestamp: t.dateTime(),
-    session_id: t.string().nullable(),
-    action: t.string().lowCardinality(),
-    version: t.string().lowCardinality(),
-    payload: t.string(),
-    tenant_id: t.string().default(""),
-    domain: t.string().default(""),
-  },
-  engine: engine.mergeTree({
-    partitionKey: "toYYYYMM(timestamp)",
-    sortingKey: ["tenant_id", "domain", "timestamp"],
-  }),
-});
-
-export type AnalyticsEventsRow = InferRow<typeof analyticsEvents>;
-
-/**
- * Analytics pages materialized view - aggregates page metrics
- */
-export const analyticsPagesMv = defineDatasource("analytics_pages_mv", {
-  jsonPaths: false,
-  schema: {
-    date: t.date(),
-    tenant_id: t.string(),
-    domain: t.string(),
-    device: t.string(),
-    browser: t.string(),
-    location: t.string(),
-    pathname: t.string(),
-    visits: t.aggregateFunction("uniq", t.string()),
-    hits: t.aggregateFunction("count", t.uint64()),
-  },
-  engine: engine.aggregatingMergeTree({
-    partitionKey: "toYYYYMM(date)",
-    sortingKey: ["tenant_id", "domain", "date", "device", "browser", "location", "pathname"],
-  }),
-});
-
-/**
- * Analytics sessions materialized view - aggregates session metrics
- */
-export const analyticsSessionsMv = defineDatasource("analytics_sessions_mv", {
-  jsonPaths: false,
-  schema: {
-    date: t.date(),
-    session_id: t.string(),
-    tenant_id: t.string(),
-    domain: t.string(),
-    device: t.simpleAggregateFunction("any", t.string()),
-    browser: t.simpleAggregateFunction("any", t.string()),
-    location: t.simpleAggregateFunction("any", t.string()),
-    first_hit: t.simpleAggregateFunction("min", t.dateTime()),
-    latest_hit: t.simpleAggregateFunction("max", t.dateTime()),
-    hits: t.aggregateFunction("count", t.uint64()),
-  },
-  engine: engine.aggregatingMergeTree({
-    partitionKey: "toYYYYMM(date)",
-    sortingKey: ["tenant_id", "domain", "date", "session_id"],
-  }),
-});
-
-/**
- * Analytics sources materialized view - aggregates referrer/source metrics
- */
-export const analyticsSourcesMv = defineDatasource("analytics_sources_mv", {
-  jsonPaths: false,
-  schema: {
-    date: t.date(),
-    tenant_id: t.string(),
-    domain: t.string(),
-    device: t.string(),
-    browser: t.string(),
-    location: t.string(),
-    referrer: t.string(),
-    visits: t.aggregateFunction("uniq", t.string()),
-    hits: t.aggregateFunction("count", t.uint64()),
-  },
-  engine: engine.aggregatingMergeTree({
-    partitionKey: "toYYYYMM(date)",
-    sortingKey: ["tenant_id", "domain", "date", "device", "browser", "location", "referrer"],
-  }),
-});
-
-/**
- * Tenant actions materialized view - tracks distinct actions by tenant
- */
-export const tenantActionsMv = defineDatasource("tenant_actions_mv", {
-  description: "Materialized datasource for storing distinct actions by tenant and domain",
-  jsonPaths: false,
-  schema: {
-    tenant_id: t.string(),
-    domain: t.string(),
-    action: t.string(),
-    last_payload: t.simpleAggregateFunction("any", t.string()),
-    last_seen: t.simpleAggregateFunction("max", t.dateTime()),
-    total_occurrences: t.aggregateFunction("count", t.uint64()),
-  },
-  engine: engine.aggregatingMergeTree({
-    partitionKey: "toYYYYMM(last_seen)",
-    sortingKey: ["tenant_id", "domain", "action"],
-  }),
-});
-
-/**
- * Tenant domains materialized view - tracks domains per tenant
- */
-export const tenantDomainsMv = defineDatasource("tenant_domains_mv", {
-  description: "Materialized datasource for tracking domains per tenant",
-  jsonPaths: false,
-  schema: {
-    tenant_id: t.string(),
-    domain: t.string(),
-    first_seen: t.simpleAggregateFunction("min", t.dateTime()),
-    last_seen: t.simpleAggregateFunction("max", t.dateTime()),
-    total_hits: t.aggregateFunction("count", t.uint64()),
-  },
-  engine: engine.aggregatingMergeTree({
-    partitionKey: "toYYYYMM(last_seen)",
-    sortingKey: ["tenant_id", "domain"],
-  }),
-});
-
-// ============================================================================
-// Internal Pipes (for materialization dependencies)
-// ============================================================================
-
-/**
- * Analytics hits - parsed page_hit events with browser/device detection
- */
-export const analyticsHits = definePipe("analytics_hits", {
-  description: "Parsed page_hit events with browser and device detection logic",
-  nodes: [
-    node({
-      name: "parsed_hits",
-      description: "Parse raw page_hit events",
-      sql: `
-        SELECT
-            timestamp,
-            action,
-            version,
-            coalesce(session_id, '0') as session_id,
-            tenant_id,
-            multiIf(domain != '', domain, current_domain != '', current_domain, domain_from_payload) as domain,
-            JSONExtractString(payload, 'domain') as domain_from_payload,
-            JSONExtractString(payload, 'locale') as locale,
-            JSONExtractString(payload, 'location') as location,
-            JSONExtractString(payload, 'referrer') as referrer,
-            JSONExtractString(payload, 'pathname') as pathname,
-            JSONExtractString(payload, 'href') as href,
-            if(domainWithoutWWW(href) = '' and href is not null and href != '', URLHierarchy(href)[1], domainWithoutWWW(href)) as current_domain,
-            lower(JSONExtractString(payload, 'user-agent')) as user_agent
-        FROM analytics_events
-        WHERE action = 'page_hit'
-            {% if defined(tenant_id) %}
-            AND tenant_id = {{ String(tenant_id, description="Filter by tenant ID") }}
-            {% end %}
-            {% if defined(domain) %}
-            AND domain = {{ String(domain, description="Filter by domain") }}
-            {% end %}
-            {% if defined(from_date) %}
-            AND timestamp >= {{ Date(from_date, description="Starting date for filtering", required=False) }}
-            {% end %}
-            {% if defined(to_date) %}
-            AND timestamp <= {{ Date(to_date, description="Finishing date for filtering", required=False) }}
-            {% end %}
-        {% if defined(limit) %}
-            LIMIT {{Int32(limit, 20)}}
-            OFFSET {{Int32(page, 0) * Int32(limit, 20)}}
-        {% end %}
-      `,
-    }),
-    node({
-      name: "endpoint",
-      sql: `
-        SELECT
-            timestamp,
-            action,
-            version,
-            session_id,
-            tenant_id,
-            domain,
-            location,
-            referrer,
-            pathname,
-            href,
-            current_domain,
-            case
-                when match(user_agent, 'wget|ahrefsbot|curl|urllib|bitdiscovery|\\+https://|googlebot')
-                then 'bot'
-                when match(user_agent, 'android')
-                then 'mobile-android'
-                when match(user_agent, 'ipad|iphone|ipod')
-                then 'mobile-ios'
-                else 'desktop'
-            END as device,
-            case
-                when match(user_agent, 'firefox')
-                then 'firefox'
-                when match(user_agent, 'chrome|crios')
-                then 'chrome'
-                when match(user_agent, 'opera')
-                then 'opera'
-                when match(user_agent, 'msie|trident')
-                then 'ie'
-                when match(user_agent, 'iphone|ipad|safari')
-                then 'safari'
-                else 'Unknown'
-            END as browser
-        FROM parsed_hits
-      `,
-    }),
-  ],
-});
-
-// ============================================================================
-// Materialization Pipes
-// ============================================================================
-
-/**
- * Analytics pages materialization pipe
- */
-export const analyticsPages = defineMaterializedView("analytics_pages", {
-  datasource: analyticsPagesMv,
-  nodes: [
-    node({
-      name: "analytics_pages_1",
-      description: "Aggregate by pathname and calculate session and hits",
-      sql: `
-        SELECT
-            toDate(timestamp) AS date,
-            tenant_id,
-            domain,
-            device,
-            browser,
-            location,
-            pathname,
-            uniqState(session_id) AS visits,
-            countState() AS hits
-        FROM analytics_hits
-        GROUP BY date, tenant_id, domain, device, browser, location, pathname
-      `,
-    }),
-  ],
-});
-
-/**
- * Analytics sessions materialization pipe
- */
-export const analyticsSessions = defineMaterializedView("analytics_sessions", {
-  datasource: analyticsSessionsMv,
-  nodes: [
-    node({
-      name: "analytics_sessions_1",
-      description: "Aggregate by session_id and calculate session metrics",
-      sql: `
-        SELECT
-            toDate(timestamp) AS date,
-            session_id,
-            tenant_id,
-            domain,
-            anySimpleState(device) AS device,
-            anySimpleState(browser) AS browser,
-            anySimpleState(location) AS location,
-            minSimpleState(timestamp) AS first_hit,
-            maxSimpleState(timestamp) AS latest_hit,
-            countState() AS hits
-        FROM analytics_hits
-        GROUP BY date, session_id, tenant_id, domain
-      `,
-    }),
-  ],
-});
-
-/**
- * Analytics sources materialization pipe
- */
-export const analyticsSources = defineMaterializedView("analytics_sources", {
-  datasource: analyticsSourcesMv,
-  nodes: [
-    node({
-      name: "analytics_sources_1",
-      description: "Aggregate by referral and calculate session and hits",
-      sql: `
-        SELECT
-            toDate(timestamp) AS date,
-            tenant_id,
-            domain,
-            device,
-            browser,
-            location,
-            referrer,
-            uniqState(session_id) AS visits,
-            countState() AS hits
-        FROM analytics_hits
-        WHERE domainWithoutWWW(referrer) != current_domain
-        GROUP BY date, tenant_id, domain, device, browser, location, referrer
-      `,
-    }),
-  ],
-});
-
-/**
- * Tenant actions materialization pipe
- */
-export const tenantActions = defineMaterializedView("tenant_actions", {
-  description: "Materializes distinct actions by tenant and domain",
-  datasource: tenantActionsMv,
-  nodes: [
-    node({
-      name: "tenant_actions_node",
-      description: "Aggregate distinct actions per tenant/domain",
-      sql: `
-        with multiIf(domain != '', domain, current_domain != '', current_domain, domain_from_payload) as domain,
-            JSONExtractString(payload, 'domain') as domain_from_payload,
-            if(domainWithoutWWW(href) = '' and href is not null and href != '', URLHierarchy(href)[1], domainWithoutWWW(href)) as current_domain,
-            JSONExtractString(payload, 'href') as href
-        SELECT
-            tenant_id,
-            domain,
-            action,
-            anySimpleState(payload) AS last_payload,
-            maxSimpleState(timestamp) AS last_seen,
-            countState() AS total_occurrences
-        FROM analytics_events
-        GROUP BY tenant_id, domain, action
-      `,
-    }),
-  ],
-});
-
-/**
- * Tenant domains materialization pipe
- */
-export const tenantDomains = defineMaterializedView("tenant_domains", {
-  description: "Materializes domain data from analytics hits",
-  datasource: tenantDomainsMv,
-  nodes: [
-    node({
-      name: "tenant_domains_node",
-      description: "Aggregate domains per tenant with timestamps",
-      sql: `
-        SELECT
-            tenant_id,
-            domain,
-            minSimpleState(timestamp) AS first_seen,
-            maxSimpleState(timestamp) AS last_seen,
-            countState() AS total_hits
-        FROM analytics_hits
-        GROUP BY tenant_id, domain
-      `,
-    }),
-  ],
-});
-
-// ============================================================================
-// Endpoints
+// Core Endpoints
 // ============================================================================
 
 /**
@@ -775,6 +404,63 @@ export const kpis = defineEndpoint("kpis", {
 
 export type KpisParams = InferParams<typeof kpis>;
 export type KpisOutput = InferOutputRow<typeof kpis>;
+
+/**
+ * Trend - realtime visits trend for last 30 minutes
+ */
+export const trend = defineEndpoint("trend", {
+  description: "Visits trend over time for the last 30 minutes - great for realtime chart",
+  nodes: [
+    node({
+      name: "timeseries",
+      description: "Generate timeseries for last 30 minutes",
+      sql: `
+        with (now() - interval 30 minute) as start
+        select addMinutes(toStartOfMinute(start), number) as t
+        from (select arrayJoin(range(1, 31)) as number)
+      `,
+    }),
+    node({
+      name: "hits",
+      description: "Get last 30 minutes metrics grouped by minute",
+      sql: `
+        select toStartOfMinute(timestamp) as t, uniq(session_id) as visits
+        from analytics_hits
+        where timestamp >= (now() - interval 30 minute)
+            {% if defined(tenant_id) %}
+            AND tenant_id = {{ String(tenant_id, description="Filter by tenant ID") }}
+            {% end %}
+            {% if defined(domain) %}
+            AND domain = {{ String(domain, description="Filter by domain") }}
+            {% end %}
+        group by toStartOfMinute(timestamp)
+        order by toStartOfMinute(timestamp)
+      `,
+    }),
+    node({
+      name: "endpoint",
+      description: "Join and generate timeseries with metrics",
+      sql: `
+        select a.t, b.visits from timeseries a left join hits b on a.t = b.t order by a.t
+      `,
+    }),
+  ],
+  params: {
+    tenant_id: p.string().optional().describe("Filter by tenant ID"),
+    domain: p.string().optional().describe("Filter by domain"),
+  },
+  output: {
+    t: t.dateTime(),
+    visits: t.uint64().nullable(),
+  },
+});
+
+export type TrendParams = InferParams<typeof trend>;
+export type TrendOutput = InferOutputRow<typeof trend>;
+
+// ============================================================================
+// Top-N Endpoints
+// ============================================================================
 
 /**
  * Top browsers - ordered by most visits
@@ -1380,61 +1066,8 @@ export const topSources = defineEndpoint("top_sources", {
 export type TopSourcesParams = InferParams<typeof topSources>;
 export type TopSourcesOutput = InferOutputRow<typeof topSources>;
 
-/**
- * Trend - realtime visits trend for last 30 minutes
- */
-export const trend = defineEndpoint("trend", {
-  description: "Visits trend over time for the last 30 minutes - great for realtime chart",
-  nodes: [
-    node({
-      name: "timeseries",
-      description: "Generate timeseries for last 30 minutes",
-      sql: `
-        with (now() - interval 30 minute) as start
-        select addMinutes(toStartOfMinute(start), number) as t
-        from (select arrayJoin(range(1, 31)) as number)
-      `,
-    }),
-    node({
-      name: "hits",
-      description: "Get last 30 minutes metrics grouped by minute",
-      sql: `
-        select toStartOfMinute(timestamp) as t, uniq(session_id) as visits
-        from analytics_hits
-        where timestamp >= (now() - interval 30 minute)
-            {% if defined(tenant_id) %}
-            AND tenant_id = {{ String(tenant_id, description="Filter by tenant ID") }}
-            {% end %}
-            {% if defined(domain) %}
-            AND domain = {{ String(domain, description="Filter by domain") }}
-            {% end %}
-        group by toStartOfMinute(timestamp)
-        order by toStartOfMinute(timestamp)
-      `,
-    }),
-    node({
-      name: "endpoint",
-      description: "Join and generate timeseries with metrics",
-      sql: `
-        select a.t, b.visits from timeseries a left join hits b on a.t = b.t order by a.t
-      `,
-    }),
-  ],
-  params: {
-    tenant_id: p.string().optional().describe("Filter by tenant ID"),
-    domain: p.string().optional().describe("Filter by domain"),
-  },
-  output: {
-    t: t.dateTime(),
-    visits: t.uint64().nullable(),
-  },
-});
-
-export type TrendParams = InferParams<typeof trend>;
-export type TrendOutput = InferOutputRow<typeof trend>;
-
 // ============================================================================
-// Web Vitals Pipes
+// Web Vitals Endpoints
 // ============================================================================
 
 /**
@@ -2044,44 +1677,3 @@ export const webVitalsTimeseries = defineEndpoint("web_vitals_timeseries", {
 
 export type WebVitalsTimeseriesParams = InferParams<typeof webVitalsTimeseries>;
 export type WebVitalsTimeseriesOutput = InferOutputRow<typeof webVitalsTimeseries>;
-
-// ============================================================================
-// Client
-// ============================================================================
-
-export const tinybird = createTinybirdClient({
-  datasources: {
-    analyticsEvents,
-    analyticsPagesMv,
-    analyticsSessionsMv,
-    analyticsSourcesMv,
-    tenantActionsMv,
-    tenantDomainsMv,
-  },
-  pipes: {
-    // Internal pipes
-    analyticsHits,
-    analyticsPages,
-    analyticsSessions,
-    analyticsSources,
-    tenantActions,
-    tenantDomains,
-    webVitalsEvents,
-    // Endpoints
-    currentVisitors,
-    domain,
-    domains,
-    actions,
-    kpis,
-    topBrowsers,
-    topDevices,
-    topLocations,
-    topPages,
-    topSources,
-    trend,
-    webVitalsCurrent,
-    webVitalsDistribution,
-    webVitalsRoutes,
-    webVitalsTimeseries,
-  },
-});
