@@ -6,9 +6,9 @@
     "dev": "pnpm --filter @tinybirdco/analytics-dashboard dev",
     "build": "pnpm --filter @tinybirdco/analytics-dashboard build",
     "lint": "pnpm --filter @tinybirdco/analytics-dashboard lint",
-    "client:dev": "pnpm --filter @tinybirdco/analytics-client dev",
-    "client:build": "pnpm --filter @tinybirdco/analytics-client build",
-    "client:deploy": "pnpm --filter @tinybirdco/analytics-client deploy"
+    "tinybird:dev": "pnpm --filter @tinybirdco/analytics-client dev",
+    "tinybird:build": "pnpm --filter @tinybirdco/analytics-client build",
+    "tinybird:deploy": "pnpm --filter @tinybirdco/analytics-client deploy"
   },
   "engines": {
     "node": ">=22"
