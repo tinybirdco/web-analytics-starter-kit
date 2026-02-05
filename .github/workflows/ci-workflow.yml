@@ -31,16 +31,20 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
       - name: Use Node.js 22
         uses: actions/setup-node@v4
         with:
           node-version: 22.x
-          cache: 'npm'
-          cache-dependency-path: middleware/package-lock.json
-      - name: npm install, build
-        run: |
-          npm install --prefix middleware
-          npm run lint --prefix middleware --if-present
-          npm run build --prefix middleware
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install
+      - name: Lint
+        run: pnpm --filter @tinybirdco/flock.js run lint --if-present
+      - name: Build
+        run: pnpm --filter @tinybirdco/flock.js run build
         env:
           CI: true
