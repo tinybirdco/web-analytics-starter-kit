@@ -7,3 +7,4 @@ dist
 .e
 .env*
 .parcel-cache
+.env*.local
