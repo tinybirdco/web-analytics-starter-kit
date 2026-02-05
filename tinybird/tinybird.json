@@ -6,5 +6,6 @@
     "lib/materializations.ts",
     "lib/web-vitals.ts"
   ],
-  "baseUrl": "https://api.tinybird.co"
+  "baseUrl": "https://api.tinybird.co",
+  "devMode": "local"
 }

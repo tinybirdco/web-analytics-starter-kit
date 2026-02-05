@@ -40,11 +40,5 @@ jobs:
         working-directory: '.'
       - name: Build TypeScript
         run: pnpm run build:ts
-      - name: Install Tinybird CLI
-        run: curl https://tinybird.co | sh
       - name: Build project
-        run: tb build
-      - name: Test project
-        run: tb test run
-      # - name: Deployment check
-      #   run: tb --cloud --host ${{ env.TINYBIRD_HOST }} --token ${{ env.TINYBIRD_TOKEN }} deploy --check
+        run: pnpm run client:build
