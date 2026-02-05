@@ -77,8 +77,6 @@ export const pipes = {
   analyticsSources,
   tenantActions,
   tenantDomains,
-  // Web vitals internal pipe
-  webVitalsEvents,
   // Endpoints
   currentVisitors,
   domain,
@@ -91,6 +89,8 @@ export const pipes = {
   topPages,
   topSources,
   trend,
+  // Web vitals resources
+  webVitalsEvents,
   webVitalsCurrent,
   webVitalsDistribution,
   webVitalsRoutes,
@@ -100,7 +100,10 @@ export const pipes = {
 /**
  * Create a Tinybird client with custom configuration
  */
-export function createAnalyticsClient(config: { token: string; baseUrl?: string }) {
+export function createAnalyticsClient(config: {
+  token: string;
+  baseUrl?: string;
+}) {
   return createTinybirdClient({
     ...config,
     datasources,
