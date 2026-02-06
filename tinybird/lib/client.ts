@@ -15,10 +15,10 @@ import {
   analyticsSourcesMv,
   tenantActionsMv,
   tenantDomainsMv,
-} from "./datasources.js";
+} from "./datasources";
 
 // Internal Pipes
-import { analyticsHits } from "./pipes.js";
+import { analyticsHits } from "./pipes";
 
 // Materializations
 import {
@@ -27,7 +27,7 @@ import {
   analyticsSources,
   tenantActions,
   tenantDomains,
-} from "./materializations.js";
+} from "./materializations";
 
 // Endpoints
 import {
@@ -42,7 +42,7 @@ import {
   topPages,
   topSources,
   trend,
-} from "./endpoints.js";
+} from "./endpoints";
 
 // Web Vitals
 import {
@@ -51,7 +51,7 @@ import {
   webVitalsDistribution,
   webVitalsRoutes,
   webVitalsTimeseries,
-} from "./web-vitals.js";
+} from "./web-vitals";
 
 /**
  * All datasources defined in this project
@@ -139,7 +139,7 @@ export type {
   TopPagesOutput,
   TopSourcesParams,
   TopSourcesOutput,
-} from "./endpoints.js";
+} from "./endpoints";
 
 export type {
   WebVitalsCurrentParams,
@@ -150,6 +150,6 @@ export type {
   WebVitalsRoutesOutput,
   WebVitalsTimeseriesParams,
   WebVitalsTimeseriesOutput,
-} from "./web-vitals.js";
+} from "./web-vitals";
 
-export type { AnalyticsEventsRow } from "./datasources.js";
+export type { AnalyticsEventsRow } from "./datasources";

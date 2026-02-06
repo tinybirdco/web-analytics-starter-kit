@@ -70,6 +70,9 @@ importers:
       '@tinybirdco/analytics-client':
         specifier: workspace:*
         version: link:../tinybird
+      '@tinybirdco/sdk':
+        specifier: ^0.0.18
+        version: 0.0.18
       ai:
         specifier: ^4.3.17
         version: 4.3.19(react@18.3.1)(zod@3.25.76)
@@ -2081,6 +2084,11 @@ packages:
 
   '@tinybirdco/sdk@0.0.11':
     resolution: {integrity: sha512-HYe+MoYa1QQVhMZ9MKPRMC+XCcrHBPiJir+5QygCnOOPb4VadG/DF76cbOZ25ibjgGeYPaUZ6QZrjmIWDUr+QQ==}
+    engines: {node: '>=20.0.0'}
+    hasBin: true
+
+  '@tinybirdco/sdk@0.0.18':
+    resolution: {integrity: sha512-fMPparNCObeNi96/NsgF+LRO3N0+4XeZ4beXr0UQ4M3zHKdCAMgywnY36op04a+EkXztUTmYviIh/HNmr17+GQ==}
     engines: {node: '>=20.0.0'}
     hasBin: true
 
@@ -7148,6 +7156,15 @@ snapshots:
       esbuild: 0.24.2
       picocolors: 1.1.1
 
+  '@tinybirdco/sdk@0.0.18':
+    dependencies:
+      '@clack/prompts': 1.0.0
+      chokidar: 4.0.3
+      commander: 12.1.0
+      dotenv: 16.6.1
+      esbuild: 0.24.2
+      picocolors: 1.1.1
+
   '@tootallnate/once@2.0.0': {}
 
   '@types/d3-array@3.2.2': {}
@@ -8064,7 +8081,7 @@ snapshots:
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.9
       eslint-import-resolver-typescript: 2.7.1(eslint-plugin-import@2.32.0(eslint@8.57.1))(eslint@8.57.1)
-      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@5.62.0(eslint@8.57.1)(typescript@5.7.3))(eslint-import-resolver-typescript@2.7.1(eslint-plugin-import@2.32.0(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
+      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@5.62.0(eslint@8.57.1)(typescript@5.7.3))(eslint-import-resolver-typescript@2.7.1)(eslint@8.57.1)
       eslint-plugin-jsx-a11y: 6.10.2(eslint@8.57.1)
       eslint-plugin-react: 7.37.5(eslint@8.57.1)
       eslint-plugin-react-hooks: 4.6.2(eslint@8.57.1)
@@ -8090,7 +8107,7 @@ snapshots:
     dependencies:
       debug: 4.4.3
       eslint: 8.57.1
-      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@5.62.0(eslint@8.57.1)(typescript@5.7.3))(eslint-import-resolver-typescript@2.7.1(eslint-plugin-import@2.32.0(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
+      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@5.62.0(eslint@8.57.1)(typescript@5.7.3))(eslint-import-resolver-typescript@2.7.1)(eslint@8.57.1)
       glob: 7.2.3
       is-glob: 4.0.3
       resolve: 1.22.11
@@ -8109,7 +8126,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.32.0(@typescript-eslint/parser@5.62.0(eslint@8.57.1)(typescript@5.7.3))(eslint-import-resolver-typescript@2.7.1(eslint-plugin-import@2.32.0(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1):
+  eslint-plugin-import@2.32.0(@typescript-eslint/parser@5.62.0(eslint@8.57.1)(typescript@5.7.3))(eslint-import-resolver-typescript@2.7.1)(eslint@8.57.1):
     dependencies:
       '@rtsao/scc': 1.1.0
       array-includes: 3.1.9

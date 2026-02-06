@@ -9,7 +9,7 @@ import {
   analyticsSourcesMv,
   tenantActionsMv,
   tenantDomainsMv,
-} from "./datasources.js";
+} from "./datasources";
 
 /**
  * Analytics pages materialization pipe

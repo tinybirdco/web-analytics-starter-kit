@@ -76,7 +76,7 @@ export async function fetcher<T>(
   return data
 }
 
-export function queryPipe<T>(
+export async function queryPipe<T>(
   name: string,
   params: Partial<PipeParams<T>> = {}
 ): Promise<QueryPipe<T>> {
@@ -86,7 +86,14 @@ export function queryPipe<T>(
     searchParams.set(key, value as string)
   })
 
-  return client(`/pipes/${name}.json?${searchParams}`)
+  const response = await fetch(`/api/endpoints/${name}?${searchParams}`)
+  const data = await response.json()
+
+  if (!response.ok) {
+    throw new QueryError(data?.error ?? 'Something went wrong', response.status)
+  }
+
+  return data
 }
 
 export function querySQL<T>(sql: string): Promise<QuerySQL<T>> {

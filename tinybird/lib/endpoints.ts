@@ -10,7 +10,7 @@ import {
   type InferParams,
   type InferOutputRow,
 } from "@tinybirdco/sdk";
-import { dashboardToken } from "./tokens.js";
+import { dashboardToken } from "./tokens";
 
 // ============================================================================
 // Core Endpoints
