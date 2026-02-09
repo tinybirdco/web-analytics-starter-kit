@@ -7,11 +7,10 @@ interface TinybirdRegionInfo {
 }
 
 interface TinybirdRegionResponse {
-  id: string
+  key: string
   name: string
   provider: string
-  provider_region: string
-  api: string
+  api_host: string
 }
 
 // Cache for regions to avoid repeated API calls
@@ -49,7 +48,7 @@ async function getRegionInfoFromHost(
   const regions = await fetchTinybirdRegions()
   const region = regions.find(r => {
     try {
-      return new URL(r.api).hostname === hostname
+      return new URL(r.api_host).hostname === hostname
     } catch {
       return false
     }
@@ -58,7 +57,7 @@ async function getRegionInfoFromHost(
   if (region) {
     return {
       provider: region.provider.toUpperCase(),
-      region: region.provider_region,
+      region: region.name,
     }
   }
 
