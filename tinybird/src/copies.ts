@@ -4,7 +4,7 @@ import { analyticsEvents } from "./datasources";
 export const randomDataGenerator = defineCopyPipe("random_data_generator", {
   nodes: [
     node({
-      name: "random_data_generator_1",
+      name: "generate_random_events",
       description: "Generate random data for the analytics_events datasource",
       sql: `
     SELECT
