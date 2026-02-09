@@ -193,8 +193,8 @@ importers:
   tinybird:
     dependencies:
       '@tinybirdco/sdk':
-        specifier: ^0.0.11
-        version: 0.0.11
+        specifier: ^0.0.20
+        version: 0.0.20
     devDependencies:
       typescript:
         specifier: ^5
@@ -2079,8 +2079,8 @@ packages:
   '@swc/types@0.1.25':
     resolution: {integrity: sha512-iAoY/qRhNH8a/hBvm3zKj9qQ4oc2+3w1unPJa2XvTK3XjeLXtzcCingVPw/9e5mn1+0yPqxcBGp9Jf0pkfMb1g==}
 
-  '@tinybirdco/sdk@0.0.11':
-    resolution: {integrity: sha512-HYe+MoYa1QQVhMZ9MKPRMC+XCcrHBPiJir+5QygCnOOPb4VadG/DF76cbOZ25ibjgGeYPaUZ6QZrjmIWDUr+QQ==}
+  '@tinybirdco/sdk@0.0.20':
+    resolution: {integrity: sha512-QK5x6pxtZEc9AWDZwg/EJESt8EGkxXZQ/pXUXDWIrA+ofGWF9Z1utRdmkLXpXGxSsN6Afl9STlnpBjuVXDH1ow==}
     engines: {node: '>=20.0.0'}
     hasBin: true
 
@@ -7139,7 +7139,7 @@ snapshots:
     dependencies:
       '@swc/counter': 0.1.3
 
-  '@tinybirdco/sdk@0.0.11':
+  '@tinybirdco/sdk@0.0.20':
     dependencies:
       '@clack/prompts': 1.0.0
       chokidar: 4.0.3
@@ -7147,6 +7147,7 @@ snapshots:
       dotenv: 16.6.1
       esbuild: 0.24.2
       picocolors: 1.1.1
+      zod: 3.25.76
 
   '@tootallnate/once@2.0.0': {}
 
