@@ -6,6 +6,8 @@
  */
 
 import { createTinybirdClient } from "@tinybirdco/sdk";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
 
 // Datasources
 import {
@@ -52,6 +54,7 @@ import {
   webVitalsRoutes,
   webVitalsTimeseries,
 } from "./web-vitals";
+import { randomDataGenerator } from "./copies";
 
 /**
  * All datasources defined in this project
@@ -89,6 +92,8 @@ export const pipes = {
   topPages,
   topSources,
   trend,
+  // Copies
+  randomDataGenerator,
   // Web vitals resources
   webVitalsEvents,
   webVitalsCurrent,
@@ -97,6 +102,10 @@ export const pipes = {
   webVitalsTimeseries,
 };
 
+// Derive configDir from import.meta.url for monorepo support
+// This ensures tinybird.json is found regardless of where the app runs from
+const __configDir = dirname(fileURLToPath(import.meta.url));
+
 /**
  * Create a Tinybird client with custom configuration
  */
@@ -104,6 +113,7 @@ export function createAnalyticsClient() {
   return createTinybirdClient({
     datasources,
     pipes,
+    configDir: __configDir,
   });
 }
 

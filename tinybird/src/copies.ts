@@ -1,9 +1,13 @@
-DESCRIPTION >
-    Copy pipe that generates random analytics events data with configurable row limit and date range parameters for testing purposes
+import { defineCopyPipe, node } from "@tinybirdco/sdk";
+import { analyticsEvents } from "./datasources";
 
-NODE generate_random_events
-SQL >
-    %
+export const randomDataGenerator = defineCopyPipe("random_data_generator", {
+  nodes: [
+    node({
+      name: "random_data_generator",
+      description: "Generate random data for the analytics_events datasource",
+      sql: `
+                %
     SELECT
         now() - interval rand() % ({{ Int32(days_back, 7, description="Number of days back to generate timestamps for") }} * 86400) second as timestamp,
         concat('session_', toString(rand() % 10000)) as session_id,
@@ -13,6 +17,8 @@ SQL >
         concat('tenant_', toString((rand() % 5) + 1)) as tenant_id,
         arrayElement(['example.com', 'test.com', 'demo.org'], (rand() % 3) + 1) as domain
     FROM numbers({{ Int32(row_limit, 1000, description="Number of random rows to generate") }})
-
-TYPE COPY
-TARGET_DATASOURCE analytics_events
+            `,
+    }),
+  ],
+  datasource: analyticsEvents,
+});

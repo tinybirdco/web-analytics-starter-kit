@@ -1,10 +1,13 @@
 {
   "include": [
-    "lib/datasources.ts",
-    "lib/endpoints.ts",
-    "lib/pipes.ts",
-    "lib/materializations.ts",
-    "lib/web-vitals.ts"
+    "src/client.ts",
+    "src/copies.ts",
+    "src/datasources.ts",
+    "src/endpoints.ts",
+    "src/pipes.ts",
+    "src/materializations.ts",
+    "src/tokens.ts",
+    "src/web-vitals.ts"
   ],
   "token": "${TINYBIRD_TOKEN}",
   "baseUrl": "${TINYBIRD_HOST}",
