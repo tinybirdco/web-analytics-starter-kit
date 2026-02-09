@@ -23,7 +23,7 @@ import LoginDialog from '@/components/LoginDialog'
 import { useLogin } from '@/lib/hooks/use-login'
 
 export default function DashboardPage() {
-  const { isLoggedIn, isLoading: isLoginLoading } = useLogin()
+  const { isLoggedIn, isLoading: isLoginLoading, logout } = useLogin()
   const {
     value: timeRangeValue,
     setValue: setTimeRangeValue,
@@ -34,12 +34,13 @@ export default function DashboardPage() {
   const insights = createInsightsFromData(insightsData)
   const currentVisitors = useCurrentVisitors()
 
-  const showLoginDialog = !isLoginLoading && !isLoggedIn
+  // Show login dialog while loading or when not authenticated
+  if (isLoginLoading || !isLoggedIn) {
+    return <LoginDialog isLoading={isLoginLoading} />
+  }
 
   return (
     <AIChatProvider>
-      {/* Show login dialog overlay when not logged in */}
-      {showLoginDialog && <LoginDialog />}
       <Suspense>
         <>
           {process.env.NODE_ENV === 'production' && (
@@ -49,7 +50,7 @@ export default function DashboardPage() {
               data-token={config.trackerToken}
             />
           )}
-          <Header onAskAiClick={() => setOpen(true)} />
+          <Header onAskAiClick={() => setOpen(true)} onLogout={logout} />
           <div className="bg-[var(--background-01-color)] p-6 border-b border-[var(--border-01-color)] pb-[532px] -mb-[492px]" />
           <div className="px-4">
             <main className="max-w-[1216px] mx-auto space-y-10">

@@ -11,17 +11,22 @@ import {
 import { Input } from '@/components/ui/Input'
 import { Button } from '@/components/ui/Button'
 import { Text } from '@/components/ui/Text'
+import { Loader } from '@/components/ui/Loader'
 
-export default function LoginDialog() {
+interface LoginDialogProps {
+  isLoading?: boolean
+}
+
+export default function LoginDialog({ isLoading: isCheckingAuth }: LoginDialogProps) {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError('')
-    setIsLoading(true)
+    setIsSubmitting(true)
 
     try {
       const response = await fetch('/api/auth/login', {
@@ -39,8 +44,17 @@ export default function LoginDialog() {
     } catch {
       setError('An error occurred. Please try again.')
     } finally {
-      setIsLoading(false)
+      setIsSubmitting(false)
     }
+  }
+
+  // Show loading state while checking authentication
+  if (isCheckingAuth) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--background-01-color)]">
+        <Loader />
+      </div>
+    )
   }
 
   return (
@@ -53,39 +67,41 @@ export default function LoginDialog() {
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4" autoComplete="off">
           <div className="space-y-2">
-            <label htmlFor="username">
+            <label htmlFor="dashboard-username">
               <Text variant="captionsemibold" color="default">
                 Username
               </Text>
             </label>
             <Input
-              id="username"
+              id="dashboard-username"
+              name="dashboard-username"
               type="text"
               value={username}
               onChange={e => setUsername(e.target.value)}
               placeholder="Enter username"
               required
-              autoComplete="username"
+              autoComplete="off"
               autoFocus
             />
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="password">
+            <label htmlFor="dashboard-password">
               <Text variant="captionsemibold" color="default">
                 Password
               </Text>
             </label>
             <Input
-              id="password"
+              id="dashboard-password"
+              name="dashboard-password"
               type="password"
               value={password}
               onChange={e => setPassword(e.target.value)}
               placeholder="Enter password"
               required
-              autoComplete="current-password"
+              autoComplete="new-password"
             />
           </div>
 
@@ -98,7 +114,7 @@ export default function LoginDialog() {
           <Button
             type="submit"
             fullWidth
-            isLoading={isLoading}
+            isLoading={isSubmitting}
             disabled={!username || !password}
           >
             Sign in
