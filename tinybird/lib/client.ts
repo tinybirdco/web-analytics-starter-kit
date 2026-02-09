@@ -100,12 +100,8 @@ export const pipes = {
 /**
  * Create a Tinybird client with custom configuration
  */
-export function createAnalyticsClient(config: {
-  token: string;
-  baseUrl?: string;
-}) {
+export function createAnalyticsClient() {
   return createTinybirdClient({
-    ...config,
     datasources,
     pipes,
   });

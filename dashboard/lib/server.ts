@@ -1,4 +1,7 @@
-import { createAnalyticsClient } from '@tinybirdco/analytics-client'
+import {
+  AnalyticsClient,
+  createAnalyticsClient,
+} from '@tinybirdco/analytics-client'
 
 export interface TinybirdWorkspace {
   id: string
@@ -12,12 +15,18 @@ export function getTinybirdConfig() {
   }
 }
 
+let client: AnalyticsClient | null = null
+
 export function isTinybirdConfigured(): boolean {
   const { token, host } = getTinybirdConfig()
   return !!token && !!host
 }
 
 export function getServerClient() {
+  if (client) {
+    return client
+  }
+
   const { token, host } = getTinybirdConfig()
 
   if (!token || !host) {
@@ -31,10 +40,7 @@ export function getServerClient() {
     )
   }
 
-  return createAnalyticsClient({
-    token,
-    baseUrl: host,
-  })
+  return createAnalyticsClient()
 }
 
 export async function getWorkspace(): Promise<TinybirdWorkspace | null> {
