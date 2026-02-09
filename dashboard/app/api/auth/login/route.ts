@@ -8,16 +8,9 @@ export async function POST(request: NextRequest) {
   try {
     const { username, password } = await request.json()
 
-    const expectedUsername = process.env.DASHBOARD_USERNAME
-    const expectedPassword = process.env.DASHBOARD_PASSWORD
-
-    if (!expectedUsername || !expectedPassword) {
-      console.error('DASHBOARD_USERNAME and DASHBOARD_PASSWORD must be set')
-      return NextResponse.json(
-        { error: 'Authentication not configured' },
-        { status: 500 }
-      )
-    }
+    // Default to admin/admin if not configured
+    const expectedUsername = process.env.DASHBOARD_USERNAME || 'admin'
+    const expectedPassword = process.env.DASHBOARD_PASSWORD || 'admin'
 
     if (username === expectedUsername && password === expectedPassword) {
       // Create a simple session token
