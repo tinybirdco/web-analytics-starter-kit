@@ -16,7 +16,7 @@
     "tinybird:preview": "tinybird preview"
   },
   "dependencies": {
-    "@tinybirdco/sdk": "^0.0.21"
+    "@tinybirdco/sdk": "^0.0.24"
   },
   "devDependencies": {
     "typescript": "^5"
