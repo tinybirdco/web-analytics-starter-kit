@@ -4,7 +4,7 @@
   "private": true,
   "description": "Tinybird resources for web analytics starter kit",
   "type": "module",
-  "main": "lib/client.ts",
+  "main": "src/client.ts",
   "scripts": {
     "dev": "tinybird dev",
     "build": "tinybird build",
