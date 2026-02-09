@@ -42,6 +42,7 @@ export default function LoginDialog({
       } else {
         const data = await response.json()
         setError(data.error || 'Invalid credentials')
+        setIsSubmitting(false)
       }
     } catch {
       setError('An error occurred. Please try again.')
@@ -104,14 +105,12 @@ export default function LoginDialog({
               required
               autoComplete="new-password"
             />
+            {!!error && (
+              <Text variant="body" as="p" color="error">
+                {error}
+              </Text>
+            )}
           </div>
-
-          {error && (
-            <Text variant="body" className="text-[var(--error-color)]">
-              {error}
-            </Text>
-          )}
-
           <Button
             type="submit"
             fullWidth
