@@ -7,6 +7,6 @@
     "lib/web-vitals.ts"
   ],
   "token": "${TINYBIRD_TOKEN}",
-  "baseUrl": "https://api.tinybird.co",
+  "baseUrl": "https://api.europe-west2.gcp.tinybird.co",
   "devMode": "local"
 }
