@@ -10,16 +10,6 @@
     "declaration": true,
     "outDir": "dist"
   },
-  "include": [
-    "lib/**/*.ts",
-    "src/client.ts",
-    "src/copies.ts",
-    "src/datasources.ts",
-    "src/endpoints.ts",
-    "src/materializations.ts",
-    "src/pipes.ts",
-    "src/tokens.ts",
-    "src/web-vitals.ts"
-  ],
+  "include": ["src/**/*.ts"],
   "exclude": ["node_modules"]
 }

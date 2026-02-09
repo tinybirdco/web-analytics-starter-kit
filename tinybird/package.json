@@ -19,6 +19,7 @@
     "@tinybirdco/sdk": "^0.0.24"
   },
   "devDependencies": {
+    "@types/node": "^22.13.10",
     "typescript": "^5"
   }
 }
