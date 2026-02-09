@@ -15,7 +15,7 @@ interface WorkspaceMenuProps {
 }
 
 export function WorkspaceMenu({ onLogout }: WorkspaceMenuProps) {
-  const { workspace, isLoading } = useWorkspace()
+  const { workspace, isLoading } = useWorkspace(onLogout)
 
   if (isLoading) {
     return <div className="text-sm text-[var(--text-02-color)]">Loading...</div>

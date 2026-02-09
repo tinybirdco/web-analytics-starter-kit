@@ -17,7 +17,9 @@ interface LoginDialogProps {
   isLoading?: boolean
 }
 
-export default function LoginDialog({ isLoading: isCheckingAuth }: LoginDialogProps) {
+export default function LoginDialog({
+  isLoading: isCheckingAuth,
+}: LoginDialogProps) {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -43,7 +45,6 @@ export default function LoginDialog({ isLoading: isCheckingAuth }: LoginDialogPr
       }
     } catch {
       setError('An error occurred. Please try again.')
-    } finally {
       setIsSubmitting(false)
     }
   }
