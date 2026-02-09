@@ -89,11 +89,7 @@ export async function GET(
         'statusCode' in error
           ? (error as { statusCode: number }).statusCode
           : 500
-      const { token, host } = getTinybirdConfig()
-      return NextResponse.json(
-        { error: error.message, token, host },
-        { status: statusCode }
-      )
+      return NextResponse.json({ error: error.message }, { status: statusCode })
     }
 
     return NextResponse.json(
