@@ -34,13 +34,12 @@ export default function DashboardPage() {
   const insights = createInsightsFromData(insightsData)
   const currentVisitors = useCurrentVisitors()
 
-  // Show login dialog if not logged in
-  if (!isLoginLoading && !isLoggedIn) {
-    return <LoginDialog />
-  }
+  const showLoginDialog = !isLoginLoading && !isLoggedIn
 
   return (
     <AIChatProvider>
+      {/* Show login dialog overlay when not logged in */}
+      {showLoginDialog && <LoginDialog />}
       <Suspense>
         <>
           {process.env.NODE_ENV === 'production' && (
