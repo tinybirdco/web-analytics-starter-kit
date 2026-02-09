@@ -53,6 +53,7 @@
   width: 16px;
   color: var(--text-02-color);
   flex-shrink: 0;
+  margin-left: auto;
 }
 
 .content {
