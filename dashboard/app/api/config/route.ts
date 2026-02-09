@@ -21,7 +21,6 @@ async function fetchTinybirdRegions(): Promise<TinybirdRegionResponse[]> {
     const response = await fetch('https://api.tinybird.co/v0/regions')
     if (response.ok) {
       const data = await response.json()
-      console.log('data', data)
       return data?.regions ?? ([] as TinybirdRegionResponse[])
     }
   } catch {
