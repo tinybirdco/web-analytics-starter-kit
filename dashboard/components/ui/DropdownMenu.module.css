@@ -1,7 +1,7 @@
 .trigger {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   padding: 6px 10px;
   border-radius: 8px;
   border: none;
@@ -14,7 +14,7 @@
   outline: none;
   transition: background-color 0.1s ease;
   text-align: left;
-  width: 200px;
+  min-width: 200px;
 }
 
 .trigger:hover {
@@ -30,13 +30,15 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 0;
+  min-width: 0;
+  flex: 1;
 }
 
 .triggerName {
   font-size: 14px;
   font-weight: 600;
   color: var(--text-color);
-  max-width: 400px;
+  max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

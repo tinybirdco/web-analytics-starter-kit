@@ -39,7 +39,7 @@ export function WorkspaceMenu({ onLogout }: WorkspaceMenuProps) {
           <ChevronDownIcon className={styles.triggerIcon} />
         </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" style={{ width: 200 }}>
+      <DropdownMenuContent align="start" style={{ width: 200 }}>
         {onLogout && (
           <DropdownMenuItem onClick={onLogout}>
             Log Out

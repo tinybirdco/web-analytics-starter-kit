@@ -34,7 +34,9 @@ export function getServerClient() {
     if (!token) missing.push('TINYBIRD_TOKEN')
     if (!host) missing.push('TINYBIRD_HOST')
     throw new Error(
-      `Tinybird configuration not found. Missing environment variables: ${missing.join(', ')}`
+      `Tinybird configuration not found. Missing environment variables: ${missing.join(
+        ', '
+      )}`
     )
   }
 
@@ -52,7 +54,7 @@ export async function getWorkspace(): Promise<TinybirdWorkspace | null> {
   }
 
   const baseUrl = getApiBaseUrl(host)
-  const url = new URL('/v0/workspace', baseUrl)
+  const url = new URL('/v1/workspace', baseUrl)
 
   const response = await fetch(url.toString(), {
     method: 'GET',
