@@ -6,7 +6,7 @@ import { useCallback } from 'react'
 const fetcher = (url: string) => fetch(url).then(res => res.json())
 
 export function useLogin() {
-  const { data, error, isLoading, mutate } = useSWR('/api/auth/status', fetcher, {
+  const { data, error, isLoading, mutate } = useSWR('/api/auth', fetcher, {
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
   })

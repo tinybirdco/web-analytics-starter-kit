@@ -30,6 +30,7 @@ function validateSession(sessionToken: string): boolean {
   }
 }
 
+// GET - Check auth status
 export async function GET() {
   // If auth is disabled, always return authenticated
   if (process.env.DISABLE_AUTH === 'true') {
