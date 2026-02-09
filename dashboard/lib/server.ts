@@ -1,14 +1,5 @@
 import { createAnalyticsClient } from '@tinybirdco/analytics-client'
 
-const uiToApiHost: Record<string, string> = {
-  'https://ui.tinybird.co': 'https://api.tinybird.co',
-  'https://ui.us-east.tinybird.co': 'https://api.us-east.tinybird.co',
-}
-
-function getApiBaseUrl(host: string) {
-  return uiToApiHost[host] ?? host
-}
-
 export interface TinybirdWorkspace {
   id: string
   name: string
@@ -42,7 +33,7 @@ export function getServerClient() {
 
   return createAnalyticsClient({
     token,
-    baseUrl: getApiBaseUrl(host),
+    baseUrl: host,
   })
 }
 
@@ -53,8 +44,7 @@ export async function getWorkspace(): Promise<TinybirdWorkspace | null> {
     return null
   }
 
-  const baseUrl = getApiBaseUrl(host)
-  const url = new URL('/v1/workspace', baseUrl)
+  const url = new URL('/v1/workspace', host)
 
   const response = await fetch(url.toString(), {
     method: 'GET',
