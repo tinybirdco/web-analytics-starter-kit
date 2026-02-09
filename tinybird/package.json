@@ -8,10 +8,15 @@
   "scripts": {
     "dev": "tinybird dev",
     "build": "tinybird build",
-    "deploy": "tinybird deploy"
+    "deploy": "tinybird deploy",
+    "deploy:check": "tinybird deploy --check",
+    "tinybird:dev": "tinybird dev",
+    "tinybird:build": "tinybird build",
+    "tinybird:deploy": "tinybird deploy",
+    "tinybird:preview": "tinybird preview"
   },
   "dependencies": {
-    "@tinybirdco/sdk": "^0.0.20"
+    "@tinybirdco/sdk": "^0.0.21"
   },
   "devDependencies": {
     "typescript": "^5"
