@@ -1,8 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
+import { createHash } from 'crypto'
 
 const SESSION_COOKIE_NAME = 'dashboard_session'
 const SESSION_MAX_AGE = 60 * 60 * 24 * 7 // 7 days
+
+function hashCredentials(username: string, password: string): string {
+  return createHash('sha256').update(`${username}:${password}`).digest('hex')
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,9 +18,10 @@ export async function POST(request: NextRequest) {
     const expectedPassword = process.env.DASHBOARD_PASSWORD || 'admin'
 
     if (username === expectedUsername && password === expectedPassword) {
-      // Create a simple session token
+      // Create session token with credentials hash for validation
+      const credentialsHash = hashCredentials(username, password)
       const sessionToken = Buffer.from(
-        `${username}:${Date.now()}`
+        JSON.stringify({ username, hash: credentialsHash, timestamp: Date.now() })
       ).toString('base64')
 
       const cookieStore = await cookies()
