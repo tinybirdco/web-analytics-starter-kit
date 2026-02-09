@@ -4,10 +4,9 @@ import { analyticsEvents } from "./datasources";
 export const randomDataGenerator = defineCopyPipe("random_data_generator", {
   nodes: [
     node({
-      name: "random_data_generator",
+      name: "random_data_generator_1",
       description: "Generate random data for the analytics_events datasource",
       sql: `
-                %
     SELECT
         now() - interval rand() % ({{ Int32(days_back, 7, description="Number of days back to generate timestamps for") }} * 86400) second as timestamp,
         concat('session_', toString(rand() % 10000)) as session_id,
