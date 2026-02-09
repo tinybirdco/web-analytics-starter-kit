@@ -38,6 +38,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install
       - name: Build locally
-        run: pnpm run tinybird:build
+        run: pnpm run tinybird:build -- --local
       - name: Preview in a branch
         run: pnpm run tinybird:preview
