@@ -3,12 +3,10 @@
 import { Suspense, useState } from 'react'
 /* eslint-disable @next/next/no-img-element */
 import Script from 'next/script'
-import useAuth from '../lib/hooks/use-auth'
 import config from '../lib/config'
 import DashboardTabs from './DashboardTabs'
 import { TimeRangeSelect } from '@/components/ui/TimeRangeSelect'
 import { useTimeRange } from '@/lib/hooks/use-time-range'
-import CredentialsDialog from '@/components/CredentialsDialog'
 import { cn } from '@/lib/utils'
 import { Text } from '@/components/ui/Text'
 import { AIChatProvider, AIChatContainer } from '@/components/ai-chat'
@@ -21,9 +19,11 @@ import { useInsightsData } from '@/lib/hooks/use-insights-data'
 import useCurrentVisitors from '@/lib/hooks/use-current-visitors'
 import React from 'react'
 import { Header } from '@/components/Header'
+import LoginDialog from '@/components/LoginDialog'
+import { useLogin } from '@/lib/hooks/use-login'
 
 export default function DashboardPage() {
-  const { isAuthenticated, isTokenValid } = useAuth()
+  const { isLoggedIn, isLoading: isLoginLoading } = useLogin()
   const {
     value: timeRangeValue,
     setValue: setTimeRangeValue,
@@ -32,6 +32,12 @@ export default function DashboardPage() {
   const [open, setOpen] = useState(false)
   const { data: insightsData, isLoading: insightsLoading } = useInsightsData()
   const insights = createInsightsFromData(insightsData)
+  const currentVisitors = useCurrentVisitors()
+
+  // Show login dialog if not logged in
+  if (!isLoginLoading && !isLoggedIn) {
+    return <LoginDialog />
+  }
 
   return (
     <AIChatProvider>
@@ -101,7 +107,7 @@ export default function DashboardPage() {
                     <div className="flex items-center gap-2">
                       <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                       <Text variant="body" color="01">
-                        {useCurrentVisitors()} visitors online
+                        {currentVisitors} visitors online
                       </Text>
                     </div>
                   </div>
@@ -119,11 +125,7 @@ export default function DashboardPage() {
                   </div>
                 </div>
               </nav>
-              <div>
-                {isAuthenticated && !isTokenValid && <p>error</p>}
-                {isAuthenticated && isTokenValid && <DashboardTabs />}
-                {!isAuthenticated && <CredentialsDialog />}
-              </div>
+              <DashboardTabs />
             </main>
           </div>
         </>
