@@ -42,7 +42,7 @@ Copy the .env.example file and rename it to .env.
 
 ```
 # Tinybird Configuration (server-only)
-TINYBIRD_AUTH_TOKEN=<YOUR_TINYBIRD_AUTH_TOKEN>
+TINYBIRD_TOKEN=<YOUR_TINYBIRD_TOKEN>
 TINYBIRD_HOST=<YOUR_TINYBIRD_HOST>
 
 # Dashboard URL

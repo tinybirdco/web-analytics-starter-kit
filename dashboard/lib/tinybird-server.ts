@@ -11,7 +11,7 @@ function getApiBaseUrl(host: string) {
 
 export function getTinybirdConfig() {
   return {
-    token: process.env.TINYBIRD_AUTH_TOKEN,
+    token: process.env.TINYBIRD_TOKEN,
     host: process.env.TINYBIRD_HOST,
   }
 }
@@ -26,7 +26,7 @@ export function getServerClient() {
 
   if (!token || !host) {
     const missing = []
-    if (!token) missing.push('TINYBIRD_AUTH_TOKEN')
+    if (!token) missing.push('TINYBIRD_TOKEN')
     if (!host) missing.push('TINYBIRD_HOST')
     throw new Error(
       `Tinybird configuration not found. Missing environment variables: ${missing.join(', ')}`

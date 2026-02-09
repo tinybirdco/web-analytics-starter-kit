@@ -5,7 +5,7 @@ export async function GET() {
   const { token, host } = getTinybirdConfig()
 
   const missing: string[] = []
-  if (!token) missing.push('TINYBIRD_AUTH_TOKEN')
+  if (!token) missing.push('TINYBIRD_TOKEN')
   if (!host) missing.push('TINYBIRD_HOST')
 
   return NextResponse.json({
