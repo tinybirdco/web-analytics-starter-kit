@@ -2,12 +2,8 @@
  * Tinybird Datasource Definitions
  */
 
-import {
-  defineDatasource,
-  t,
-  engine,
-  type InferRow,
-} from "@tinybirdco/sdk";
+import { defineDatasource, t, engine, type InferRow } from "@tinybirdco/sdk";
+import { trackerToken } from "./tokens";
 
 // ============================================================================
 // Landing Datasource
@@ -17,6 +13,7 @@ import {
  * Analytics events - landing data source for all analytics events
  */
 export const analyticsEvents = defineDatasource("analytics_events", {
+  tokens: [{ token: trackerToken, scope: "APPEND" }],
   description: "Analytics events landing data source",
   schema: {
     timestamp: t.dateTime(),
@@ -57,7 +54,15 @@ export const analyticsPagesMv = defineDatasource("analytics_pages_mv", {
   },
   engine: engine.aggregatingMergeTree({
     partitionKey: "toYYYYMM(date)",
-    sortingKey: ["tenant_id", "domain", "date", "device", "browser", "location", "pathname"],
+    sortingKey: [
+      "tenant_id",
+      "domain",
+      "date",
+      "device",
+      "browser",
+      "location",
+      "pathname",
+    ],
   }),
 });
 
@@ -102,7 +107,15 @@ export const analyticsSourcesMv = defineDatasource("analytics_sources_mv", {
   },
   engine: engine.aggregatingMergeTree({
     partitionKey: "toYYYYMM(date)",
-    sortingKey: ["tenant_id", "domain", "date", "device", "browser", "location", "referrer"],
+    sortingKey: [
+      "tenant_id",
+      "domain",
+      "date",
+      "device",
+      "browser",
+      "location",
+      "referrer",
+    ],
   }),
 });
 
@@ -110,7 +123,8 @@ export const analyticsSourcesMv = defineDatasource("analytics_sources_mv", {
  * Tenant actions materialized view - tracks distinct actions by tenant
  */
 export const tenantActionsMv = defineDatasource("tenant_actions_mv", {
-  description: "Materialized datasource for storing distinct actions by tenant and domain",
+  description:
+    "Materialized datasource for storing distinct actions by tenant and domain",
   jsonPaths: false,
   schema: {
     tenant_id: t.string(),
