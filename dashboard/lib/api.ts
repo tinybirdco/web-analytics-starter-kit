@@ -1,80 +1,5 @@
 import fetch from 'cross-fetch'
-import {
-  ClientResponse,
-  PipeParams,
-  QueryPipe,
-  QuerySQL,
-  QueryError,
-} from './types/api'
-import config from './config'
-
-export function getConfig(search?: string) {
-  // Check if we're in the browser
-  const isBrowser = typeof window !== 'undefined'
-  
-  // Use provided search param, or window.location.search if in browser, or empty string if on server
-  const searchParams = new URLSearchParams(search || (isBrowser ? window.location.search : ''))
-  
-  const token = config.authToken ?? searchParams?.get('token')
-  const host = config.host ?? searchParams?.get('host')
-  
-  return {
-    token,
-    host,
-  }
-}
-
-export async function client<T>(
-  path: string,
-  params?: RequestInit
-): Promise<ClientResponse<T>> {
-  const { host, token } = getConfig()
-
-  if (!token || !host) throw new Error('Configuration not found')
-
-  const apiUrl =
-    {
-      'https://ui.tinybird.co': 'https://api.tinybird.co',
-      'https://ui.us-east.tinybird.co': 'https://api.us-east.tinybird.co',
-    }[host] ?? host
-
-  const response = await fetch(`${apiUrl}/v0${path}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    ...params,
-  })
-  const data = (await response.json()) as ClientResponse<T>
-
-  if (!response.ok) {
-    throw new QueryError(data?.error ?? 'Something went wrong', response.status)
-  }
-
-  return data
-}
-
-export async function fetcher<T>(
-  path: string,
-  params?: RequestInit
-): Promise<ClientResponse<T>> {
-  const { host, token } = getConfig()
-
-  if (!token || !host) throw new Error('Configuration not found')
-
-  const response = await fetch(path, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    ...params,
-  })
-  const data = (await response.json()) as ClientResponse<T>
-
-  if (!response.ok) {
-    throw new QueryError(data?.error ?? 'Something went wrong', response.status)
-  }
-
-  return data
-}
+import { PipeParams, QueryPipe, QuerySQL, QueryError } from './types/api'
 
 export async function queryPipe<T>(
   name: string,
@@ -96,6 +21,18 @@ export async function queryPipe<T>(
   return data
 }
 
-export function querySQL<T>(sql: string): Promise<QuerySQL<T>> {
-  return client(`/sql?q=${sql}`)
+export async function querySQL<T>(sql: string): Promise<QuerySQL<T>> {
+  const response = await fetch('/api/sql', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ sql }),
+  })
+
+  const data = await response.json()
+
+  if (!response.ok) {
+    throw new QueryError(data?.error ?? 'Something went wrong', response.status)
+  }
+
+  return data
 }

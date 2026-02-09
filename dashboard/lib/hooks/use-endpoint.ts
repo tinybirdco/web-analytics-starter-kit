@@ -1,5 +1,5 @@
 import useSWR from 'swr'
-import { queryPipe, getConfig } from '../api'
+import { queryPipe } from '../api'
 import { useSearchParams } from 'next/navigation'
 
 export function useEndpoint<T>(
