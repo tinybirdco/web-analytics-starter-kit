@@ -14,7 +14,12 @@ export function getServerClient() {
   const host = process.env.NEXT_PUBLIC_TINYBIRD_HOST
 
   if (!token || !host) {
-    throw new Error('Tinybird configuration not found')
+    const missing = []
+    if (!token) missing.push('NEXT_PUBLIC_TINYBIRD_AUTH_TOKEN')
+    if (!host) missing.push('NEXT_PUBLIC_TINYBIRD_HOST')
+    throw new Error(
+      `Tinybird configuration not found. Missing environment variables: ${missing.join(', ')}`
+    )
   }
 
   return createAnalyticsClient({
