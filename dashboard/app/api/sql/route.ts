@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getTinybirdConfig } from '@/lib/tinybird-server'
+import { getTinybirdConfig } from '@/lib/server'
 
 const uiToApiHost: Record<string, string> = {
   'https://ui.tinybird.co': 'https://api.tinybird.co',
@@ -21,17 +21,24 @@ export async function POST(request: NextRequest) {
       if (!token) missing.push('TINYBIRD_TOKEN')
       if (!host) missing.push('TINYBIRD_HOST')
       return NextResponse.json(
-        { error: `Tinybird configuration not found. Missing: ${missing.join(', ')}` },
+        {
+          error: `Tinybird configuration not found. Missing: ${missing.join(
+            ', '
+          )}`,
+        },
         { status: 503 }
       )
     }
 
     const apiUrl = uiToApiHost[host] ?? host
-    const response = await fetch(`${apiUrl}/v0/sql?q=${encodeURIComponent(sql)}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
+    const response = await fetch(
+      `${apiUrl}/v0/sql?q=${encodeURIComponent(sql)}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
 
     const data = await response.json()
 

@@ -8,5 +8,5 @@
   ],
   "token": "${TINYBIRD_TOKEN}",
   "baseUrl": "https://api.europe-west2.gcp.tinybird.co",
-  "devMode": "local"
+  "devMode": "branch"
 }

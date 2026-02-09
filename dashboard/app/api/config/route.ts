@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { getTinybirdConfig, getWorkspace } from '@/lib/tinybird-server'
+import { getTinybirdConfig, getWorkspace } from '@/lib/server'
 
 interface TinybirdRegionInfo {
   provider: string

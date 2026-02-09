@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getServerClient, getTinybirdConfig } from '@/lib/tinybird-server'
+import { getServerClient, getTinybirdConfig } from '@/lib/server'
 
 const VALID_ENDPOINTS = [
   'currentVisitors',
@@ -45,12 +45,17 @@ export async function GET(
     }
 
     const { token, host } = getTinybirdConfig()
+
     if (!token || !host) {
       const missing = []
       if (!token) missing.push('TINYBIRD_TOKEN')
       if (!host) missing.push('TINYBIRD_HOST')
       return NextResponse.json(
-        { error: `Tinybird configuration not found. Missing: ${missing.join(', ')}` },
+        {
+          error: `Tinybird configuration not found. Missing: ${missing.join(
+            ', '
+          )}`,
+        },
         { status: 503 }
       )
     }
@@ -71,16 +76,22 @@ export async function GET(
       )
     }
 
-    const result = await (queryFn as (params: Record<string, string>) => Promise<unknown>)(queryParams)
+    const result = await (
+      queryFn as (params: Record<string, string>) => Promise<unknown>
+    )(queryParams)
 
     return NextResponse.json(result)
   } catch (error) {
     console.error('Tinybird API error:', error)
 
     if (error instanceof Error) {
-      const statusCode = 'statusCode' in error ? (error as { statusCode: number }).statusCode : 500
+      const statusCode =
+        'statusCode' in error
+          ? (error as { statusCode: number }).statusCode
+          : 500
+      const { token, host } = getTinybirdConfig()
       return NextResponse.json(
-        { error: error.message },
+        { error: error.message, token, host },
         { status: statusCode }
       )
     }
