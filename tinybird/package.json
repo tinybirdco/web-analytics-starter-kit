@@ -10,10 +10,7 @@
     "build": "tinybird build",
     "deploy": "tinybird deploy",
     "deploy:check": "tinybird deploy --check",
-    "tinybird:dev": "tinybird dev",
-    "tinybird:build": "tinybird build",
-    "tinybird:deploy": "tinybird deploy",
-    "tinybird:preview": "tinybird preview"
+    "preview": "tinybird preview"
   },
   "dependencies": {
     "@tinybirdco/sdk": "^0.0.24"

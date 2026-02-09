@@ -37,5 +37,7 @@ jobs:
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install
-      - name: Build project
+      - name: Build locally
         run: pnpm run tinybird:build
+      - name: Preview in a branch
+        run: pnpm run tinybird:preview
