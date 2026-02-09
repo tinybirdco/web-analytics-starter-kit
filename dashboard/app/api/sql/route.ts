@@ -17,9 +17,12 @@ export async function POST(request: NextRequest) {
     const { token, host } = getTinybirdConfig()
 
     if (!token || !host) {
+      const missing = []
+      if (!token) missing.push('TINYBIRD_TOKEN')
+      if (!host) missing.push('TINYBIRD_HOST')
       return NextResponse.json(
-        { error: 'Tinybird configuration not found' },
-        { status: 500 }
+        { error: `Tinybird configuration not found. Missing: ${missing.join(', ')}` },
+        { status: 503 }
       )
     }
 

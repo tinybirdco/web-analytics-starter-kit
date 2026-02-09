@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getServerClient } from '@/lib/tinybird-server'
+import { getServerClient, getTinybirdConfig } from '@/lib/tinybird-server'
 
 const VALID_ENDPOINTS = [
   'currentVisitors',
@@ -41,6 +41,17 @@ export async function GET(
       return NextResponse.json(
         { error: `Unknown endpoint: ${name}` },
         { status: 404 }
+      )
+    }
+
+    const { token, host } = getTinybirdConfig()
+    if (!token || !host) {
+      const missing = []
+      if (!token) missing.push('TINYBIRD_TOKEN')
+      if (!host) missing.push('TINYBIRD_HOST')
+      return NextResponse.json(
+        { error: `Tinybird configuration not found. Missing: ${missing.join(', ')}` },
+        { status: 503 }
       )
     }
 
