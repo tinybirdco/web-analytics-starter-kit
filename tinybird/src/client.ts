@@ -114,6 +114,8 @@ export function createAnalyticsClient() {
     datasources,
     pipes,
     configDir: __configDir,
+    baseUrl: process.env.TINYBIRD_HOST,
+    token: process.env.TINYBIRD_TOKEN,
   });
 }
 
