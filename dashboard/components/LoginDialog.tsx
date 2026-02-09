@@ -52,7 +52,7 @@ export default function LoginDialog({
   // Show loading state while checking authentication
   if (isCheckingAuth) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--background-01-color)]">
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/75 backdrop-blur-[3px]">
         <Loader />
       </div>
     )

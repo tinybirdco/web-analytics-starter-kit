@@ -1,6 +1,7 @@
 import useSWR from 'swr'
 import { queryPipe } from '../api'
 import { useSearchParams } from 'next/navigation'
+import { useLogin } from './use-login'
 
 async function getCurrentVisitors(domainParam?: string): Promise<number> {
   const domainFilter =
@@ -16,8 +17,14 @@ async function getCurrentVisitors(domainParam?: string): Promise<number> {
 export default function useCurrentVisitors() {
   const searchParams = useSearchParams()
   const domainParam = searchParams.get('domain') || undefined
-  const { data } = useSWR(['current_visitors', domainParam], () =>
-    getCurrentVisitors(domainParam)
+  const { isLoggedIn, isLoading: isAuthLoading } = useLogin()
+
+  // Don't fetch if not logged in
+  const shouldFetch = isLoggedIn && !isAuthLoading
+
+  const { data } = useSWR(
+    shouldFetch ? ['current_visitors', domainParam] : null,
+    () => getCurrentVisitors(domainParam)
   )
   return data ?? 0
 }

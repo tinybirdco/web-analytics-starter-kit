@@ -1,12 +1,69 @@
 import { NextResponse } from 'next/server'
-import { getTinybirdConfig } from '@/lib/tinybird-server'
+import { getTinybirdConfig, getWorkspace } from '@/lib/tinybird-server'
 
-function getRegionFromHost(host: string): string {
-  if (host.includes('us-east')) return 'us-east'
-  if (host.includes('us-west')) return 'us-west'
-  if (host.includes('eu-') || host.includes('europe')) return 'europe'
-  if (host.includes('api.tinybird.co')) return 'eu'
-  return 'unknown'
+interface TinybirdRegionInfo {
+  provider: string
+  region: string
+}
+
+interface TinybirdRegionResponse {
+  id: string
+  name: string
+  provider: string
+  provider_region: string
+  api: string
+}
+
+// Cache for regions to avoid repeated API calls
+
+async function fetchTinybirdRegions(): Promise<TinybirdRegionResponse[]> {
+  try {
+    const response = await fetch('https://api.tinybird.co/v0/regions')
+    if (response.ok) {
+      const data = await response.json()
+      console.log('data', data)
+      return data?.regions ?? ([] as TinybirdRegionResponse[])
+    }
+  } catch {
+    // Fall through to return empty array
+  }
+
+  return []
+}
+
+async function getRegionInfoFromHost(
+  host: string
+): Promise<TinybirdRegionInfo> {
+  // Local development
+  if (host.includes('localhost') || host.includes('127.0.0.1')) {
+    return { provider: 'Local', region: 'localhost' }
+  }
+
+  // Extract hostname from URL if needed
+  let hostname = host
+  try {
+    hostname = new URL(host).hostname
+  } catch {
+    // Already a hostname, not a URL
+  }
+
+  const regions = await fetchTinybirdRegions()
+  const region = regions.find(r => {
+    try {
+      return new URL(r.api).hostname === hostname
+    } catch {
+      return false
+    }
+  })
+
+  if (region) {
+    return {
+      provider: region.provider.toUpperCase(),
+      region: region.provider_region,
+    }
+  }
+
+  return { provider: 'Unknown', region: 'unknown' }
 }
 
 export async function GET() {
@@ -19,13 +76,16 @@ export async function GET() {
   const configured = missing.length === 0
 
   // Include workspace info if configured
-  const workspace = configured && host
-    ? {
-        name: process.env.TINYBIRD_WORKSPACE_NAME || 'Analytics',
-        provider: 'tinybird',
-        region: getRegionFromHost(host),
-      }
-    : null
+  const regionInfo = host ? await getRegionInfoFromHost(host) : null
+  const tinybirdWorkspace = configured ? await getWorkspace() : null
+  const workspace =
+    configured && host && regionInfo
+      ? {
+          name: tinybirdWorkspace?.name || 'Unknown',
+          provider: regionInfo.provider,
+          region: regionInfo.region,
+        }
+      : null
 
   return NextResponse.json({
     configured,

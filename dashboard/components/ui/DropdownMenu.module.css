@@ -14,6 +14,7 @@
   outline: none;
   transition: background-color 0.1s ease;
   text-align: left;
+  width: 200px;
 }
 
 .trigger:hover {

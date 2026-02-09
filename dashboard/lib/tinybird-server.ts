@@ -9,6 +9,11 @@ function getApiBaseUrl(host: string) {
   return uiToApiHost[host] ?? host
 }
 
+export interface TinybirdWorkspace {
+  id: string
+  name: string
+}
+
 export function getTinybirdConfig() {
   return {
     token: process.env.TINYBIRD_TOKEN,
@@ -37,4 +42,29 @@ export function getServerClient() {
     token,
     baseUrl: getApiBaseUrl(host),
   })
+}
+
+export async function getWorkspace(): Promise<TinybirdWorkspace | null> {
+  const { token, host } = getTinybirdConfig()
+
+  if (!token || !host) {
+    return null
+  }
+
+  const baseUrl = getApiBaseUrl(host)
+  const url = new URL('/v0/workspace', baseUrl)
+
+  const response = await fetch(url.toString(), {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+
+  if (!response.ok) {
+    return null
+  }
+
+  const data = (await response.json()) as TinybirdWorkspace
+  return data
 }

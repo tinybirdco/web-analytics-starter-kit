@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import useSWR from 'swr'
 import { queryPipe } from '../api'
+import { useLogin } from './use-login'
 
 const FALLBACK_LOGO = '/fallback-logo.png'
 
@@ -17,8 +18,12 @@ async function getDomain(): Promise<{ domain: string; logo: string }> {
 
 export default function useDomain() {
   const [logo, setLogo] = useState(FALLBACK_LOGO)
+  const { isLoggedIn, isLoading: isAuthLoading } = useLogin()
 
-  const { data } = useSWR('domain', getDomain, {
+  // Don't fetch if not logged in
+  const shouldFetch = isLoggedIn && !isAuthLoading
+
+  const { data } = useSWR(shouldFetch ? 'domain' : null, getDomain, {
     onSuccess: ({ logo }) => setLogo(logo),
   })
 
