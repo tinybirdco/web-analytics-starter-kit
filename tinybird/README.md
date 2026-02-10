@@ -1,119 +1,131 @@
-# Tinybird Data Project
+# Tinybird Web Analytics
 
-## Project structure
+A TypeScript-first data project for web analytics using the [Tinybird SDK](https://www.npmjs.com/package/@tinybirdco/sdk).
+
+## Project Structure
 
 ```
-web-analytics-starter-kit/tinybird/
-├── src/                      # TypeScript SDK definitions
+tinybird/
+├── src/
 │   ├── client.ts             # Tinybird client configuration
 │   ├── datasources.ts        # Datasource definitions
-│   ├── endpoints.ts          # Endpoint definitions
+│   ├── endpoints.ts          # API endpoint definitions
 │   ├── materializations.ts   # Materialized view definitions
-│   ├── pipes.ts              # Pipe definitions
+│   ├── pipes.ts              # Internal pipe definitions
 │   ├── tokens.ts             # Token definitions
-│   ├── copies.ts             # Copy definitions
+│   ├── copies.ts             # Copy pipe definitions
 │   └── web-vitals.ts         # Web vitals endpoints
+├── tinybird.json             # SDK configuration
 ├── package.json
-├── tinybird.json
-├── tsconfig.json
-└── README.md
+└── tsconfig.json
 ```
 
-## TypeScript SDK (Recommended)
-
-This project uses the **Tinybird TypeScript SDK** for fully-typed datasource and endpoint definitions.
-
-### Setup
+## Setup
 
 ```bash
 cd tinybird
 pnpm install
 ```
 
-### Development
+Configure your environment in `.env.local`:
+
+```env
+TINYBIRD_TOKEN=p.your_admin_token
+TINYBIRD_HOST=https://api.tinybird.co
+```
+
+## Development
 
 ```bash
-# Start development mode with hot reload
+# Start development mode (watches for changes and syncs to a branch)
 pnpm dev
 
-# Build and deploy to a branch
+# Build and push to a branch
 pnpm build
 
-# Deploy to production
+# Deploy to production (main workspace)
 pnpm deploy
+
+# Preview changes without deploying
+pnpm preview
 ```
 
-### Benefits
-
-- **Full type safety** for datasources, pipes, and endpoints
-- **IntelliSense** for params and output types
-- **Single source of truth** - all definitions in `src/`
-- **Automatic generation** of .datasource and .pipe files
-
-### Resources Defined
-
-The `src/` directory defines:
-
-**Datasources (6):**
-- `analyticsEvents` - Landing data source for all analytics events
-- `analyticsPagesMv` - Aggregated page metrics
-- `analyticsSessionsMv` - Aggregated session metrics
-- `analyticsSourcesMv` - Aggregated referrer/source metrics
-- `tenantActionsMv` - Distinct actions by tenant
-- `tenantDomainsMv` - Domains per tenant
-
-**Materialized Views (5):**
-- `analyticsPages`, `analyticsSessions`, `analyticsSources`, `tenantActions`, `tenantDomains`
-
-**Endpoints (14):**
-- `currentVisitors`, `domain`, `domains`, `actions`, `kpis`
-- `topBrowsers`, `topDevices`, `topLocations`, `topPages`, `topSources`
-- `trend`, `webVitalsCurrent`, `webVitalsDistribution`, `webVitalsRoutes`, `webVitalsTimeseries`
-
-### Using Types in Your App
+## Using the Client
 
 ```typescript
-import { kpis, topPages } from './src/endpoints';
+import { tinybird } from './src/client';
 
-// Query with full type safety
-const result = await kpis({
-  date_from: '2024-01-01',
-  date_to: '2024-01-31',
+// Type-safe queries with autocomplete
+const result = await tinybird.query.kpis({
+  date_from: new Date('2024-01-01'),
+  date_to: new Date(),
   tenant_id: 'my-tenant'
 });
+
+// result.data is fully typed
 ```
 
----
+## Resources
 
-## Local development
+### Datasources
 
-```bash
-# Install the Tinybird CLI
-curl https://tinybird.co | sh
+| Name | Description |
+|------|-------------|
+| `analyticsEvents` | Landing datasource for all analytics events |
+| `analyticsPagesMv` | Aggregated page metrics |
+| `analyticsSessionsMv` | Aggregated session metrics |
+| `analyticsSourcesMv` | Aggregated referrer/source metrics |
+| `tenantActionsMv` | Distinct actions by tenant |
+| `tenantDomainsMv` | Domains per tenant |
 
-# Start local Tinybird
-tb local start
+### Endpoints
 
-# Login and select a workspace
-tb login
+| Name | Description |
+|------|-------------|
+| `currentVisitors` | Real-time visitor count |
+| `kpis` | Key performance indicators |
+| `trend` | Traffic trends over time |
+| `topPages` | Most visited pages |
+| `topSources` | Top traffic sources |
+| `topBrowsers` | Browser breakdown |
+| `topDevices` | Device breakdown |
+| `topLocations` | Geographic breakdown |
+| `domain` | Primary domain |
+| `domains` | All tracked domains |
+| `actions` | Tracked actions |
 
-# Start development mode (watches for changes)
-pnpm dev
+### Web Vitals Endpoints
 
-# Get your local admin token
-tb token ls
+| Name | Description |
+|------|-------------|
+| `webVitalsCurrent` | Current web vitals metrics |
+| `webVitalsDistribution` | Distribution of web vitals scores |
+| `webVitalsRoutes` | Web vitals by route |
+| `webVitalsTimeseries` | Web vitals over time |
+
+## Configuration
+
+The `tinybird.json` configures the SDK:
+
+```json
+{
+  "include": [
+    "src/client.ts",
+    "src/datasources.ts",
+    "src/endpoints.ts",
+    "src/materializations.ts",
+    "src/pipes.ts",
+    "src/tokens.ts",
+    "src/copies.ts",
+    "src/web-vitals.ts"
+  ],
+  "token": "${TINYBIRD_TOKEN}",
+  "baseUrl": "${TINYBIRD_HOST}",
+  "devMode": "branch"
+}
 ```
 
-Use `http://localhost:7181` as `TINYBIRD_HOST` and the admin token in the [dashboard](../dashboard/README.md).
+## Learn More
 
-### Cloud deployment
-
-After validating your changes use `pnpm deploy` or `tb --cloud deploy`.
-
----
-
-## Project description
-
-The Tinybird data project for web analytics includes datasources, endpoints, and materializations to power analytics dashboards and APIs. The main datasource, `analytics_events`, collects events from the tracker script. Endpoints provide parsed and aggregated analytics, and materializations enable efficient querying for dashboards.
-
-`web_vitals` metrics are stored in `analytics_events` with `action=web_vital`. See `src/web-vitals.ts` for web vitals endpoints.
+- [Tinybird SDK Documentation](https://www.npmjs.com/package/@tinybirdco/sdk)
+- [Tinybird Documentation](https://www.tinybird.co/docs)
