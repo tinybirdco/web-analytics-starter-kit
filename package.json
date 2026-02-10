@@ -8,7 +8,7 @@
     "lint": "pnpm --filter @tinybirdco/analytics-dashboard lint",
     "tinybird:dev": "pnpm --filter @tinybirdco/analytics-client dev",
     "tinybird:build": "pnpm --filter @tinybirdco/analytics-client build",
-    "tinybird:deploy": "pnpm --filter @tinybirdco/analytics-client deploy",
+    "tinybird:deploy": "pnpm --filter @tinybirdco/analytics-client run deploy",
     "tinybird:preview": "pnpm --filter @tinybirdco/analytics-client preview"
   },
   "engines": {
