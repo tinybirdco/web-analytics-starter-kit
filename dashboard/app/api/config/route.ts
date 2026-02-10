@@ -1,5 +1,5 @@
-import { NextResponse } from 'next/server'
-import { getTinybirdConfig, getWorkspace } from '@/lib/server'
+import { NextRequest, NextResponse } from 'next/server'
+import { getTinybirdConfig, getWorkspace, getWorkspaceWithCredentials } from '@/lib/server'
 
 interface TinybirdRegionInfo {
   provider: string
@@ -64,8 +64,14 @@ async function getRegionInfoFromHost(
   return { provider: 'Unknown', region: 'unknown' }
 }
 
-export async function GET() {
-  const { token, host } = getTinybirdConfig()
+export async function GET(request: NextRequest) {
+  // Check for token from headers first (public mode), then fall back to env vars
+  const headerToken = request.headers.get('X-Tinybird-Token')
+  const headerHost = request.headers.get('X-Tinybird-Host')
+  const { token: envToken, host: envHost } = getTinybirdConfig()
+
+  const token = headerToken || envToken
+  const host = headerHost || envHost
 
   const missing: string[] = []
   if (!token) missing.push('TINYBIRD_TOKEN')
@@ -75,7 +81,14 @@ export async function GET() {
 
   // Include workspace info if configured
   const regionInfo = host ? await getRegionInfoFromHost(host) : null
-  const tinybirdWorkspace = configured ? await getWorkspace() : null
+
+  // Fetch workspace using header credentials if provided, otherwise use env vars
+  const tinybirdWorkspace = configured
+    ? headerToken && headerHost
+      ? await getWorkspaceWithCredentials(headerToken, headerHost)
+      : await getWorkspace()
+    : null
+
   const workspace =
     configured && host && regionInfo
       ? {

@@ -1,5 +1,17 @@
 import fetch from 'cross-fetch'
 import { PipeParams, QueryPipe, QuerySQL, QueryError } from './types/api'
+import { getStoredCredentials } from './hooks/use-login'
+
+function getAuthHeaders(): HeadersInit {
+  const credentials = getStoredCredentials()
+  if (credentials?.token && credentials?.host) {
+    return {
+      'X-Tinybird-Token': credentials.token,
+      'X-Tinybird-Host': credentials.host,
+    }
+  }
+  return {}
+}
 
 export async function queryPipe<T>(
   name: string,
@@ -11,7 +23,9 @@ export async function queryPipe<T>(
     searchParams.set(key, value as string)
   })
 
-  const response = await fetch(`/api/endpoints/${name}?${searchParams}`)
+  const response = await fetch(`/api/endpoints/${name}?${searchParams}`, {
+    headers: getAuthHeaders(),
+  })
   const data = await response.json()
 
   if (!response.ok) {
@@ -24,7 +38,10 @@ export async function queryPipe<T>(
 export async function querySQL<T>(sql: string): Promise<QuerySQL<T>> {
   const response = await fetch('/api/sql', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      ...getAuthHeaders(),
+    },
     body: JSON.stringify({ sql }),
   })
 

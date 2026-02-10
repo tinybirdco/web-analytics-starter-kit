@@ -14,7 +14,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'SQL query required' }, { status: 400 })
     }
 
-    const { token, host } = getTinybirdConfig()
+    // Check for token from headers first (public mode), then fall back to env vars
+    const headerToken = request.headers.get('X-Tinybird-Token')
+    const headerHost = request.headers.get('X-Tinybird-Host')
+    const { token: envToken, host: envHost } = getTinybirdConfig()
+
+    const token = headerToken || envToken
+    const host = headerHost || envHost
 
     if (!token || !host) {
       const missing = []

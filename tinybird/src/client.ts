@@ -106,16 +106,21 @@ export const pipes = {
 // This ensures tinybird.json is found regardless of where the app runs from
 const __configDir = dirname(fileURLToPath(import.meta.url));
 
+interface CreateAnalyticsClientOptions {
+  token?: string;
+  baseUrl?: string;
+}
+
 /**
  * Create a Tinybird client with custom configuration
  */
-export function createAnalyticsClient() {
+export function createAnalyticsClient(options?: CreateAnalyticsClientOptions) {
   return createTinybirdClient({
     datasources,
     pipes,
     configDir: __configDir,
-    baseUrl: process.env.TINYBIRD_HOST,
-    token: process.env.TINYBIRD_TOKEN,
+    baseUrl: options?.baseUrl ?? process.env.TINYBIRD_HOST,
+    token: options?.token ?? process.env.TINYBIRD_TOKEN,
   });
 }
 
