@@ -19,7 +19,7 @@ import { useInsightsData } from '@/lib/hooks/use-insights-data'
 import useCurrentVisitors from '@/lib/hooks/use-current-visitors'
 import React from 'react'
 import { Header } from '@/components/Header'
-import LoginDialog from '@/components/LoginDialog'
+import AuthDialog from '@/components/AuthDialog'
 import { useLogin } from '@/lib/hooks/use-login'
 
 export default function DashboardPage() {
@@ -39,7 +39,7 @@ export default function DashboardPage() {
   return (
     <AIChatProvider>
       {/* Show login dialog overlay when not logged in */}
-      {showLoginDialog && <LoginDialog isLoading={isLoginLoading} />}
+      {showLoginDialog && <AuthDialog isLoading={isLoginLoading} />}
       <Suspense>
         <>
           {process.env.NODE_ENV === 'production' && (

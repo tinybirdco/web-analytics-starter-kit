@@ -13,7 +13,7 @@
     "preview": "tinybird preview"
   },
   "dependencies": {
-    "@tinybirdco/sdk": "^0.0.25"
+    "@tinybirdco/sdk": "^0.0.26"
   },
   "devDependencies": {
     "@types/node": "^22.13.10",
