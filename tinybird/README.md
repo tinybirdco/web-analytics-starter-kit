@@ -53,9 +53,12 @@ pnpm preview
 ## Using the Client
 
 ```typescript
-import { tinybird } from './src/client';
+import { createAnalyticsClient } from './src/client';
 
-// Type-safe queries with autocomplete
+// Initialize the client
+const tinybird = createAnalyticsClient();
+
+// Type-safe requests with autocomplete
 const result = await tinybird.query.kpis({
   date_from: new Date('2024-01-01'),
   date_to: new Date(),
@@ -69,39 +72,49 @@ const result = await tinybird.query.kpis({
 
 ### Datasources
 
-| Name | Description |
-|------|-------------|
-| `analyticsEvents` | Landing datasource for all analytics events |
-| `analyticsPagesMv` | Aggregated page metrics |
-| `analyticsSessionsMv` | Aggregated session metrics |
-| `analyticsSourcesMv` | Aggregated referrer/source metrics |
-| `tenantActionsMv` | Distinct actions by tenant |
-| `tenantDomainsMv` | Domains per tenant |
+| Resource Name | Description |
+|---------------|-------------|
+| `analytics_events` | Landing datasource for all analytics events |
+| `analytics_pages_mv` | Aggregated page metrics |
+| `analytics_sessions_mv` | Aggregated session metrics |
+| `analytics_sources_mv` | Aggregated referrer/source metrics |
+| `tenant_actions_mv` | Distinct actions by tenant |
+| `tenant_domains_mv` | Domains per tenant |
+
+### Materialized Views
+
+| Resource Name | Target Datasource |
+|---------------|-------------------|
+| `analytics_pages` | `analytics_pages_mv` |
+| `analytics_sessions` | `analytics_sessions_mv` |
+| `analytics_sources` | `analytics_sources_mv` |
+| `tenant_actions` | `tenant_actions_mv` |
+| `tenant_domains` | `tenant_domains_mv` |
 
 ### Endpoints
 
-| Name | Description |
-|------|-------------|
-| `currentVisitors` | Real-time visitor count |
+| Resource Name | Description |
+|---------------|-------------|
+| `current_visitors` | Real-time visitor count |
 | `kpis` | Key performance indicators |
 | `trend` | Traffic trends over time |
-| `topPages` | Most visited pages |
-| `topSources` | Top traffic sources |
-| `topBrowsers` | Browser breakdown |
-| `topDevices` | Device breakdown |
-| `topLocations` | Geographic breakdown |
+| `top_pages` | Most visited pages |
+| `top_sources` | Top traffic sources |
+| `top_browsers` | Browser breakdown |
+| `top_devices` | Device breakdown |
+| `top_locations` | Geographic breakdown |
 | `domain` | Primary domain |
 | `domains` | All tracked domains |
 | `actions` | Tracked actions |
 
 ### Web Vitals Endpoints
 
-| Name | Description |
-|------|-------------|
-| `webVitalsCurrent` | Current web vitals metrics |
-| `webVitalsDistribution` | Distribution of web vitals scores |
-| `webVitalsRoutes` | Web vitals by route |
-| `webVitalsTimeseries` | Web vitals over time |
+| Resource Name | Description |
+|---------------|-------------|
+| `web_vitals_current` | Current web vitals metrics |
+| `web_vitals_distribution` | Distribution of web vitals scores |
+| `web_vitals_routes` | Web vitals by route |
+| `web_vitals_timeseries` | Web vitals over time |
 
 ## Configuration
 
