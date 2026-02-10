@@ -1,6 +1,7 @@
 'use client'
 
 import useSWR from 'swr'
+import { useSearchParams } from 'next/navigation'
 import { getStoredCredentials } from './use-login'
 
 interface WorkspaceInfo {
@@ -53,20 +54,6 @@ function getRegionFromHost(host: string): { provider: string; region: string } {
 const fetcher = (url: string) => {
   const credentials = getStoredCredentials()
 
-  // If we have stored credentials with workspace info, return that directly
-  if (credentials?.token && credentials?.host && credentials?.workspace) {
-    const regionInfo = getRegionFromHost(credentials.host)
-    return Promise.resolve({
-      configured: true,
-      missing: [],
-      workspace: {
-        name: credentials.workspace.name,
-        provider: regionInfo.provider,
-        region: regionInfo.region,
-      },
-    } as ConfigResponse)
-  }
-
   const headers: HeadersInit = {}
   if (credentials?.token && credentials?.host) {
     headers['X-Tinybird-Token'] = credentials.token
@@ -77,10 +64,37 @@ const fetcher = (url: string) => {
 }
 
 export function useWorkspace() {
-  const { data, error, isLoading } = useSWR<ConfigResponse>('/api/config', fetcher, {
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-  })
+  const searchParams = useSearchParams()
+
+  // Check URL params for workspace info (from token mode)
+  const workspaceFromUrl = searchParams?.get('workspace')
+  const hostFromUrl = searchParams?.get('host')
+  const hasUrlWorkspace = !!workspaceFromUrl && !!hostFromUrl
+
+  // Always call useSWR but skip fetch if we have URL params
+  const { data, error, isLoading } = useSWR<ConfigResponse>(
+    hasUrlWorkspace ? null : '/api/config',
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    }
+  )
+
+  // If we have workspace name in URL params, use that directly
+  if (hasUrlWorkspace) {
+    const regionInfo = getRegionFromHost(hostFromUrl)
+    return {
+      workspace: {
+        name: workspaceFromUrl,
+        provider: regionInfo.provider,
+        region: regionInfo.region,
+      },
+      isConfigured: true,
+      isLoading: false,
+      error: null,
+    }
+  }
 
   return {
     workspace: data?.workspace ?? null,

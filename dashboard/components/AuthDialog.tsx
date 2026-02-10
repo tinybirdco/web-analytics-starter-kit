@@ -16,7 +16,6 @@ import { Text } from '@/components/ui/Text'
 import { Loader } from '@/components/ui/Loader'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/Tabs'
 import { SignJWT } from 'jose'
-import { setStoredCredentials } from '@/lib/hooks/use-login'
 
 type AuthMode = 'signin' | 'token'
 
@@ -207,7 +206,7 @@ export default function AuthDialog({
     if (!token || (hostUrl === 'other' && !hostName)) return
 
     // Fetch workspace info using the admin token before creating scoped JWT
-    let workspaceInfo: { name: string; id?: string } | undefined
+    let workspaceName: string | undefined
     try {
       const workspaceUrl = new URL('/v1/workspace', host)
       const response = await fetch(workspaceUrl.toString(), {
@@ -215,7 +214,7 @@ export default function AuthDialog({
       })
       if (response.ok) {
         const data = await response.json()
-        workspaceInfo = { name: data.name, id: data.id }
+        workspaceName = data.name
       }
     } catch {
       // Workspace fetch failed, continue without it
@@ -223,16 +222,13 @@ export default function AuthDialog({
 
     const jwt = await createJwt(token, tenant_id || '')
 
-    // Save credentials to localStorage (including workspace info)
-    setStoredCredentials({
-      token: jwt,
-      host,
-      tenantId: tenant_id || undefined,
-      workspace: workspaceInfo,
-    })
-
-    // Reload page to use the new credentials
-    window.location.reload()
+    // Navigate to URL with token params (including workspace name)
+    const url = new URL(window.location.href)
+    url.searchParams.set('token', jwt)
+    url.searchParams.set('host', host)
+    if (tenant_id) url.searchParams.set('tenant_id', tenant_id)
+    if (workspaceName) url.searchParams.set('workspace', workspaceName)
+    window.location.href = url.toString()
   }
 
   const hostOptions = [

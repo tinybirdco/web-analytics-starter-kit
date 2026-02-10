@@ -1,53 +1,43 @@
 'use client'
 
 import useSWR from 'swr'
-import { useCallback, useEffect, useState } from 'react'
-
-const STORAGE_KEY = 'tinybird_credentials'
-
-export interface WorkspaceInfo {
-  name: string
-  id?: string
-}
+import { useSearchParams } from 'next/navigation'
+import { useCallback } from 'react'
 
 export interface StoredCredentials {
   token: string
   host: string
   tenantId?: string
-  workspace?: WorkspaceInfo
 }
 
 export function getStoredCredentials(): StoredCredentials | null {
   if (typeof window === 'undefined') return null
   try {
-    const stored = localStorage.getItem(STORAGE_KEY)
-    if (!stored) return null
-    return JSON.parse(stored)
+    const searchParams = new URLSearchParams(window.location.search)
+    const token = searchParams.get('token')
+    const host = searchParams.get('host')
+    if (token && host) {
+      return {
+        token,
+        host,
+        tenantId: searchParams.get('tenant_id') || undefined,
+      }
+    }
+    return null
   } catch {
     return null
   }
 }
 
-export function setStoredCredentials(credentials: StoredCredentials): void {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(credentials))
-}
-
-export function clearStoredCredentials(): void {
-  localStorage.removeItem(STORAGE_KEY)
-}
-
 const fetcher = (url: string) => fetch(url).then(res => res.json())
 
 export function useLogin() {
-  const [hasTokenAuth, setHasTokenAuth] = useState(false)
-  const [isTokenChecked, setIsTokenChecked] = useState(false)
+  const searchParams = useSearchParams()
 
-  // Check for localStorage token on mount
-  useEffect(() => {
-    const credentials = getStoredCredentials()
-    setHasTokenAuth(!!credentials?.token && !!credentials?.host)
-    setIsTokenChecked(true)
-  }, [])
+  // Check URL params for token auth
+  const token = searchParams?.get('token')
+  const host = searchParams?.get('host')
+  const hasTokenAuth = !!token && !!host
 
   // Check server session auth
   const { data, error, isLoading: isSessionLoading, mutate } = useSWR(
@@ -60,9 +50,11 @@ export function useLogin() {
   )
 
   const logout = useCallback(async () => {
-    // Clear localStorage credentials
-    clearStoredCredentials()
-    setHasTokenAuth(false)
+    // Clear URL params
+    const url = new URL(window.location.href)
+    url.searchParams.delete('token')
+    url.searchParams.delete('host')
+    url.searchParams.delete('tenant_id')
 
     // Also logout from server session if authenticated
     if (data?.authenticated) {
@@ -70,18 +62,17 @@ export function useLogin() {
       mutate({ authenticated: false }, false)
     }
 
-    // Force reload to show login dialog
-    window.location.reload()
+    // Navigate to URL without token params
+    window.location.href = url.toString()
   }, [data?.authenticated, mutate])
 
   const isSessionAuth = data?.authenticated ?? false
-  const isLoading = isSessionLoading || !isTokenChecked
 
   return {
     isLoggedIn: isSessionAuth || hasTokenAuth,
     isSessionAuth,
     isTokenAuth: hasTokenAuth,
-    isLoading,
+    isLoading: isSessionLoading,
     error,
     logout,
   }
