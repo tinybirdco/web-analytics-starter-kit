@@ -99,10 +99,12 @@ export async function createJwt(
     'tenant_domains_mv',
   ]
 
+  const filter = tenant_id ? `tenant_id = '${tenant_id}'` : ''
+  const fixed_params = tenant_id ? { tenant_id } : {}
   const datasources_scopes = datasources_resources.map(resource => ({
     type: 'DATASOURCES:READ',
     resource,
-    filter: `tenant_id = '${tenant_id}'`,
+    filter,
   }))
 
   const payload = {
@@ -113,9 +115,7 @@ export async function createJwt(
       ...resources.map(resource => ({
         type: 'PIPES:READ',
         resource,
-        fixed_params: {
-          tenant_id: tenant_id,
-        },
+        fixed_params,
       })),
       ...datasources_scopes,
     ],
