@@ -232,7 +232,7 @@ export default function AuthDialog({
 
   return (
     <Dialog open={true}>
-      <DialogContent className="!min-w-[440px] !max-w-[440px]">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Access Dashboard</DialogTitle>
           <DialogDescription>
@@ -240,149 +240,151 @@ export default function AuthDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <Tabs
-          value={mode}
-          onValueChange={value => setMode(value as AuthMode)}
-          variant="pill"
-        >
+        <Tabs value={mode} onValueChange={value => setMode(value as AuthMode)}>
           <TabsList>
             <TabsTrigger value="signin">Sign in</TabsTrigger>
-            <TabsTrigger value="token">Use Token</TabsTrigger>
+            <TabsTrigger value="token">Tinybird Token</TabsTrigger>
           </TabsList>
 
           <TabsContent value="signin">
             <form
               onSubmit={handleSignIn}
-              className="space-y-4"
+              className="space-y-6"
               autoComplete="off"
             >
-              <div className="space-y-2">
-                <label htmlFor="dashboard-username">
-                  <Text variant="captionsemibold" color="default">
-                    Username
-                  </Text>
-                </label>
-                <Input
-                  id="dashboard-username"
-                  name="dashboard-username"
-                  type="text"
-                  value={username}
-                  onChange={e => setUsername(e.target.value)}
-                  placeholder="Enter username"
-                  required
-                  autoComplete="off"
-                  autoFocus
-                />
-              </div>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <label htmlFor="dashboard-username">
+                    <Text variant="captionsemibold" color="default">
+                      Username
+                    </Text>
+                  </label>
+                  <Input
+                    id="dashboard-username"
+                    name="dashboard-username"
+                    type="text"
+                    value={username}
+                    onChange={e => setUsername(e.target.value)}
+                    placeholder="Enter username"
+                    required
+                    autoComplete="off"
+                    autoFocus
+                  />
+                </div>
 
-              <div className="space-y-2">
-                <label htmlFor="dashboard-password">
-                  <Text variant="captionsemibold" color="default">
-                    Password
-                  </Text>
-                </label>
-                <Input
-                  id="dashboard-password"
-                  name="dashboard-password"
-                  type="password"
-                  value={password}
-                  onChange={e => setPassword(e.target.value)}
-                  placeholder="Enter password"
-                  required
-                  autoComplete="new-password"
-                />
-                {!!signInError && (
-                  <Text variant="body" as="p" color="error">
-                    {signInError}
-                  </Text>
-                )}
+                <div className="space-y-2">
+                  <label htmlFor="dashboard-password">
+                    <Text variant="captionsemibold" color="default">
+                      Password
+                    </Text>
+                  </label>
+                  <Input
+                    id="dashboard-password"
+                    name="dashboard-password"
+                    type="password"
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    placeholder="Enter password"
+                    required
+                    autoComplete="new-password"
+                  />
+                  {!!signInError && (
+                    <Text variant="body" as="p" color="error">
+                      {signInError}
+                    </Text>
+                  )}
+                </div>
               </div>
-              <Button
-                type="submit"
-                fullWidth
-                isLoading={isSubmitting}
-                disabled={!username || !password}
-              >
-                Sign in
-              </Button>
+              <div className="w-full flex justify-end">
+                <Button
+                  type="submit"
+                  size="large"
+                  isLoading={isSubmitting}
+                  disabled={!username || !password}
+                >
+                  Sign in
+                </Button>
+              </div>
             </form>
           </TabsContent>
-
           <TabsContent value="token">
-            <form onSubmit={handleTokenSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <label>
-                  <Text variant="captionsemibold" color="default">
-                    Token
-                  </Text>
-                </label>
-                <Input
-                  name="token"
-                  required={true}
-                  placeholder="Paste your workspace admin token"
-                  onChange={handleTokenChange}
-                />
-                <Link
-                  href="https://cloud.tinybird.co/tokens"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block text-sm"
-                >
-                  Get your admin token
-                </Link>
-              </div>
+            <form onSubmit={handleTokenSubmit} className="space-y-6">
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <label>
+                    <Text variant="captionsemibold" color="default">
+                      Token
+                    </Text>
+                  </label>
+                  <Input
+                    name="token"
+                    required={true}
+                    placeholder="Paste your workspace admin token"
+                    onChange={handleTokenChange}
+                  />
+                  <Link
+                    href="https://cloud.tinybird.co/tokens"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block text-sm"
+                  >
+                    Get your admin token
+                  </Link>
+                </div>
 
-              {!tokenHasHost && (
-                <>
-                  <div className="space-y-2">
-                    <label>
-                      <Text variant="captionsemibold" color="default">
-                        Host
-                      </Text>
-                    </label>
-                    <Select
-                      options={hostOptions}
-                      value={hostUrl}
-                      onValueChange={setHostUrl}
-                      width="full"
-                    />
-                  </div>
-
-                  {hostUrl === 'other' && (
+                {!tokenHasHost && (
+                  <>
                     <div className="space-y-2">
                       <label>
                         <Text variant="captionsemibold" color="default">
-                          Host name
+                          Host
                         </Text>
                       </label>
-                      <Input
-                        name="hostName"
-                        placeholder="Host name"
-                        value={hostName}
-                        onChange={e => setHostName(e.target.value)}
+                      <Select
+                        options={hostOptions}
+                        value={hostUrl}
+                        onValueChange={setHostUrl}
+                        width="full"
                       />
                     </div>
-                  )}
-                </>
-              )}
 
-              <div className="space-y-2">
-                <label>
-                  <Text variant="captionsemibold" color="default">
-                    Tenant ID (optional)
-                  </Text>
-                </label>
-                <Input
-                  name="tenant_id"
-                  placeholder="Leave empty for default tenant"
-                  value={tenantId}
-                  onChange={e => setTenantId(e.target.value)}
-                />
+                    {hostUrl === 'other' && (
+                      <div className="space-y-2">
+                        <label>
+                          <Text variant="captionsemibold" color="default">
+                            Host name
+                          </Text>
+                        </label>
+                        <Input
+                          name="hostName"
+                          placeholder="Host name"
+                          value={hostName}
+                          onChange={e => setHostName(e.target.value)}
+                        />
+                      </div>
+                    )}
+                  </>
+                )}
+
+                <div className="space-y-2">
+                  <label>
+                    <Text variant="captionsemibold" color="default">
+                      Tenant ID (optional)
+                    </Text>
+                  </label>
+                  <Input
+                    name="tenant_id"
+                    placeholder="Leave empty for default tenant"
+                    value={tenantId}
+                    onChange={e => setTenantId(e.target.value)}
+                  />
+                </div>
               </div>
-
-              <Button type="submit" fullWidth>
-                View dashboard
-              </Button>
+              <div className="w-full flex justify-end">
+                <Button type="submit" size="large">
+                  View dashboard
+                </Button>
+              </div>
             </form>
           </TabsContent>
         </Tabs>
