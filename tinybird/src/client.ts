@@ -109,7 +109,7 @@ const __configDir = dirname(fileURLToPath(import.meta.url));
 interface CreateAnalyticsClientOptions {
   token?: string;
   baseUrl?: string;
-  devMode?: boolean | "branch";
+  devMode?: boolean;
 }
 
 /**
@@ -122,12 +122,8 @@ export function createAnalyticsClient(options?: CreateAnalyticsClientOptions) {
     configDir: __configDir,
     baseUrl: options?.baseUrl ?? process.env.TINYBIRD_HOST,
     token: options?.token ?? process.env.TINYBIRD_TOKEN,
+    devMode: options?.devMode ?? process.env.NODE_ENV === "development",
   };
-
-  // Only set devMode if explicitly provided (otherwise use tinybird.json config)
-  if (options?.devMode !== undefined) {
-    clientOptions.devMode = options.devMode;
-  }
 
   return createTinybirdClient(clientOptions);
 }
