@@ -39,7 +39,7 @@
     "@radix-ui/react-toast": "^1.2.5",
     "@radix-ui/react-tooltip": "^1.1.7",
     "@tinybirdco/analytics-client": "workspace:*",
-    "@tinybirdco/sdk": "^0.0.25",
+    "@tinybirdco/sdk": "^0.0.27",
     "ai": "^4.3.17",
     "class-variance-authority": "^0.7.1",
     "country-flag-icons": "^1.5.19",

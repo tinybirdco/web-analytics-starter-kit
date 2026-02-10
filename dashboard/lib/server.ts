@@ -43,6 +43,10 @@ export function getServerClient() {
   return createAnalyticsClient()
 }
 
+export function createClientWithCredentials(token: string, host: string) {
+  return createAnalyticsClient({ token, baseUrl: host, devMode: false })
+}
+
 export async function getWorkspace(): Promise<TinybirdWorkspace | null> {
   const { token, host } = getTinybirdConfig()
 
@@ -50,6 +54,13 @@ export async function getWorkspace(): Promise<TinybirdWorkspace | null> {
     return null
   }
 
+  return getWorkspaceWithCredentials(token, host)
+}
+
+export async function getWorkspaceWithCredentials(
+  token: string,
+  host: string
+): Promise<TinybirdWorkspace | null> {
   const url = new URL('/v1/workspace', host)
 
   const response = await fetch(url.toString(), {
