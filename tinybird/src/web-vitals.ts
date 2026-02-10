@@ -264,6 +264,7 @@ export const webVitalsDistribution = defineEndpoint("web_vitals_distribution", {
   nodes: [
     node({
       name: "date_calculations",
+      description: "Calculate current and previous period date ranges",
       sql: `
         WITH
             {% if defined(date_from) and defined(date_to) %}
@@ -276,11 +277,17 @@ export const webVitalsDistribution = defineEndpoint("web_vitals_distribution", {
             dateDiff('day', current_start, current_end) + 1 as period_days,
             timestampAdd(current_start, interval -period_days day) as previous_start,
             timestampAdd(current_end, interval -period_days day) as previous_end
-        SELECT current_start, current_end, previous_start, previous_end, period_days
+        SELECT
+            current_start,
+            current_end,
+            previous_start,
+            previous_end,
+            period_days
       `,
     }),
     node({
       name: "current_filtered_vitals",
+      description: "Filter web vitals data for the current period",
       sql: `
         SELECT
             metric_name,
@@ -306,7 +313,42 @@ export const webVitalsDistribution = defineEndpoint("web_vitals_distribution", {
       `,
     }),
     node({
+      name: "previous_filtered_vitals",
+      description:
+        "Filter web vitals data for the previous period (only when include_previous_period is true)",
+      sql: `
+        {% if defined(include_previous_period) and include_previous_period == 'true' %}
+        SELECT
+            metric_name,
+            value,
+            performance_category,
+            score,
+            units,
+            description,
+            thresholds_text,
+            domain,
+            tenant_id
+        FROM web_vitals_events
+        WHERE
+            timestamp >= toDateTime(concat(toString((SELECT previous_start FROM date_calculations)), ' 00:00:00'))
+            AND timestamp <= toDateTime(concat(toString((SELECT previous_end FROM date_calculations)), ' 23:59:59'))
+            {% if defined(tenant_id) %}
+            AND tenant_id = {{ String(tenant_id, description="Filter by tenant ID") }}
+            {% end %}
+            {% if defined(domain) %}
+            AND domain = {{ String(domain, description="Domain to filter") }}
+            {% end %}
+            AND performance_category != 'unknown'
+        {% else %}
+        SELECT '' as metric_name, 0 as value, '' as performance_category, 0 as score, '' as units,
+               '' as description, '' as thresholds_text, '' as domain, '' as tenant_id WHERE 1=0
+        {% end %}
+      `,
+    }),
+    node({
       name: "current_category_stats",
+      description:
+        "Calculate aggregated statistics for each metric and performance category combination for current period",
       sql: `
         SELECT
             metric_name,
@@ -314,6 +356,8 @@ export const webVitalsDistribution = defineEndpoint("web_vitals_distribution", {
             round(avg(value), 2) as current_avg_value,
             quantile(0.75)(value) as current_p75,
             quantile(0.90)(value) as current_p90,
+            quantile(0.95)(value) as current_p95,
+            quantile(0.99)(value) as current_p99,
             count() as current_measurement_count,
             any(score) as score,
             any(units) as units,
@@ -326,7 +370,35 @@ export const webVitalsDistribution = defineEndpoint("web_vitals_distribution", {
       `,
     }),
     node({
+      name: "previous_category_stats",
+      description:
+        "Calculate aggregated statistics for each metric and performance category combination for previous period",
+      sql: `
+        {% if defined(include_previous_period) and include_previous_period == 'true' %}
+        SELECT
+            metric_name,
+            performance_category,
+            round(avg(value), 2) as previous_avg_value,
+            quantile(0.75)(value) as previous_p75,
+            quantile(0.90)(value) as previous_p90,
+            quantile(0.95)(value) as previous_p95,
+            quantile(0.99)(value) as previous_p99,
+            count() as previous_measurement_count,
+            domain,
+            tenant_id
+        FROM previous_filtered_vitals
+        GROUP BY metric_name, performance_category, domain, tenant_id
+        {% else %}
+        SELECT '' as metric_name, '' as performance_category, 0 as previous_avg_value, 0 as previous_p75,
+               0 as previous_p90, 0 as previous_p95, 0 as previous_p99, 0 as previous_measurement_count,
+               '' as domain, '' as tenant_id WHERE 1=0
+        {% end %}
+      `,
+    }),
+    node({
       name: "current_metric_totals",
+      description:
+        "Calculate total measurements per metric for percentage calculations (current period)",
       sql: `
         SELECT
             metric_name,
@@ -338,14 +410,84 @@ export const webVitalsDistribution = defineEndpoint("web_vitals_distribution", {
       `,
     }),
     node({
-      name: "endpoint",
+      name: "previous_metric_totals",
+      description:
+        "Calculate total measurements per metric for percentage calculations (previous period)",
       sql: `
+        {% if defined(include_previous_period) and include_previous_period == 'true' %}
+        SELECT
+            metric_name,
+            sum(previous_measurement_count) as previous_total_measurements,
+            domain,
+            tenant_id
+        FROM previous_category_stats
+        GROUP BY metric_name, domain, tenant_id
+        {% else %}
+        SELECT '' as metric_name, 0 as previous_total_measurements, '' as domain, '' as tenant_id WHERE 1=0
+        {% end %}
+      `,
+    }),
+    node({
+      name: "endpoint",
+      description:
+        "Calculate final distribution with percentages and combine all metadata with growth calculations",
+      sql: `
+        {% if defined(include_previous_period) and include_previous_period == 'true' %}
         SELECT
             cs.metric_name metric_name,
             cs.performance_category performance_category,
             cs.current_avg_value as avg_value,
             cs.current_p75 as p75,
             cs.current_p90 as p90,
+            cs.current_p95 as p95,
+            cs.current_p99 as p99,
+            cs.current_measurement_count as measurement_count,
+            round((cs.current_measurement_count * 100.0) / mt.current_total_measurements, 1) as percentage,
+            mt.current_total_measurements as total_measurements,
+            coalesce(ps.previous_avg_value, 0) as previous_avg_value,
+            coalesce(ps.previous_p75, 0) as previous_p75,
+            coalesce(ps.previous_p90, 0) as previous_p90,
+            coalesce(ps.previous_p95, 0) as previous_p95,
+            coalesce(ps.previous_p99, 0) as previous_p99,
+            coalesce(ps.previous_measurement_count, 0) as previous_measurement_count,
+            coalesce(pmt.previous_total_measurements, 0) as previous_total_measurements,
+            coalesce(round((ps.previous_measurement_count * 100.0) / pmt.previous_total_measurements, 1), 0) as previous_percentage,
+            CASE
+                WHEN coalesce(ps.previous_avg_value, 0) = 0 AND cs.current_avg_value > 0 THEN 100.0
+                WHEN coalesce(ps.previous_avg_value, 0) = 0 THEN 0.0
+                ELSE round(((cs.current_avg_value - coalesce(ps.previous_avg_value, 0)) * 100.0) / ps.previous_avg_value, 2)
+            END as avg_value_growth_percentage,
+            CASE
+                WHEN coalesce(ps.previous_measurement_count, 0) = 0 AND cs.current_measurement_count > 0 THEN 100.0
+                WHEN coalesce(ps.previous_measurement_count, 0) = 0 THEN 0.0
+                ELSE round(((cs.current_measurement_count - coalesce(ps.previous_measurement_count, 0)) * 100.0) / ps.previous_measurement_count, 2)
+            END as measurement_count_growth_percentage,
+            cs.score score,
+            cs.units units,
+            cs.thresholds thresholds,
+            cs.description description,
+            cs.domain domain
+        FROM current_category_stats cs
+        JOIN current_metric_totals mt ON cs.metric_name = mt.metric_name and cs.domain = mt.domain and cs.tenant_id = mt.tenant_id
+        LEFT JOIN previous_category_stats ps ON cs.metric_name = ps.metric_name AND cs.performance_category = ps.performance_category AND cs.domain = ps.domain AND cs.tenant_id = ps.tenant_id
+        LEFT JOIN previous_metric_totals pmt ON cs.metric_name = pmt.metric_name AND cs.domain = pmt.domain AND cs.tenant_id = pmt.tenant_id
+        ORDER BY
+            cs.metric_name,
+            CASE cs.performance_category
+                WHEN 'excellent' THEN 1
+                WHEN 'good' THEN 2
+                WHEN 'poor' THEN 3
+                ELSE 4
+            END
+        {% else %}
+        SELECT
+            cs.metric_name metric_name,
+            cs.performance_category performance_category,
+            cs.current_avg_value as avg_value,
+            cs.current_p75 as p75,
+            cs.current_p90 as p90,
+            cs.current_p95 as p95,
+            cs.current_p99 as p99,
             cs.current_measurement_count as measurement_count,
             round((cs.current_measurement_count * 100.0) / mt.current_total_measurements, 1) as percentage,
             mt.current_total_measurements as total_measurements,
@@ -364,6 +506,7 @@ export const webVitalsDistribution = defineEndpoint("web_vitals_distribution", {
                 WHEN 'poor' THEN 3
                 ELSE 4
             END
+        {% end %}
       `,
     }),
   ],
@@ -375,7 +518,7 @@ export const webVitalsDistribution = defineEndpoint("web_vitals_distribution", {
     include_previous_period: p
       .string()
       .optional()
-      .describe("Include previous period"),
+      .describe("Set to 'true' to include previous period metrics and growth percentage"),
   },
   output: {
     metric_name: t.string(),
@@ -383,9 +526,21 @@ export const webVitalsDistribution = defineEndpoint("web_vitals_distribution", {
     avg_value: t.float64(),
     p75: t.float64(),
     p90: t.float64(),
+    p95: t.float64(),
+    p99: t.float64(),
     measurement_count: t.uint64(),
     percentage: t.float64(),
     total_measurements: t.uint64(),
+    previous_avg_value: t.float64().nullable(),
+    previous_p75: t.float64().nullable(),
+    previous_p90: t.float64().nullable(),
+    previous_p95: t.float64().nullable(),
+    previous_p99: t.float64().nullable(),
+    previous_measurement_count: t.uint64().nullable(),
+    previous_total_measurements: t.uint64().nullable(),
+    previous_percentage: t.float64().nullable(),
+    avg_value_growth_percentage: t.float64().nullable(),
+    measurement_count_growth_percentage: t.float64().nullable(),
     score: t.uint8(),
     units: t.string(),
     thresholds: t.string(),
@@ -523,10 +678,16 @@ export const webVitalsRoutes = defineEndpoint("web_vitals_routes", {
         ORDER BY
             {% if defined(sort_order) and sort_order == 'desc' %}
                 overall_score DESC,
-                lcp_score DESC
+                lcp_score DESC,
+                fcp_score DESC,
+                ttfb_score DESC,
+                {% if defined(analysis_type) and analysis_type == 'pathnames' %}pathname{% else %}route{% end %} ASC
             {% else %}
                 overall_score ASC,
-                lcp_score ASC
+                lcp_score ASC,
+                fcp_score ASC,
+                ttfb_score ASC,
+                {% if defined(analysis_type) and analysis_type == 'pathnames' %}pathname{% else %}route{% end %} ASC
             {% end %}
         LIMIT {{ Int32(skip, 0) }}, {{ Int32(limit, 10) }}
       `,

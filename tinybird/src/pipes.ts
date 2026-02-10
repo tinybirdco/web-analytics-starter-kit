@@ -2,13 +2,23 @@
  * Tinybird Internal Pipe Definitions
  */
 
-import { definePipe, node } from "@tinybirdco/sdk";
+import {
+  defineEndpoint,
+  node,
+  t,
+  p,
+  type InferParams,
+  type InferOutputRow,
+} from "@tinybirdco/sdk";
+import { dashboardToken } from "./tokens";
 
 /**
  * Analytics hits - parsed page_hit events with browser/device detection
  */
-export const analyticsHits = definePipe("analytics_hits", {
-  description: "Parsed page_hit events with browser and device detection logic",
+export const analyticsHits = defineEndpoint("analytics_hits", {
+  description:
+    "Parsed page_hit events with browser and device detection logic. Use like_filter for arbitrary text filter over the payload column.",
+  tokens: [{ token: dashboardToken, scope: "READ" }],
   nodes: [
     node({
       name: "parsed_hits",
@@ -42,6 +52,9 @@ export const analyticsHits = definePipe("analytics_hits", {
             {% end %}
             {% if defined(to_date) %}
             AND timestamp <= {{ Date(to_date, description="Finishing date for filtering", required=False) }}
+            {% end %}
+            {% if defined(like_filter) %}
+            AND payload like {{ String(like_filter, description="Filter to apply to the payload JSON string", example="%utm_%") }}
             {% end %}
         {% if defined(limit) %}
             LIMIT {{Int32(limit, 20)}}
@@ -90,4 +103,34 @@ export const analyticsHits = definePipe("analytics_hits", {
       `,
     }),
   ],
+  params: {
+    tenant_id: p.string().optional().describe("Filter by tenant ID"),
+    domain: p.string().optional().describe("Filter by domain"),
+    from_date: p.date().optional().describe("Starting date for filtering"),
+    to_date: p.date().optional().describe("Finishing date for filtering"),
+    like_filter: p
+      .string()
+      .optional()
+      .describe("Filter to apply to the payload JSON string"),
+    limit: p.int32().optional(20).describe("Limit for pagination"),
+    page: p.int32().optional(0).describe("Page number for pagination"),
+  },
+  output: {
+    timestamp: t.dateTime(),
+    action: t.string(),
+    version: t.string(),
+    session_id: t.string(),
+    tenant_id: t.string(),
+    domain: t.string(),
+    location: t.string(),
+    referrer: t.string(),
+    pathname: t.string(),
+    href: t.string(),
+    current_domain: t.string(),
+    device: t.string(),
+    browser: t.string(),
+  },
 });
+
+export type AnalyticsHitsParams = InferParams<typeof analyticsHits>;
+export type AnalyticsHitsOutput = InferOutputRow<typeof analyticsHits>;
