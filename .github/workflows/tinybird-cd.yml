@@ -1,20 +1,17 @@
 name: Tinybird - CD Workflow
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
-    paths:
-      - "tinybird/package.json"
-      - "tinybird/tinybird.json"
-      - "tinybird/**/*.ts"
 
 env:
   TINYBIRD_HOST: ${{ secrets.TINYBIRD_HOST }}
   TINYBIRD_TOKEN: ${{ secrets.TINYBIRD_TOKEN }}
 
 jobs:
-  ci:
+  cd:
     runs-on: ubuntu-latest
     defaults:
       run:
