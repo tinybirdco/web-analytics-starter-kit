@@ -5,6 +5,7 @@ on:
     branches:
       - main
     paths:
+      - "tinybird/package.json"
       - "tinybird/tinybird.json"
       - "tinybird/**/*.ts"
 
