@@ -70,6 +70,9 @@ importers:
       '@tinybirdco/analytics-client':
         specifier: workspace:*
         version: link:../tinybird
+      '@tinybirdco/sdk':
+        specifier: ^0.0.25
+        version: 0.0.25
       ai:
         specifier: ^4.3.17
         version: 4.3.19(react@18.3.1)(zod@3.25.76)
@@ -2084,6 +2087,11 @@ packages:
 
   '@tinybirdco/sdk@0.0.24':
     resolution: {integrity: sha512-tXPIbrlKaya4latYMhZ2op79w3brLcIr3lboMwR5Zfh8CKIF+A/cUwCcqBIheM7qMFQAjwJgKSgi7GevBiSFkg==}
+    engines: {node: '>=20.0.0'}
+    hasBin: true
+
+  '@tinybirdco/sdk@0.0.25':
+    resolution: {integrity: sha512-PYJcwEgv2/gOAPcHHgaimoTMy4hFuy3UyT6tSBNznEcd+HJms0W4DA/y68yB3m8A9O+zYKztejNtK/U/8lNg7Q==}
     engines: {node: '>=20.0.0'}
     hasBin: true
 
@@ -7143,6 +7151,16 @@ snapshots:
       '@swc/counter': 0.1.3
 
   '@tinybirdco/sdk@0.0.24':
+    dependencies:
+      '@clack/prompts': 1.0.0
+      chokidar: 4.0.3
+      commander: 12.1.0
+      dotenv: 16.6.1
+      esbuild: 0.24.2
+      picocolors: 1.1.1
+      zod: 3.25.76
+
+  '@tinybirdco/sdk@0.0.25':
     dependencies:
       '@clack/prompts': 1.0.0
       chokidar: 4.0.3
