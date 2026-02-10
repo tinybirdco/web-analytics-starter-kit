@@ -13,7 +13,23 @@ interface TinybirdRegionResponse {
   api_host: string
 }
 
-// Cache for regions to avoid repeated API calls
+// Try to extract workspace name from JWT token payload
+function extractWorkspaceNameFromToken(token: string): string | null {
+  try {
+    const payload = token.split('.')[1]
+    if (!payload) return null
+    const base64 =
+      payload.replace(/-/g, '+').replace(/_/g, '/') +
+      '==='.slice((payload.length + 3) % 4)
+    const json = Buffer.from(base64, 'base64').toString()
+    const data = JSON.parse(json)
+    // Skip 'frontend_jwt' as it's just a token label, not workspace name
+    const name = data.workspace_name || (data.name !== 'frontend_jwt' ? data.name : null)
+    return name || null
+  } catch {
+    return null
+  }
+}
 
 async function fetchTinybirdRegions(): Promise<TinybirdRegionResponse[]> {
   try {
@@ -91,6 +107,11 @@ export async function GET(request: NextRequest) {
       ? await getWorkspaceWithCredentials(headerToken, headerHost)
       : await getWorkspace()
     workspaceName = tinybirdWorkspace?.name || null
+  }
+
+  // If still no workspace name and we have a token, try to decode it
+  if (!workspaceName && headerToken) {
+    workspaceName = extractWorkspaceNameFromToken(headerToken)
   }
 
   const workspace =

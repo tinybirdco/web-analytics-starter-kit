@@ -44,7 +44,7 @@ export function getServerClient() {
 }
 
 export function createClientWithCredentials(token: string, host: string) {
-  return createAnalyticsClient({ token, baseUrl: host })
+  return createAnalyticsClient({ token, baseUrl: host, devMode: false })
 }
 
 export async function getWorkspace(): Promise<TinybirdWorkspace | null> {

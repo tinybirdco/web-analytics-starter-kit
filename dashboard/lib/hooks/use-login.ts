@@ -29,7 +29,16 @@ export function getStoredCredentials(): StoredCredentials | null {
   }
 }
 
-const fetcher = (url: string) => fetch(url).then(res => res.json())
+function createFetcher(token: string | null, host: string | null) {
+  return (url: string) => {
+    const headers: HeadersInit = {}
+    if (token && host) {
+      headers['X-Tinybird-Token'] = token
+      headers['X-Tinybird-Host'] = host
+    }
+    return fetch(url, { headers }).then(res => res.json())
+  }
+}
 
 export function useLogin() {
   const searchParams = useSearchParams()
@@ -38,6 +47,9 @@ export function useLogin() {
   const token = searchParams?.get('token')
   const host = searchParams?.get('host')
   const hasTokenAuth = !!token && !!host
+
+  // Create fetcher with token/host to pass as headers
+  const fetcher = createFetcher(token, host)
 
   // Check server session auth
   const { data, error, isLoading: isSessionLoading, mutate } = useSWR(

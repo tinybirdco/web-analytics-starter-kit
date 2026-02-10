@@ -24,6 +24,13 @@ export function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
+  // Check for token auth from headers (public mode)
+  const headerToken = request.headers.get('X-Tinybird-Token')
+  const headerHost = request.headers.get('X-Tinybird-Host')
+  if (headerToken && headerHost) {
+    return NextResponse.next()
+  }
+
   // Check for session cookie
   const sessionCookie = request.cookies.get(SESSION_COOKIE_NAME)
 

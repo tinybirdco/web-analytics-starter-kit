@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 import { createHash } from 'crypto'
 
@@ -31,9 +31,16 @@ function validateSession(sessionToken: string): boolean {
 }
 
 // GET - Check auth status
-export async function GET() {
+export async function GET(request: NextRequest) {
   // If auth is disabled, always return authenticated
   if (process.env.DISABLE_AUTH === 'true') {
+    return NextResponse.json({ authenticated: true })
+  }
+
+  // Check for token auth from headers (passed from URL params by client)
+  const headerToken = request.headers.get('X-Tinybird-Token')
+  const headerHost = request.headers.get('X-Tinybird-Host')
+  if (headerToken && headerHost) {
     return NextResponse.json({ authenticated: true })
   }
 

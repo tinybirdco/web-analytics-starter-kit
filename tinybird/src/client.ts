@@ -109,19 +109,27 @@ const __configDir = dirname(fileURLToPath(import.meta.url));
 interface CreateAnalyticsClientOptions {
   token?: string;
   baseUrl?: string;
+  devMode?: boolean | "branch";
 }
 
 /**
  * Create a Tinybird client with custom configuration
  */
 export function createAnalyticsClient(options?: CreateAnalyticsClientOptions) {
-  return createTinybirdClient({
+  const clientOptions: Parameters<typeof createTinybirdClient>[0] = {
     datasources,
     pipes,
     configDir: __configDir,
     baseUrl: options?.baseUrl ?? process.env.TINYBIRD_HOST,
     token: options?.token ?? process.env.TINYBIRD_TOKEN,
-  });
+  };
+
+  // Only set devMode if explicitly provided (otherwise use tinybird.json config)
+  if (options?.devMode !== undefined) {
+    clientOptions.devMode = options.devMode;
+  }
+
+  return createTinybirdClient(clientOptions);
 }
 
 /**
