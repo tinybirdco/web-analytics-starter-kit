@@ -44,6 +44,7 @@ import {
   topPages,
   topSources,
   trend,
+  trafficByHour,
 } from "./endpoints";
 
 // Web Vitals
@@ -92,6 +93,7 @@ export const pipes = {
   topPages,
   topSources,
   trend,
+  trafficByHour,
   // Copies
   randomDataGenerator,
   // Web vitals resources
@@ -147,6 +149,8 @@ export type {
   TopPagesOutput,
   TopSourcesParams,
   TopSourcesOutput,
+  TrafficByHourParams,
+  TrafficByHourOutput,
 } from "./endpoints";
 
 export type {

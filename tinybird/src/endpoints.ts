@@ -1101,3 +1101,82 @@ export const topSources = defineEndpoint("top_sources", {
 
 export type TopSourcesParams = InferParams<typeof topSources>;
 export type TopSourcesOutput = InferOutputRow<typeof topSources>;
+
+// ============================================================================
+// Hourly Traffic Distribution
+// ============================================================================
+
+/**
+ * Traffic by hour - shows hourly traffic distribution
+ * Useful for understanding when users are most active
+ */
+export const trafficByHour = defineEndpoint("traffic_by_hour", {
+  description:
+    "Hourly traffic distribution showing visits per hour of day",
+  tokens: [{ token: dashboardToken, scope: "READ" }],
+  nodes: [
+    node({
+      name: "date_calculations",
+      description: "Calculate current period date range",
+      sql: `
+        WITH
+            {% if defined(date_from) and defined(date_to) %}
+                toDate({{ String(date_from) }}) as current_start,
+                toDate({{ String(date_to) }}) as current_end
+            {% else %}
+                toDate(timestampAdd(today(), interval -7 day)) as current_start,
+                toDate(today()) as current_end
+            {% end %}
+        SELECT current_start, current_end
+      `,
+    }),
+    node({
+      name: "hourly_data",
+      description: "Aggregate traffic by hour of day",
+      sql: `
+        SELECT
+            toHour(first_hit) as hour,
+            uniq(session_id) as visits,
+            countMerge(hits) as pageviews
+        FROM analytics_sessions_mv
+        WHERE date >= (SELECT current_start FROM date_calculations)
+            AND date <= (SELECT current_end FROM date_calculations)
+            {% if defined(tenant_id) %}
+            AND tenant_id = {{ String(tenant_id, description="Filter by tenant ID") }}
+            {% end %}
+            {% if defined(domain) %}
+            AND domain = {{ String(domain, description="Filter by domain") }}
+            {% end %}
+        GROUP BY hour
+        ORDER BY hour
+      `,
+    }),
+    node({
+      name: "endpoint",
+      description: "Fill missing hours with zeros",
+      sql: `
+        SELECT
+            number as hour,
+            coalesce(h.visits, 0) as visits,
+            coalesce(h.pageviews, 0) as pageviews
+        FROM (SELECT arrayJoin(range(0, 24)) as number)
+        LEFT JOIN hourly_data h ON number = h.hour
+        ORDER BY hour
+      `,
+    }),
+  ],
+  params: {
+    date_from: p.string().optional().describe("Start date"),
+    date_to: p.string().optional().describe("End date"),
+    tenant_id: p.string().optional().describe("Filter by tenant ID"),
+    domain: p.string().optional().describe("Filter by domain"),
+  },
+  output: {
+    hour: t.uint8(),
+    visits: t.uint64(),
+    pageviews: t.uint64(),
+  },
+});
+
+export type TrafficByHourParams = InferParams<typeof trafficByHour>;
+export type TrafficByHourOutput = InferOutputRow<typeof trafficByHour>;

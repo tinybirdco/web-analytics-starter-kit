@@ -13,6 +13,7 @@ const VALID_ENDPOINTS = [
   'topLocations',
   'topPages',
   'topSources',
+  'trafficByHour',
   'webVitalsCurrent',
   'webVitalsDistribution',
   'webVitalsRoutes',
