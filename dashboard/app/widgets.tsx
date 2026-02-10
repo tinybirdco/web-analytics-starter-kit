@@ -16,6 +16,7 @@ import {
   TopSources,
   TopDevices,
   TopBrowsers,
+  TrafficByHour,
 } from './widgets/index'
 
 // Helper function to determine date format based on time range
@@ -150,6 +151,7 @@ export const Widgets = () => {
         {/* Import widgets from the new structure */}
         <Visitors />
         <Pageviews />
+        <TrafficByHour />
         <TopPages />
         <TopLocations />
         <TopSources />
