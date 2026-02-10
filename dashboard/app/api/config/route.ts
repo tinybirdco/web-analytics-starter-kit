@@ -68,6 +68,7 @@ export async function GET(request: NextRequest) {
   // Check for token from headers first (public mode), then fall back to env vars
   const headerToken = request.headers.get('X-Tinybird-Token')
   const headerHost = request.headers.get('X-Tinybird-Host')
+  const headerWorkspace = request.headers.get('X-Tinybird-Workspace')
   const { token: envToken, host: envHost } = getTinybirdConfig()
 
   const token = headerToken || envToken
@@ -82,17 +83,20 @@ export async function GET(request: NextRequest) {
   // Include workspace info if configured
   const regionInfo = host ? await getRegionInfoFromHost(host) : null
 
-  // Fetch workspace using header credentials if provided, otherwise use env vars
-  const tinybirdWorkspace = configured
-    ? headerToken && headerHost
+  // Use workspace name from header if provided (avoids permission issues with scoped JWT)
+  // Otherwise fetch using credentials
+  let workspaceName = headerWorkspace
+  if (!workspaceName && configured) {
+    const tinybirdWorkspace = headerToken && headerHost
       ? await getWorkspaceWithCredentials(headerToken, headerHost)
       : await getWorkspace()
-    : null
+    workspaceName = tinybirdWorkspace?.name || null
+  }
 
   const workspace =
     configured && host && regionInfo
       ? {
-          name: tinybirdWorkspace?.name || 'Unknown',
+          name: workspaceName || 'Unknown',
           provider: regionInfo.provider,
           region: regionInfo.region,
         }

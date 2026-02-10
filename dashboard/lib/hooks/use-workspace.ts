@@ -51,16 +51,22 @@ function getRegionFromHost(host: string): { provider: string; region: string } {
   return { provider: 'Unknown', region: 'unknown' }
 }
 
-const fetcher = (url: string) => {
-  const credentials = getStoredCredentials()
+function createFetcher(workspaceName: string | null) {
+  return (url: string) => {
+    const credentials = getStoredCredentials()
 
-  const headers: HeadersInit = {}
-  if (credentials?.token && credentials?.host) {
-    headers['X-Tinybird-Token'] = credentials.token
-    headers['X-Tinybird-Host'] = credentials.host
+    const headers: HeadersInit = {}
+    if (credentials?.token && credentials?.host) {
+      headers['X-Tinybird-Token'] = credentials.token
+      headers['X-Tinybird-Host'] = credentials.host
+    }
+    // Pass workspace name from URL params to avoid permission issues with scoped JWT
+    if (workspaceName) {
+      headers['X-Tinybird-Workspace'] = workspaceName
+    }
+
+    return fetch(url, { headers }).then(res => res.json())
   }
-
-  return fetch(url, { headers }).then(res => res.json())
 }
 
 export function useWorkspace() {
@@ -70,6 +76,9 @@ export function useWorkspace() {
   const workspaceFromUrl = searchParams?.get('workspace')
   const hostFromUrl = searchParams?.get('host')
   const hasUrlWorkspace = !!workspaceFromUrl && !!hostFromUrl
+
+  // Create fetcher with workspace name from URL (to pass as header)
+  const fetcher = createFetcher(workspaceFromUrl)
 
   // Always call useSWR but skip fetch if we have URL params
   const { data, error, isLoading } = useSWR<ConfigResponse>(
