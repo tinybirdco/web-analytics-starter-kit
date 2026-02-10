@@ -1,12 +1,14 @@
 import useSWR from 'swr'
-import { queryPipe, getConfig } from '../api'
+import { queryPipe } from '../api'
 import { useSearchParams } from 'next/navigation'
+import { useLogin } from './use-login'
 
 export function useEndpoint<T>(
   pipeName: string,
   params: Record<string, string | number | boolean> = {}
 ) {
   const searchParams = useSearchParams()
+  const { isLoggedIn, isLoading: isAuthLoading } = useLogin()
 
   let mergedParams = { ...params }
   if (searchParams) {
@@ -23,8 +25,11 @@ export function useEndpoint<T>(
     return data
   }
 
+  // Don't fetch if not logged in (SWR skips fetch when key is null)
+  const shouldFetch = isLoggedIn && !isAuthLoading
+
   const { data, error, isLoading, mutate } = useSWR(
-    [pipeName, mergedParams],
+    shouldFetch ? [pipeName, mergedParams] : null,
     fetcher,
     {
       revalidateOnFocus: false,
@@ -35,7 +40,7 @@ export function useEndpoint<T>(
   return {
     data,
     error,
-    isLoading,
+    isLoading: isAuthLoading || isLoading,
     mutate,
   }
 }

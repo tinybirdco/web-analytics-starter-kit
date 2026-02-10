@@ -1,23 +1,20 @@
 'use client'
 
-import { useSearchParams } from 'next/navigation'
+import useSWR from 'swr'
 import { useAnalytics } from '../../components/Provider'
-import config from '../config'
+
+const fetcher = (url: string) => fetch(url).then(res => res.json())
 
 export default function useAuth() {
-  const searchParams = useSearchParams()
-
-  let token, host
-  if (config.host && config.authToken) {
-    token = config.authToken
-    host = config.host
-  } else {
-    token = searchParams?.get('token') || undefined
-    host = searchParams?.get('host') || undefined
-  }
+  const { data, isLoading } = useSWR('/api/config', fetcher, {
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+  })
 
   const { error } = useAnalytics()
   const isTokenValid = !error || ![401, 403].includes(error.status ?? 0)
-  const isAuthenticated = !!token && !!host
-  return { isAuthenticated, token, host, isTokenValid }
+  const isAuthenticated = data?.configured ?? false
+  const missingVars = data?.missing ?? []
+
+  return { isAuthenticated, isTokenValid, isLoading, missingVars }
 }

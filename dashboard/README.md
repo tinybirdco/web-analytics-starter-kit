@@ -18,14 +18,14 @@ To build this Starter Kit template we have used:
 First of all, you have to clone the repo if you haven't already
 
 ```bash
-$ git clone git@github.com:tinybirdco/web-analytics-starter-kit.git
+git clone git@github.com:tinybirdco/web-analytics-starter-kit.git
 ```
 
 Then navigate into the `/dashboard` folder and install the dependencies
 
 ```bash
-$ cd web-analytics-starter-kit/dashboard
-$ npm install
+cd web-analytics-starter-kit/dashboard
+pnpm install
 ```
 
 ### Build for Development
@@ -33,35 +33,54 @@ $ npm install
 Once you have installed the dependencies, run:
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
 You will find the app running at http://localhost:3000
 
 Copy the .env.example file and rename it to .env.
 
-```
-NEXT_PUBLIC_ASK_TINYBIRD_ENDPOINT="https://ask-tb.tinybird.live/api/chat" # To use the Ask AI functionality
+```bash
+# Tinybird Configuration (server-only, required)
+TINYBIRD_TOKEN=your-tinybird-token
+TINYBIRD_HOST=https://api.tinybird.co
 
+# Dashboard URL (public)
 NEXT_PUBLIC_TINYBIRD_DASHBOARD_URL=http://localhost:3000
-NEXT_PUBLIC_TINYBIRD_TRACKER_TOKEN=<YOUR_TINYBIRD_TRACKER_TOKEN>
-NEXT_PUBLIC_TINYBIRD_AUTH_TOKEN=<YOUR_TINYBIRD_AUTH_TOKEN>
-NEXT_PUBLIC_TINYBIRD_HOST=<YOUR_TINYBIRD_HOST>
+
+# Tracker token for analytics (public, optional)
+NEXT_PUBLIC_TINYBIRD_TRACKER_TOKEN=
+
+# Dashboard Basic Auth (server-only, defaults to admin/admin if not set)
+# DASHBOARD_USERNAME=admin
+# DASHBOARD_PASSWORD=changeme
+
+# Optional: Set to "true" to disable auth during development
+DISABLE_AUTH=false
+
+# Optional: AI Chat
+NEXT_PUBLIC_ASK_TINYBIRD_ENDPOINT="https://ask-tb.tinybird.live/api/chat"
 ```
 
-To develop locally, start [Tinybird Local](https://www.tinybird.co/docs/cli/local-container) and use `http://localhost` as NEXT_PUBLIC_TINYBIRD_HOST.
+To develop locally, start [Tinybird Local](https://www.tinybird.co/docs/cli/local-container) and use `http://localhost:7181` as TINYBIRD_HOST.
+
+### Authentication
+
+The dashboard includes built-in authentication. By default, credentials are `admin/admin`. You can customize this by setting `DASHBOARD_USERNAME` and `DASHBOARD_PASSWORD` environment variables.
+
+For local development, you can disable authentication by setting `DISABLE_AUTH=true`.
 
 ### Build for Production
 
 ```bash
-npm run build
+pnpm build
 ```
 
 ```bash
-npm run start
+pnpm start
 ```
 
- And you will find the app running at but with the production bundle http://localhost:3000
+And you will find the app running with the production bundle at http://localhost:3000
 
 ### Deployment
 

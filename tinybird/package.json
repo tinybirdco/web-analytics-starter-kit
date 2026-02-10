@@ -1,0 +1,22 @@
+{
+  "name": "@tinybirdco/analytics-client",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Tinybird resources for web analytics starter kit",
+  "type": "module",
+  "main": "src/client.ts",
+  "scripts": {
+    "dev": "tinybird dev",
+    "build": "tinybird build",
+    "deploy": "tinybird deploy",
+    "deploy:check": "tinybird deploy --check",
+    "preview": "tinybird preview"
+  },
+  "dependencies": {
+    "@tinybirdco/sdk": "^0.0.25"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.10",
+    "typescript": "^5"
+  }
+}

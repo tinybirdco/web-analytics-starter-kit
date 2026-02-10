@@ -3,12 +3,14 @@ import { FormatIcon } from './ui/Icons'
 import { Text } from './ui/Text'
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
+import { WorkspaceMenu } from './WorkspaceMenu'
 
 interface HeaderProps {
   onAskAiClick?: () => void
+  onLogout?: () => void
 }
 
-export const Header = ({ onAskAiClick }: HeaderProps) => {
+export const Header = ({ onAskAiClick, onLogout }: HeaderProps) => {
   const [isScrolled, setIsScrolled] = useState(false)
   const [showAskAi, setShowAskAi] = useState(false)
 
@@ -43,27 +45,30 @@ export const Header = ({ onAskAiClick }: HeaderProps) => {
         </Text>
       </a>
 
-      <AnimatePresence>
-        {showAskAi && (
-          <motion.div
-            initial={{ opacity: 0, y: 4 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 4 }}
-            transition={{ duration: 0.18, ease: "easeIn" }}
-          >
-            <Button
-              variant="solid"
-              color="dark"
-              size="large"
-              className="!bg-[var(--alternative-color)] !rounded-lg"
-              onClick={onAskAiClick}
+      <div className="flex items-center gap-3">
+        <AnimatePresence>
+          {showAskAi && (
+            <motion.div
+              initial={{ opacity: 0, y: 4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 4 }}
+              transition={{ duration: 0.18, ease: 'easeIn' }}
             >
-              <FormatIcon size={16} className="-ml-1" color="white" />
-              Ask AI
-            </Button>
-          </motion.div>
-        )}
-      </AnimatePresence>
+              <Button
+                variant="solid"
+                color="dark"
+                size="large"
+                className="!bg-[var(--alternative-color)] !rounded-lg"
+                onClick={onAskAiClick}
+              >
+                <FormatIcon size={16} className="-ml-1" color="white" />
+                Ask AI
+              </Button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+        <WorkspaceMenu onLogout={onLogout} />
+      </div>
     </nav>
   )
 }

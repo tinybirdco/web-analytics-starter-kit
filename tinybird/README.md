@@ -1,76 +1,144 @@
-# Tinybird Data Project
+# Tinybird Web Analytics
 
-## Project structure
+A TypeScript-first data project for web analytics using the [Tinybird SDK](https://www.npmjs.com/package/@tinybirdco/sdk).
+
+## Project Structure
 
 ```
-web-analytics-starter-kit/tinybird/
-├── datasources
-│   ├── analytics_events.datasource
-│   ├── analytics_pages_mv.datasource
-│   ├── analytics_sessions_mv.datasource
-│   └── analytics_sources_mv.datasource
-├── endpoints
-│   ├── analytics_hits.pipe
-│   ├── current_visitors.pipe
-│   ├── domain.pipe
-│   ├── kpis.pipe
-│   ├── top_browsers.pipe
-│   ├── top_devices.pipe
-│   ├── top_locations.pipe
-│   ├── top_pages.pipe
-│   ├── top_sources.pipe
-│   └── trend.pipe
-├── materializations
-│   ├── analytics_pages.pipe
-│   ├── analytics_sessions.pipe
-│   └── analytics_sources.pipe
-├── web_vitals
-│   ├── web_vitals_current.pipe
-│   ├── web_vitals_distribution.pipe
-│   └── web_vitals_routes.pipe
-├── fixtures
-│   ├── analytics_events.ndjson
-│   └── analytics_events.sql
-├── tests
-├── .gitignore
-├── .cursorrules
-├── CLAUDE.md
-└── README.md
+tinybird/
+├── src/
+│   ├── client.ts             # Tinybird client configuration
+│   ├── datasources.ts        # Datasource definitions
+│   ├── endpoints.ts          # API endpoint definitions
+│   ├── materializations.ts   # Materialized view definitions
+│   ├── pipes.ts              # Internal pipe definitions
+│   ├── tokens.ts             # Token definitions
+│   ├── copies.ts             # Copy pipe definitions
+│   └── web-vitals.ts         # Web vitals endpoints
+├── tinybird.json             # SDK configuration
+├── package.json
+└── tsconfig.json
 ```
 
-### Folder descriptions
-
-- **datasources/**: Contains all datasource definitions, including the main analytics_events datasource and materialized view datasources.
-- **endpoints/**: Contains all API pipes/endpoints for web analytics, such as analytics_hits, kpis, top_browsers, top_devices, top_locations, top_pages, top_sources, trend, current_visitors, and domain.
-- **materializations/**: Contains materialized view pipes for analytics_pages, analytics_sessions, and analytics_sources.
-- **web_vitals/**: Contains API pipes/endpoints for web vitals metrics.
-- **tests/**: Contains tests.
-- **fixtures/**: Contains data and SQL for analytics_events.
-- **.gitignore, .cursorrules, CLAUDE.md, README.md**: Project configuration and documentation files.
-
-## Project description
-
-The Tinybird data project for web analytics includes datasources, endpoints, and materializations to power analytics dashboards and APIs. The main datasource, `analytics_events`, collects events from the tracker script. Endpoints provide parsed and aggregated analytics, and materializations enable efficient querying for dashboards.
-
-`web_vitals` metrics are stored in `analytics_events` with `action=web_vital`. See `web_vitals` folder for example endpoints.
-
-## Local development
+## Setup
 
 ```bash
-# install the tinybird CLI
-curl https://tinybird.co | sh
-
-tb local start
-
-# select or create a new workspace
-tb login
-
-tb dev
-tb token ls  # copy the local admin token
+cd tinybird
+pnpm install
 ```
 
-Use `http://localhost:7181` as NEXT_PUBLIC_TINYBIRD_HOST and the admin token in the [dashboard](../dashboard/README.md).
+Configure your environment in `.env.local`:
 
-## Cloud deployment
+```env
+TINYBIRD_TOKEN=p.your_admin_token
+TINYBIRD_HOST=https://api.tinybird.co
+```
 
-After validating your changes use `tb --cloud deploy`
+## Development
+
+```bash
+# Start development mode (watches for changes and syncs to a branch)
+pnpm dev
+
+# Build and push to a branch
+pnpm build
+
+# Deploy to production (main workspace)
+pnpm deploy
+
+# Preview changes without deploying
+pnpm preview
+```
+
+## Using the Client
+
+```typescript
+import { createAnalyticsClient } from './src/client';
+
+// Initialize the client
+const tinybird = createAnalyticsClient();
+
+// Type-safe requests with autocomplete
+const result = await tinybird.query.kpis({
+  date_from: new Date('2024-01-01'),
+  date_to: new Date(),
+  tenant_id: 'my-tenant'
+});
+
+// result.data is fully typed
+```
+
+## Resources
+
+### Datasources
+
+| Resource Name | Description |
+|---------------|-------------|
+| `analytics_events` | Landing datasource for all analytics events |
+| `analytics_pages_mv` | Aggregated page metrics |
+| `analytics_sessions_mv` | Aggregated session metrics |
+| `analytics_sources_mv` | Aggregated referrer/source metrics |
+| `tenant_actions_mv` | Distinct actions by tenant |
+| `tenant_domains_mv` | Domains per tenant |
+
+### Materialized Views
+
+| Resource Name | Target Datasource |
+|---------------|-------------------|
+| `analytics_pages` | `analytics_pages_mv` |
+| `analytics_sessions` | `analytics_sessions_mv` |
+| `analytics_sources` | `analytics_sources_mv` |
+| `tenant_actions` | `tenant_actions_mv` |
+| `tenant_domains` | `tenant_domains_mv` |
+
+### Endpoints
+
+| Resource Name | Description |
+|---------------|-------------|
+| `current_visitors` | Real-time visitor count |
+| `kpis` | Key performance indicators |
+| `trend` | Traffic trends over time |
+| `top_pages` | Most visited pages |
+| `top_sources` | Top traffic sources |
+| `top_browsers` | Browser breakdown |
+| `top_devices` | Device breakdown |
+| `top_locations` | Geographic breakdown |
+| `domain` | Primary domain |
+| `domains` | All tracked domains |
+| `actions` | Tracked actions |
+
+### Web Vitals Endpoints
+
+| Resource Name | Description |
+|---------------|-------------|
+| `web_vitals_current` | Current web vitals metrics |
+| `web_vitals_distribution` | Distribution of web vitals scores |
+| `web_vitals_routes` | Web vitals by route |
+| `web_vitals_timeseries` | Web vitals over time |
+
+## Configuration
+
+The `tinybird.json` configures the SDK:
+
+```json
+{
+  "include": [
+    "src/client.ts",
+    "src/datasources.ts",
+    "src/endpoints.ts",
+    "src/materializations.ts",
+    "src/pipes.ts",
+    "src/tokens.ts",
+    "src/copies.ts",
+    "src/web-vitals.ts"
+  ],
+  "token": "${TINYBIRD_TOKEN}",
+  "baseUrl": "${TINYBIRD_HOST}",
+  "devMode": "branch"
+}
+```
+
+## Learn More
+
+- [Tinybird SDK Documentation](https://www.npmjs.com/package/@tinybirdco/sdk)
+- [Tinybird Documentation](https://www.tinybird.co/docs)

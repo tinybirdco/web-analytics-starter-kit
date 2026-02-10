@@ -1,0 +1,15 @@
+{
+  "include": [
+    "src/client.ts",
+    "src/copies.ts",
+    "src/datasources.ts",
+    "src/endpoints.ts",
+    "src/pipes.ts",
+    "src/materializations.ts",
+    "src/tokens.ts",
+    "src/web-vitals.ts"
+  ],
+  "token": "${TINYBIRD_TOKEN}",
+  "baseUrl": "${TINYBIRD_HOST}",
+  "devMode": "branch"
+}

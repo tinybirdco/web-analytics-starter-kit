@@ -5,5 +5,6 @@
 node_modules
 dist
 .e
-.env
-tmp/
+.env*
+.parcel-cache
+.env*.local

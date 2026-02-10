@@ -1,0 +1,17 @@
+{
+  "name": "@tinybirdco/web-analytics-starter-kit",
+  "private": true,
+  "description": "Web Analytics Starter Kit - A privacy-first analytics solution built with Tinybird",
+  "scripts": {
+    "dev": "pnpm --filter @tinybirdco/analytics-dashboard dev",
+    "build": "pnpm --filter @tinybirdco/analytics-dashboard build",
+    "lint": "pnpm --filter @tinybirdco/analytics-dashboard lint",
+    "tinybird:dev": "pnpm --filter @tinybirdco/analytics-client dev",
+    "tinybird:build": "pnpm --filter @tinybirdco/analytics-client build",
+    "tinybird:deploy": "pnpm --filter @tinybirdco/analytics-client deploy",
+    "tinybird:preview": "pnpm --filter @tinybirdco/analytics-client preview"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

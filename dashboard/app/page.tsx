@@ -3,12 +3,10 @@
 import { Suspense, useState } from 'react'
 /* eslint-disable @next/next/no-img-element */
 import Script from 'next/script'
-import useAuth from '../lib/hooks/use-auth'
 import config from '../lib/config'
 import DashboardTabs from './DashboardTabs'
 import { TimeRangeSelect } from '@/components/ui/TimeRangeSelect'
 import { useTimeRange } from '@/lib/hooks/use-time-range'
-import CredentialsDialog from '@/components/CredentialsDialog'
 import { cn } from '@/lib/utils'
 import { Text } from '@/components/ui/Text'
 import { AIChatProvider, AIChatContainer } from '@/components/ai-chat'
@@ -21,9 +19,11 @@ import { useInsightsData } from '@/lib/hooks/use-insights-data'
 import useCurrentVisitors from '@/lib/hooks/use-current-visitors'
 import React from 'react'
 import { Header } from '@/components/Header'
+import LoginDialog from '@/components/LoginDialog'
+import { useLogin } from '@/lib/hooks/use-login'
 
 export default function DashboardPage() {
-  const { isAuthenticated, isTokenValid } = useAuth()
+  const { isLoggedIn, isLoading: isLoginLoading, logout } = useLogin()
   const {
     value: timeRangeValue,
     setValue: setTimeRangeValue,
@@ -32,9 +32,14 @@ export default function DashboardPage() {
   const [open, setOpen] = useState(false)
   const { data: insightsData, isLoading: insightsLoading } = useInsightsData()
   const insights = createInsightsFromData(insightsData)
+  const currentVisitors = useCurrentVisitors()
+
+  const showLoginDialog = isLoginLoading || !isLoggedIn
 
   return (
     <AIChatProvider>
+      {/* Show login dialog overlay when not logged in */}
+      {showLoginDialog && <LoginDialog isLoading={isLoginLoading} />}
       <Suspense>
         <>
           {process.env.NODE_ENV === 'production' && (
@@ -44,7 +49,7 @@ export default function DashboardPage() {
               data-token={config.trackerToken}
             />
           )}
-          <Header onAskAiClick={() => setOpen(true)} />
+          <Header onAskAiClick={() => setOpen(true)} onLogout={logout} />
           <div className="bg-[var(--background-01-color)] p-6 border-b border-[var(--border-01-color)] pb-[532px] -mb-[492px]" />
           <div className="px-4">
             <main className="max-w-[1216px] mx-auto space-y-10">
@@ -101,7 +106,7 @@ export default function DashboardPage() {
                     <div className="flex items-center gap-2">
                       <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                       <Text variant="body" color="01">
-                        {useCurrentVisitors()} visitors online
+                        {currentVisitors} visitors online
                       </Text>
                     </div>
                   </div>
@@ -119,11 +124,7 @@ export default function DashboardPage() {
                   </div>
                 </div>
               </nav>
-              <div>
-                {isAuthenticated && !isTokenValid && <p>error</p>}
-                {isAuthenticated && isTokenValid && <DashboardTabs />}
-                {!isAuthenticated && <CredentialsDialog />}
-              </div>
+              <DashboardTabs />
             </main>
           </div>
         </>

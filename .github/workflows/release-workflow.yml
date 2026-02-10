@@ -10,23 +10,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v1
-    - name: Use Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: 22.x
-    - name: npm install, build, and test
-      run: |
-        npm install --prefix middleware
-        npm run lint --prefix middleware --if-present
-        npm run test:coverage --prefix middleware --if-present
-        npm run build --prefix middleware
-      env:
-        CI: true
-    - name: npm publish
-      run: |
-        npm config set //registry.npmjs.org/:_authToken=$NODE_AUTH_TOKEN
-        npm publish ./middleware --access public
-      env:
-        CI: true
-        NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+      - uses: actions/checkout@v4
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install
+      - name: Lint
+        run: pnpm --filter @tinybirdco/flock.js run lint --if-present
+      - name: Test
+        run: pnpm --filter @tinybirdco/flock.js run test:coverage --if-present
+      - name: Build
+        run: pnpm --filter @tinybirdco/flock.js run build
+        env:
+          CI: true
+      - name: npm publish
+        run: |
+          npm config set //registry.npmjs.org/:_authToken=$NODE_AUTH_TOKEN
+          npm publish ./middleware --access public
+        env:
+          CI: true
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}

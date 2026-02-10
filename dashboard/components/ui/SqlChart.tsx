@@ -210,7 +210,7 @@ export function SqlChart({
               <CartesianGrid
                 vertical={false}
                 horizontal={true}
-                strokeDasharray={4}
+                strokeDasharray="4"
                 stroke="#E8E9ED"
               />
               <XAxis
@@ -301,7 +301,7 @@ export function SqlChart({
               <CartesianGrid
                 vertical={false}
                 horizontal={true}
-                strokeDasharray={4}
+                strokeDasharray="4"
                 stroke="#E8E9ED"
               />
               <XAxis
