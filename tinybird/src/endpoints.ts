@@ -379,7 +379,8 @@ export const kpis = defineEndpoint("kpis", {
         FROM timeseries a
         LEFT JOIN current_period_data b ON a.date = b.date
         LEFT JOIN previous_period_data p ON a.date = timestampAdd(p.date, interval (SELECT period_days FROM date_calculations) day)
-        WHERE a.date >= (SELECT current_start FROM date_calculations) AND a.date <= (SELECT current_end FROM date_calculations)
+        WHERE a.date >= (SELECT current_start FROM date_calculations)
+            AND a.date <= timestampAdd((SELECT current_end FROM date_calculations), interval 1 day)
         {% else %}
         SELECT
             a.date date,
