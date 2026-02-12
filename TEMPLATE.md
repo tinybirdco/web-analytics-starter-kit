@@ -7,14 +7,11 @@ Built with privacy and speed as top priorities, this template lets you get real-
 Fork the GitHub repository and deploy the data project to Tinybird.
 
 ```bash
-# select or create a new workspace
-tb login
-
-# deploy the template
-tb --cloud deploy --template https://github.com/tinybirdco/web-analytics-starter-kit/tree/main/tinybird
-
-# copy the dashboard token
-tb --cloud token copy dashboard
+git clone https://github.com/tinybirdco/web-analytics-starter-kit
+cd web-analytics-starter-kit/tinybird
+pnpm install
+npx tinybird login
+npx tinybird deploy
 ```
 
 [Deploy the dashboard](https://github.com/tinybirdco/web-analytics-starter-kit/blob/main/dashboard/README.md) to Vercel or use the hosted dashboard at https://analytics.tinybird.live/ using the Workspace `dashboard` [token](https://cloud.tinybird.co/tokens).
@@ -32,11 +29,7 @@ Copy the snippet and paste it within your site `<head>` section:
 ></script>
 ```
 
-Get your `tracker` token from the [Tinybird dashboard](https://cloud.tinybird.co/tokens) or using the CLI:
-
-```bash
-tb --cloud token copy tracker && TRACKER_TOKEN=$(pbpaste)
-```
+Get your `tracker` token from the [Tinybird dashboard](https://cloud.tinybird.co/tokens).
 
 Use the `data-host` attribute to set your Tinybird host URL. Defaults to `https://api.tinybird.co/`.
 
