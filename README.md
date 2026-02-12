@@ -13,9 +13,11 @@ After you've finished the basic setup, expand your analytics with custom events 
 To deploy this template on Tinybird:
 
 ```bash
-curl -sSL https://tinybird.co | bash
-tb login
-tb --cloud deploy --template https://github.com/tinybirdco/web-analytics-starter-kit/tree/main/tinybird
+git clone https://github.com/tinybirdco/web-analytics-starter-kit
+cd web-analytics-starter-kit/tinybird
+pnpm install
+npx tinybird login
+npx tinybird deploy
 ```
 
 ### Track web events
@@ -144,16 +146,18 @@ Get your `dashboard` token from https://cloud.tinybird.co/tokens.
 
 See the [tinybird](./tinybird/README.md) and [dashboard](./dashboard/README.md) READMEs.
 
-1. Install the Tinybird CLI using `curl https://tinybird.co | bash`
-2. Create a [Tinybird](https://tinybird.co) account and a workspace by running `tb login`
-3. Clone this repository:
+1. Create a [Tinybird](https://tinybird.co) account and a workspace.
+2. Clone this repository:
 
 ```bash
 git clone https://github.com/tinybirdco/web-analytics-starter-kit
 cd web-analytics-starter-kit/tinybird
+pnpm install
+npx tinybird login
 ```
 
-4. Make changes to the `tinybird` project and deploy using `tb --cloud deploy`.
+3. This will create a `.env.local` file with `TINYBIRD_TOKEN` and `TINYBIRD_HOST` values.
+4. Run `pnpm dev` to sync changes to a Tinybird branch, or `pnpm deploy` for production.
 
 ### Hosting your own dashboard on Vercel
 
