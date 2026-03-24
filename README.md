@@ -58,6 +58,7 @@ These parameters can be used with the tracker snippet:
 | `data-proxy-url`  | No        | A complete proxy URL endpoint for the tracking request. Use this when you need to specify a custom tracking endpoint beyond just the domain. Cannot be used together with `data-proxy`.             |
 | `data-host`       | No        | Tinybird host URL. Defaults to `https://api.tinybird.co/`, but could be `https://api.us-east.tinybird.co` or a dedicated cluster. The banner already generates the snippet with the proper host.  |
 | `data-datasource` | No        | If you iterate the landing data source, or you just want to ingest the event in a different one, you can specify the landing data source name. 
+| `data-pathname`   | No        | Override the `pathname` field sent with every event. Useful for SPAs where `window.location` is polluted with campaign parameters, or when you need to send a virtual/canonical URL (e.g. a content ID instead of the full path). 
 | `web-vitals`      | No        | Tracks web vitals using the [web-vitals](https://www.npmjs.com/package/web-vitals) library 
 
 ### Implementing custom attributes
