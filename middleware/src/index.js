@@ -11,7 +11,7 @@
   let globalAttributes = {}
   let stringifyPayload = true
 
-  let proxy, proxyUrl, token, host, domain, tenantId
+  let proxy, proxyUrl, token, host, domain, tenantId, customPathname
   if (document.currentScript) {
     host = document.currentScript.getAttribute('data-host')
     proxy = document.currentScript.getAttribute('data-proxy')
@@ -19,6 +19,7 @@
     token = document.currentScript.getAttribute('data-token')
     domain = document.currentScript.getAttribute('data-domain') || ''
     tenantId = document.currentScript.getAttribute('data-tenant-id') || ''
+    customPathname = document.currentScript.getAttribute('data-pathname') || ''
 
     // Check if both proxy and proxyUrl are specified
     if (proxy && proxyUrl) {
@@ -322,7 +323,7 @@
         locale,
         location: country,
         referrer: document.referrer,
-        pathname: window.location.pathname,
+        pathname: customPathname || window.location.pathname,
         href: window.location.href,
       })
     }, 300)
@@ -339,7 +340,7 @@
           rating: metric.rating,
           id: metric.id,
           navigationType: metric.navigationType,
-          pathname: window.location.pathname,
+          pathname: customPathname || window.location.pathname,
           href: window.location.href,
           'user-agent': window.navigator.userAgent,
           locale,
