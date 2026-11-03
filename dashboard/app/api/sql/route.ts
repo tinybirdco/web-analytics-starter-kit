@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getTinybirdConfig } from '@/lib/server'
+import { getRequestCredentials } from '@/lib/server'
 
 const uiToApiHost: Record<string, string> = {
   'https://ui.tinybird.co': 'https://api.tinybird.co',
@@ -14,27 +14,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'SQL query required' }, { status: 400 })
     }
 
-    // Check for token from headers first (public mode), then fall back to env vars
-    const headerToken = request.headers.get('X-Tinybird-Token')
-    const headerHost = request.headers.get('X-Tinybird-Host')
-    const { token: envToken, host: envHost } = getTinybirdConfig()
-
-    const token = headerToken || envToken
-    const host = headerHost || envHost
-
-    if (!token || !host) {
-      const missing = []
-      if (!token) missing.push('TINYBIRD_TOKEN')
-      if (!host) missing.push('TINYBIRD_HOST')
+    const credentials = getRequestCredentials(request)
+    if (!credentials) {
       return NextResponse.json(
-        {
-          error: `Tinybird configuration not found. Missing: ${missing.join(
-            ', '
-          )}`,
-        },
-        { status: 503 }
+        { error: 'Tinybird token and host required' },
+        { status: 401 }
       )
     }
+    const { token, host } = credentials
 
     const apiUrl = uiToApiHost[host] ?? host
     const response = await fetch(

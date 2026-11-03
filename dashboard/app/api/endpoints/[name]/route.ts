@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getServerClient, getTinybirdConfig, createClientWithCredentials } from '@/lib/server'
+import {
+  getRequestCredentials,
+  createClientWithCredentials,
+} from '@/lib/server'
 
 const VALID_ENDPOINTS = [
   'currentVisitors',
@@ -44,32 +47,16 @@ export async function GET(
       )
     }
 
-    // Check for token from headers first (public mode), then fall back to env vars
-    const headerToken = request.headers.get('X-Tinybird-Token')
-    const headerHost = request.headers.get('X-Tinybird-Host')
-    const { token: envToken, host: envHost } = getTinybirdConfig()
-
-    const token = headerToken || envToken
-    const host = headerHost || envHost
-
-    if (!token || !host) {
-      const missing = []
-      if (!token) missing.push('TINYBIRD_TOKEN')
-      if (!host) missing.push('TINYBIRD_HOST')
+    const credentials = getRequestCredentials(request)
+    if (!credentials) {
       return NextResponse.json(
-        {
-          error: `Tinybird configuration not found. Missing: ${missing.join(
-            ', '
-          )}`,
-        },
-        { status: 503 }
+        { error: 'Tinybird token and host required' },
+        { status: 401 }
       )
     }
+    const { token, host } = credentials
+    const client = createClientWithCredentials(token, host)
 
-    // Use header credentials if provided, otherwise use server client
-    const client = headerToken && headerHost
-      ? createClientWithCredentials(headerToken, headerHost)
-      : getServerClient()
     const searchParams = request.nextUrl.searchParams
     const queryParams: Record<string, string> = {}
 

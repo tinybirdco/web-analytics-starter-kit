@@ -1,60 +1,20 @@
-import {
-  AnalyticsClient,
-  createAnalyticsClient,
-} from '@tinybirdco/analytics-client'
+import { createAnalyticsClient } from '@tinybirdco/analytics-client'
 
 export interface TinybirdWorkspace {
   id: string
   name: string
 }
 
-export function getTinybirdConfig() {
-  return {
-    token: process.env.TINYBIRD_TOKEN,
-    host: process.env.TINYBIRD_HOST,
-  }
-}
-
-let client: AnalyticsClient | null = null
-
-export function isTinybirdConfigured(): boolean {
-  const { token, host } = getTinybirdConfig()
-  return !!token && !!host
-}
-
-export function getServerClient() {
-  if (client) {
-    return client
-  }
-
-  const { token, host } = getTinybirdConfig()
-
-  if (!token || !host) {
-    const missing = []
-    if (!token) missing.push('TINYBIRD_TOKEN')
-    if (!host) missing.push('TINYBIRD_HOST')
-    throw new Error(
-      `Tinybird configuration not found. Missing environment variables: ${missing.join(
-        ', '
-      )}`
-    )
-  }
-
-  return createAnalyticsClient()
+// Dashboard requests must supply their own complete credential pair.
+// Never read deployment credentials here, even for legacy session cookies.
+export function getRequestCredentials(request: Request) {
+  const token = request.headers.get('X-Tinybird-Token')
+  const host = request.headers.get('X-Tinybird-Host')
+  return token && host ? { token, host } : null
 }
 
 export function createClientWithCredentials(token: string, host: string) {
   return createAnalyticsClient({ token, baseUrl: host, devMode: false })
-}
-
-export async function getWorkspace(): Promise<TinybirdWorkspace | null> {
-  const { token, host } = getTinybirdConfig()
-
-  if (!token || !host) {
-    return null
-  }
-
-  return getWorkspaceWithCredentials(token, host)
 }
 
 export async function getWorkspaceWithCredentials(

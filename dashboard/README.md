@@ -41,34 +41,23 @@ You will find the app running at http://localhost:3000
 Copy the .env.example file and rename it to .env.
 
 ```bash
-# Tinybird Configuration (server-only, required)
-TINYBIRD_TOKEN=your-tinybird-token
-TINYBIRD_HOST=https://api.tinybird.co
-
 # Dashboard URL (public)
 NEXT_PUBLIC_TINYBIRD_DASHBOARD_URL=http://localhost:3000
 
 # Tracker token for analytics (public, optional)
 NEXT_PUBLIC_TINYBIRD_TRACKER_TOKEN=
 
-# Dashboard Basic Auth (server-only, defaults to admin/admin if not set)
-# DASHBOARD_USERNAME=admin
-# DASHBOARD_PASSWORD=changeme
-
-# Optional: Set to "true" to disable auth during development
-DISABLE_AUTH=false
-
 # Optional: AI Chat
 NEXT_PUBLIC_ASK_TINYBIRD_ENDPOINT="https://ask-tb.tinybird.live/api/chat"
 ```
 
-To develop locally, start [Tinybird Local](https://www.tinybird.co/docs/cli/local-container) and use `http://localhost:7181` as TINYBIRD_HOST.
+To develop locally, start [Tinybird Local](https://www.tinybird.co/docs/cli/local-container) and use `http://localhost:7181` as the host in the token access form.
 
 ### Authentication
 
-The dashboard includes built-in authentication. By default, credentials are `admin/admin`. You can customize this by setting `DASHBOARD_USERNAME` and `DASHBOARD_PASSWORD` environment variables.
+The dashboard supports Tinybird token access only. Use the token form or open a dashboard link with `token` and `host` parameters. API requests must provide both `X-Tinybird-Token` and `X-Tinybird-Host`; Tinybird enforces the token's permissions.
 
-For local development, you can disable authentication by setting `DISABLE_AUTH=true`.
+Password login, session cookies, and `DISABLE_AUTH` have been removed. The dashboard no longer reads `TINYBIRD_TOKEN` or `TINYBIRD_HOST` from its environment. Remove these deployment variables and use caller-supplied credentials. Credentials needed by the separate Tinybird deployment tooling or ingestion middleware remain separate.
 
 ### Build for Production
 

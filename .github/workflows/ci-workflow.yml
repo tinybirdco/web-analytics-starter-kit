@@ -25,6 +25,21 @@ jobs:
         run: pnpm run build
         env:
           CI: true
+      - name: Test dashboard credential isolation
+        env:
+          TINYBIRD_TOKEN: server-token-must-never-leave
+          TINYBIRD_HOST: http://127.0.0.1:1
+          DISABLE_AUTH: 'true'
+        run: |
+          node dashboard/tests/credentials.cjs
+          pnpm --filter @tinybirdco/analytics-dashboard exec next start -p 3097 &
+          server_pid=$!
+          trap 'kill "$server_pid"' EXIT
+          for attempt in $(seq 1 30); do
+            if curl --silent --fail http://localhost:3097/ > /dev/null; then break; fi
+            sleep 1
+          done
+          node dashboard/tests/token-auth.mjs
 
   middleware:
     runs-on: ubuntu-latest

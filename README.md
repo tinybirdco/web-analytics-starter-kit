@@ -1,5 +1,8 @@
 # Web Analytics template for Tinybird
 
+> **Security update (2026-11-03):** Earlier dashboard versions allowed a request-controlled host to receive the deployment's Tinybird token. Upgrade and redeploy the dashboard, remove its `TINYBIRD_TOKEN` deployment variable, and revoke/rotate any token configured in an exposed deployment. Password/session authentication is removed; dashboard access now requires a caller-supplied Tinybird token and host. Updating the code does not revoke previously leaked credentials.
+
+
 Build your own web analytics platform using [Tinybird](https://www.tinybird.co/)'s Events API and Endpoints. Built with privacy and speed as top priorities, this template lets you get real-time metrics in a pre-built dashboard in just a few minutes without any knowledge about Tinybird.
 
 After you've finished the basic setup, expand your analytics with custom events tailored to your specific use cases (eCommerce, marketing, etc.), keeping the same real-time performance.

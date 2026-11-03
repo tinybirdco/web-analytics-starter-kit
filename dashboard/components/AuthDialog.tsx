@@ -14,10 +14,7 @@ import { Select } from '@/components/ui/Select'
 import { Link } from '@/components/ui/Link'
 import { Text } from '@/components/ui/Text'
 import { Loader } from '@/components/ui/Loader'
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/Tabs'
 import { SignJWT } from 'jose'
-
-type AuthMode = 'signin' | 'token'
 
 const regionMap: Record<string, string> = {
   'gcp-europe-west2': 'https://api.europe-west2.gcp.tinybird.co',
@@ -129,51 +126,16 @@ export async function createJwt(
 
 interface AuthDialogProps {
   isLoading?: boolean
-  defaultMode?: AuthMode
 }
 
 export default function AuthDialog({
   isLoading: isCheckingAuth,
-  defaultMode = 'signin',
 }: AuthDialogProps) {
-  const [mode, setMode] = useState<AuthMode>(defaultMode)
-
-  // Sign in state
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const [signInError, setSignInError] = useState('')
-  const [isSubmitting, setIsSubmitting] = useState(false)
-
   // Token state
   const [hostUrl, setHostUrl] = useState(regionValues[0])
   const [hostName, setHostName] = useState('')
   const [tenantId, setTenantId] = useState('')
   const [tokenHasHost, setTokenHasHost] = useState(true)
-
-  async function handleSignIn(e: React.FormEvent) {
-    e.preventDefault()
-    setSignInError('')
-    setIsSubmitting(true)
-
-    try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
-      })
-
-      if (response.ok) {
-        window.location.reload()
-      } else {
-        const data = await response.json()
-        setSignInError(data.error || 'Invalid credentials')
-        setIsSubmitting(false)
-      }
-    } catch {
-      setSignInError('An error occurred. Please try again.')
-      setIsSubmitting(false)
-    }
-  }
 
   const handleTokenChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const token = e.target.value
@@ -253,158 +215,88 @@ export default function AuthDialog({
         <DialogHeader>
           <DialogTitle>Access Dashboard</DialogTitle>
           <DialogDescription>
-            Sign in with your credentials or use a Tinybird token directly.
+            Use a Tinybird token to access your dashboard.
           </DialogDescription>
         </DialogHeader>
 
-        <Tabs value={mode} onValueChange={value => setMode(value as AuthMode)}>
-          <TabsList>
-            <TabsTrigger value="signin">Sign in</TabsTrigger>
-            <TabsTrigger value="token">Tinybird Token</TabsTrigger>
-          </TabsList>
+        <form onSubmit={handleTokenSubmit} className="space-y-6">
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <label>
+                <Text variant="captionsemibold" color="default">
+                  Token
+                </Text>
+              </label>
+              <Input
+                name="token"
+                required={true}
+                placeholder="Paste your workspace admin token"
+                onChange={handleTokenChange}
+              />
+              <Link
+                href="https://cloud.tinybird.co/tokens"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block text-sm"
+              >
+                Get your admin token
+              </Link>
+            </div>
 
-          <TabsContent value="signin">
-            <form
-              onSubmit={handleSignIn}
-              className="space-y-6"
-              autoComplete="off"
-            >
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <label htmlFor="dashboard-username">
-                    <Text variant="captionsemibold" color="default">
-                      Username
-                    </Text>
-                  </label>
-                  <Input
-                    id="dashboard-username"
-                    name="dashboard-username"
-                    type="text"
-                    value={username}
-                    onChange={e => setUsername(e.target.value)}
-                    placeholder="Enter username"
-                    required
-                    autoComplete="off"
-                    autoFocus
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <label htmlFor="dashboard-password">
-                    <Text variant="captionsemibold" color="default">
-                      Password
-                    </Text>
-                  </label>
-                  <Input
-                    id="dashboard-password"
-                    name="dashboard-password"
-                    type="password"
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
-                    placeholder="Enter password"
-                    required
-                    autoComplete="new-password"
-                  />
-                  {!!signInError && (
-                    <Text variant="body" as="p" color="error">
-                      {signInError}
-                    </Text>
-                  )}
-                </div>
-              </div>
-              <div className="w-full flex justify-end">
-                <Button
-                  type="submit"
-                  size="large"
-                  isLoading={isSubmitting}
-                  disabled={!username || !password}
-                >
-                  Sign in
-                </Button>
-              </div>
-            </form>
-          </TabsContent>
-          <TabsContent value="token">
-            <form onSubmit={handleTokenSubmit} className="space-y-6">
-              <div className="space-y-4">
+            {!tokenHasHost && (
+              <>
                 <div className="space-y-2">
                   <label>
                     <Text variant="captionsemibold" color="default">
-                      Token
+                      Host
                     </Text>
                   </label>
-                  <Input
-                    name="token"
-                    required={true}
-                    placeholder="Paste your workspace admin token"
-                    onChange={handleTokenChange}
+                  <Select
+                    options={hostOptions}
+                    value={hostUrl}
+                    onValueChange={setHostUrl}
+                    width="full"
                   />
-                  <Link
-                    href="https://cloud.tinybird.co/tokens"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block text-sm"
-                  >
-                    Get your admin token
-                  </Link>
                 </div>
 
-                {!tokenHasHost && (
-                  <>
-                    <div className="space-y-2">
-                      <label>
-                        <Text variant="captionsemibold" color="default">
-                          Host
-                        </Text>
-                      </label>
-                      <Select
-                        options={hostOptions}
-                        value={hostUrl}
-                        onValueChange={setHostUrl}
-                        width="full"
-                      />
-                    </div>
-
-                    {hostUrl === 'other' && (
-                      <div className="space-y-2">
-                        <label>
-                          <Text variant="captionsemibold" color="default">
-                            Host name
-                          </Text>
-                        </label>
-                        <Input
-                          name="hostName"
-                          placeholder="Host name"
-                          value={hostName}
-                          onChange={e => setHostName(e.target.value)}
-                        />
-                      </div>
-                    )}
-                  </>
+                {hostUrl === 'other' && (
+                  <div className="space-y-2">
+                    <label>
+                      <Text variant="captionsemibold" color="default">
+                        Host name
+                      </Text>
+                    </label>
+                    <Input
+                      name="hostName"
+                      placeholder="Host name"
+                      value={hostName}
+                      onChange={e => setHostName(e.target.value)}
+                    />
+                  </div>
                 )}
+              </>
+            )}
 
-                <div className="space-y-2">
-                  <label>
-                    <Text variant="captionsemibold" color="default">
-                      Tenant ID (optional)
-                    </Text>
-                  </label>
-                  <Input
-                    name="tenant_id"
-                    placeholder="Leave empty for default tenant"
-                    value={tenantId}
-                    onChange={e => setTenantId(e.target.value)}
-                  />
-                </div>
-              </div>
-              <div className="w-full flex justify-end">
-                <Button type="submit" size="large">
-                  View dashboard
-                </Button>
-              </div>
-            </form>
-          </TabsContent>
-        </Tabs>
+            <div className="space-y-2">
+              <label>
+                <Text variant="captionsemibold" color="default">
+                  Tenant ID (optional)
+                </Text>
+              </label>
+              <Input
+                name="tenant_id"
+                placeholder="Leave empty for default tenant"
+                value={tenantId}
+                onChange={e => setTenantId(e.target.value)}
+              />
+            </div>
+          </div>
+          <div className="w-full flex justify-end">
+            <Button type="submit" size="large">
+              View dashboard
+            </Button>
+          </div>
+        </form>
       </DialogContent>
     </Dialog>
   )
