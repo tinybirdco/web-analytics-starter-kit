@@ -5,6 +5,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
+### Security
+- [Dashboard] Restrict token-mode upstreams to Tinybird API origins or explicitly configured allowed origins
+- [Dashboard] Remove password/session authentication, including the development auth bypass; require caller-supplied Tinybird token and host headers
+- [Dashboard] Remove deployment-token fallback while preserving the allowed-host policy
+- [Dashboard] Remove the unused `/api/sql` route, which ran arbitrary SQL with the server `TINYBIRD_TOKEN`
+
 - [Data project]  Fix `top_devices` and `top_browsers` session count (#90)
 
 ## [1.4.0] - 2023-04-12

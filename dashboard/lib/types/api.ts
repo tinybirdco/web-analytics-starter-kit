@@ -17,8 +17,6 @@ export type PipeParams<T> = Record<string, string | number | boolean>
 
 export type QueryPipe<T> = ClientResponse<T>
 
-export type QuerySQL<T> = ClientResponse<T>
-
 export class QueryError extends Error {
   constructor(
     message: string,

@@ -47,6 +47,9 @@ NEXT_PUBLIC_TINYBIRD_DASHBOARD_URL=http://localhost:3000
 # Tracker token for analytics (public, optional)
 NEXT_PUBLIC_TINYBIRD_TRACKER_TOKEN=
 
+# Optional: extra API origins accepted for caller-supplied tokens (comma-separated)
+# TINYBIRD_ALLOWED_HOSTS=https://my-tinybird.example
+
 # Optional: AI Chat
 NEXT_PUBLIC_ASK_TINYBIRD_ENDPOINT="https://ask-tb.tinybird.live/api/chat"
 ```
@@ -57,7 +60,9 @@ To develop locally, start [Tinybird Local](https://www.tinybird.co/docs/cli/loca
 
 The dashboard supports Tinybird token access only. Use the token form or open a dashboard link with `token` and `host` parameters. API requests must provide both `X-Tinybird-Token` and `X-Tinybird-Host`; Tinybird enforces the token's permissions.
 
-Password login, session cookies, and `DISABLE_AUTH` have been removed. The dashboard no longer reads `TINYBIRD_TOKEN` or `TINYBIRD_HOST` from its environment. Remove these deployment variables and use caller-supplied credentials. Credentials needed by the separate Tinybird deployment tooling or ingestion middleware remain separate.
+Password login, session cookies, and `DISABLE_AUTH` have been removed. The dashboard no longer uses `TINYBIRD_TOKEN`; remove it from dashboard deployments and use caller-supplied credentials. `TINYBIRD_HOST`, if set, only adds an allowed origin and never supplies request credentials. Credentials needed by the separate Tinybird deployment tooling or ingestion middleware remain separate.
+
+The host restrictions introduced by the security fix remain: HTTPS Tinybird API origins are accepted, as are origins explicitly configured in `TINYBIRD_ALLOWED_HOSTS` or `TINYBIRD_HOST`. Localhost origins are also accepted during development. Both credential headers are required even when an allowed host is configured.
 
 ### Build for Production
 

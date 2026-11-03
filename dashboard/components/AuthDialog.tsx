@@ -13,7 +13,6 @@ import { Button } from '@/components/ui/Button'
 import { Select } from '@/components/ui/Select'
 import { Link } from '@/components/ui/Link'
 import { Text } from '@/components/ui/Text'
-import { Loader } from '@/components/ui/Loader'
 import { SignJWT } from 'jose'
 
 const regionMap: Record<string, string> = {
@@ -124,13 +123,7 @@ export async function createJwt(
     .sign(key)
 }
 
-interface AuthDialogProps {
-  isLoading?: boolean
-}
-
-export default function AuthDialog({
-  isLoading: isCheckingAuth,
-}: AuthDialogProps) {
+export default function AuthDialog() {
   // Token state
   const [hostUrl, setHostUrl] = useState(regionValues[0])
   const [hostName, setHostName] = useState('')
@@ -200,14 +193,6 @@ export default function AuthDialog({
     })),
     { value: 'other', label: 'Other' },
   ]
-
-  if (isCheckingAuth) {
-    return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/75 backdrop-blur-[3px]">
-        <Loader />
-      </div>
-    )
-  }
 
   return (
     <Dialog open={true}>

@@ -23,7 +23,7 @@ import AuthDialog from '@/components/AuthDialog'
 import { useLogin } from '@/lib/hooks/use-login'
 
 export default function DashboardPage() {
-  const { isLoggedIn, isLoading: isLoginLoading, logout } = useLogin()
+  const { isLoggedIn, logout } = useLogin()
   const {
     value: timeRangeValue,
     setValue: setTimeRangeValue,
@@ -34,12 +34,12 @@ export default function DashboardPage() {
   const insights = createInsightsFromData(insightsData)
   const currentVisitors = useCurrentVisitors()
 
-  const showLoginDialog = isLoginLoading || !isLoggedIn
+  const showLoginDialog = !isLoggedIn
 
   return (
     <AIChatProvider>
       {/* Show login dialog overlay when not logged in */}
-      {showLoginDialog && <AuthDialog isLoading={isLoginLoading} />}
+      {showLoginDialog && <AuthDialog />}
       <Suspense>
         <>
           {process.env.NODE_ENV === 'production' && (

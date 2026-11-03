@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import {
-  getRequestCredentials,
   createClientWithCredentials,
+  resolveTinybirdCredentials,
 } from '@/lib/server'
 
 const VALID_ENDPOINTS = [
@@ -47,16 +47,16 @@ export async function GET(
       )
     }
 
-    const credentials = getRequestCredentials(request)
-    if (!credentials) {
+    const credentialsResult = resolveTinybirdCredentials(request.headers)
+    if ('error' in credentialsResult) {
       return NextResponse.json(
-        { error: 'Tinybird token and host required' },
-        { status: 401 }
+        { error: credentialsResult.error },
+        { status: credentialsResult.status }
       )
     }
-    const { token, host } = credentials
-    const client = createClientWithCredentials(token, host)
 
+    const { token, host } = credentialsResult.credentials
+    const client = createClientWithCredentials(token, host)
     const searchParams = request.nextUrl.searchParams
     const queryParams: Record<string, string> = {}
 

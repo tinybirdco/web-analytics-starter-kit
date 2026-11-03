@@ -41,5 +41,6 @@ export function useLogin() {
     window.location.href = url.toString()
   }, [])
 
+  // Credential availability is synchronous; data hooks still consume isLoading.
   return { isLoggedIn: hasTokenAuth, isLoading: false, logout }
 }

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import {
-  getRequestCredentials,
   getWorkspaceWithCredentials,
+  resolveTinybirdCredentials,
 } from '@/lib/server'
 
 interface TinybirdRegionInfo {
@@ -85,16 +85,14 @@ async function getRegionInfoFromHost(
 }
 
 export async function GET(request: NextRequest) {
-  const credentials = getRequestCredentials(request)
-  if (!credentials) {
-    return NextResponse.json(
-      { error: 'Tinybird token and host required' },
-      { status: 401 }
-    )
-  }
-  const { token, host } = credentials
   const headerWorkspace = request.headers.get('X-Tinybird-Workspace')
+  const result = resolveTinybirdCredentials(request.headers)
 
+  if ('error' in result) {
+    return NextResponse.json({ error: result.error }, { status: result.status })
+  }
+
+  const { token, host } = result.credentials
   const regionInfo = await getRegionInfoFromHost(host)
 
   // Use workspace name from header if provided (avoids permission issues with scoped JWT)

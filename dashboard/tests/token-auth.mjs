@@ -17,16 +17,13 @@ const upstream = createServer((req, res) => {
     )
   )
 })
-upstream.listen(0, '127.0.0.1')
+// Explicitly allow this test origin via TINYBIRD_ALLOWED_HOSTS on the dashboard.
+upstream.listen(Number(process.env.TEST_UPSTREAM_PORT || 3098), '127.0.0.1')
 await once(upstream, 'listening')
 const host = `http://127.0.0.1:${upstream.address().port}`
 const token = 'caller-owned-test-token'
 try {
-  for (const [path, method] of [
-    ['/api/config', 'GET'],
-    ['/api/sql', 'POST'],
-    ['/api/endpoints/domains', 'GET'],
-  ]) {
+  for (const path of ['/api/config', '/api/endpoints/domains']) {
     for (const headers of [
       {},
       { Cookie: 'dashboard_session=x' },
@@ -34,9 +31,7 @@ try {
       { 'X-Tinybird-Token': token },
     ]) {
       const response = await fetch(`${dashboard}${path}`, {
-        method,
         headers: { ...headers, 'Content-Type': 'application/json' },
-        ...(method === 'POST' && { body: JSON.stringify({ sql: 'SELECT 1' }) }),
       })
       assert.equal(
         response.status,
@@ -50,33 +45,48 @@ try {
       'unauthorized requests must not reach upstream'
     )
   }
-  for (const path of ['/api/auth', '/api/auth/login', '/api/auth/logout']) {
+  for (const path of [
+    '/api/auth',
+    '/api/auth/login',
+    '/api/auth/logout',
+    '/api/sql',
+  ]) {
     const response = await fetch(`${dashboard}${path}`, {
       method: path === '/api/auth' ? 'GET' : 'POST',
     })
     assert.equal(response.status, 404, `${path} must be removed`)
   }
-  for (const [path, method] of [
-    ['/api/config', 'GET'],
-    ['/api/sql', 'POST'],
-    ['/api/endpoints/domains', 'GET'],
-  ]) {
+  for (const path of ['/api/config', '/api/endpoints/domains']) {
     const before = requests.length
     const response = await fetch(`${dashboard}${path}`, {
-      method,
       headers: {
         'X-Tinybird-Token': token,
         'X-Tinybird-Host': host,
         'Content-Type': 'application/json',
       },
-      ...(method === 'POST' && { body: JSON.stringify({ sql: 'SELECT 1' }) }),
     })
     assert.equal(response.status, 200, `${path}: ${await response.text()}`)
     assert.ok(requests.length > before, `${path} must reach caller's upstream`)
   }
+  const before = requests.length
+  for (const path of ['/api/config', '/api/endpoints/domains']) {
+    const response = await fetch(`${dashboard}${path}`, {
+      headers: {
+        'X-Tinybird-Token': token,
+        // Same local upstream, but a hostname that is not on the allowlist.
+        'X-Tinybird-Host': `http://localhost:${upstream.address().port}`,
+      },
+    })
+    assert.equal(response.status, 400, `${path} must reject unapproved hosts`)
+  }
+  assert.equal(
+    requests.length,
+    before,
+    'unapproved hosts must not receive a request'
+  )
   assert.ok(requests.every(req => req.authorization === `Bearer ${token}`))
   console.log(
-    'Passed: incomplete credentials, legacy cookie, removed auth routes, and caller-token forwarding on all three data routes'
+    'Passed: incomplete credentials, legacy cookie, removed auth/SQL routes, allowed hosts, and caller-token forwarding'
   )
 } finally {
   upstream.closeAllConnections()
