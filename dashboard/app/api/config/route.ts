@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getTinybirdConfig, getWorkspace, getWorkspaceWithCredentials } from '@/lib/server'
+import {
+  getWorkspaceWithCredentials,
+  resolveTinybirdCredentials,
+} from '@/lib/server'
 
 interface TinybirdRegionInfo {
   provider: string
@@ -24,7 +27,8 @@ function extractWorkspaceNameFromToken(token: string): string | null {
     const json = Buffer.from(base64, 'base64').toString()
     const data = JSON.parse(json)
     // Skip 'frontend_jwt' as it's just a token label, not workspace name
-    const name = data.workspace_name || (data.name !== 'frontend_jwt' ? data.name : null)
+    const name =
+      data.workspace_name || (data.name !== 'frontend_jwt' ? data.name : null)
     return name || null
   } catch {
     return null
@@ -81,51 +85,43 @@ async function getRegionInfoFromHost(
 }
 
 export async function GET(request: NextRequest) {
-  // Check for token from headers first (public mode), then fall back to env vars
-  const headerToken = request.headers.get('X-Tinybird-Token')
-  const headerHost = request.headers.get('X-Tinybird-Host')
   const headerWorkspace = request.headers.get('X-Tinybird-Workspace')
-  const { token: envToken, host: envHost } = getTinybirdConfig()
+  const result = resolveTinybirdCredentials(request.headers)
 
-  const token = headerToken || envToken
-  const host = headerHost || envHost
+  if ('error' in result) {
+    if (result.missing) {
+      return NextResponse.json({
+        configured: false,
+        missing: result.missing,
+        workspace: null,
+      })
+    }
+    return NextResponse.json({ error: result.error }, { status: result.status })
+  }
 
-  const missing: string[] = []
-  if (!token) missing.push('TINYBIRD_TOKEN')
-  if (!host) missing.push('TINYBIRD_HOST')
-
-  const configured = missing.length === 0
-
-  // Include workspace info if configured
-  const regionInfo = host ? await getRegionInfoFromHost(host) : null
+  const { token, host, fromHeaders } = result.credentials
+  const regionInfo = await getRegionInfoFromHost(host)
 
   // Use workspace name from header if provided (avoids permission issues with scoped JWT)
   // Otherwise fetch using credentials
   let workspaceName = headerWorkspace
-  if (!workspaceName && configured) {
-    const tinybirdWorkspace = headerToken && headerHost
-      ? await getWorkspaceWithCredentials(headerToken, headerHost)
-      : await getWorkspace()
+  if (!workspaceName) {
+    const tinybirdWorkspace = await getWorkspaceWithCredentials(token, host)
     workspaceName = tinybirdWorkspace?.name || null
   }
 
   // If still no workspace name and we have a token, try to decode it
-  if (!workspaceName && headerToken) {
-    workspaceName = extractWorkspaceNameFromToken(headerToken)
+  if (!workspaceName && fromHeaders) {
+    workspaceName = extractWorkspaceNameFromToken(token)
   }
 
-  const workspace =
-    configured && host && regionInfo
-      ? {
-          name: workspaceName || 'Unknown',
-          provider: regionInfo.provider,
-          region: regionInfo.region,
-        }
-      : null
-
   return NextResponse.json({
-    configured,
-    missing,
-    workspace,
+    configured: true,
+    missing: [],
+    workspace: {
+      name: workspaceName || 'Unknown',
+      provider: regionInfo.provider,
+      region: regionInfo.region,
+    },
   })
 }

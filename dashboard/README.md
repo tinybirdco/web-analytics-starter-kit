@@ -51,9 +51,13 @@ NEXT_PUBLIC_TINYBIRD_DASHBOARD_URL=http://localhost:3000
 # Tracker token for analytics (public, optional)
 NEXT_PUBLIC_TINYBIRD_TRACKER_TOKEN=
 
-# Dashboard Basic Auth (server-only, defaults to admin/admin if not set)
+# Dashboard Basic Auth (server-only). Login is disabled unless DASHBOARD_PASSWORD is set.
 # DASHBOARD_USERNAME=admin
 # DASHBOARD_PASSWORD=changeme
+
+# Optional: extra Tinybird API hosts accepted in token mode (comma-separated).
+# *.tinybird.co API hosts and TINYBIRD_HOST are always accepted.
+# TINYBIRD_ALLOWED_HOSTS=
 
 # Optional: Set to "true" to disable auth during development
 DISABLE_AUTH=false
@@ -66,7 +70,9 @@ To develop locally, start [Tinybird Local](https://www.tinybird.co/docs/cli/loca
 
 ### Authentication
 
-The dashboard includes built-in authentication. By default, credentials are `admin/admin`. You can customize this by setting `DASHBOARD_USERNAME` and `DASHBOARD_PASSWORD` environment variables.
+The dashboard includes built-in authentication. Set `DASHBOARD_PASSWORD` (and optionally `DASHBOARD_USERNAME`, defaults to `admin`) to enable username/password login; without `DASHBOARD_PASSWORD`, login is disabled. Sessions are signed and expire after 7 days; changing the password invalidates existing sessions.
+
+The server-side `TINYBIRD_TOKEN` is only ever sent to `TINYBIRD_HOST`. When signing in with a Tinybird token, the host must be a Tinybird API host (`https://api.*.tinybird.co`), `TINYBIRD_HOST`, or listed in `TINYBIRD_ALLOWED_HOSTS`.
 
 For local development, you can disable authentication by setting `DISABLE_AUTH=true`.
 

@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { SESSION_COOKIE_NAME, verifySessionToken } from '@/lib/session'
 
-const SESSION_COOKIE_NAME = 'dashboard_session'
-
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   // Skip auth if disabled (for development)
   if (process.env.DISABLE_AUTH === 'true') {
     return NextResponse.next()
@@ -31,10 +30,9 @@ export function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
-  // Check for session cookie
   const sessionCookie = request.cookies.get(SESSION_COOKIE_NAME)
 
-  if (!sessionCookie?.value) {
+  if (!(await verifySessionToken(sessionCookie?.value))) {
     // For API routes, return 401
     if (pathname.startsWith('/api')) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
