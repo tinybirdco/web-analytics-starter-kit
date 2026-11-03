@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [Dashboard] Never send the server `TINYBIRD_TOKEN` to a host taken from the `X-Tinybird-Host` header; only accept Tinybird API hosts in token mode
 - [Dashboard] Validate signed, expiring session cookies in middleware and API routes
 - [Dashboard] Remove the `admin/admin` default credentials; login requires `DASHBOARD_PASSWORD`
+- [Dashboard] Remove the unused `/api/sql` route, which ran arbitrary SQL with the server `TINYBIRD_TOKEN`
 
 - [Data project]  Fix `top_devices` and `top_browsers` session count (#90)
 
