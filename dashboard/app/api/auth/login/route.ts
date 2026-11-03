@@ -1,37 +1,53 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
-import { createHash } from 'crypto'
+import { createHash, timingSafeEqual } from 'crypto'
+import {
+  SESSION_COOKIE_NAME,
+  SESSION_MAX_AGE,
+  createSessionToken,
+  getDashboardCredentials,
+} from '@/lib/session'
 
-const SESSION_COOKIE_NAME = 'dashboard_session'
-const SESSION_MAX_AGE = 60 * 60 * 24 * 7 // 7 days
-
-function hashCredentials(username: string, password: string): string {
-  return createHash('sha256').update(`${username}:${password}`).digest('hex')
+function safeEqual(a: string, b: string): boolean {
+  return timingSafeEqual(
+    createHash('sha256').update(a).digest(),
+    createHash('sha256').update(b).digest()
+  )
 }
 
 export async function POST(request: NextRequest) {
   try {
     const { username, password } = await request.json()
 
-    // Default to admin/admin if not configured
-    const expectedUsername = process.env.DASHBOARD_USERNAME || 'admin'
-    const expectedPassword = process.env.DASHBOARD_PASSWORD || 'admin'
+    const credentials = getDashboardCredentials()
+    if (!credentials) {
+      return NextResponse.json(
+        {
+          error:
+            'Dashboard login is not configured. Set DASHBOARD_PASSWORD to enable it.',
+        },
+        { status: 503 }
+      )
+    }
 
-    if (username === expectedUsername && password === expectedPassword) {
-      // Create session token with credentials hash for validation
-      const credentialsHash = hashCredentials(username, password)
-      const sessionToken = Buffer.from(
-        JSON.stringify({ username, hash: credentialsHash, timestamp: Date.now() })
-      ).toString('base64')
-
+    if (
+      typeof username === 'string' &&
+      typeof password === 'string' &&
+      safeEqual(username, credentials.username) &&
+      safeEqual(password, credentials.password)
+    ) {
       const cookieStore = await cookies()
-      cookieStore.set(SESSION_COOKIE_NAME, sessionToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-        maxAge: SESSION_MAX_AGE,
-        path: '/',
-      })
+      cookieStore.set(
+        SESSION_COOKIE_NAME,
+        await createSessionToken(credentials),
+        {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'lax',
+          maxAge: SESSION_MAX_AGE,
+          path: '/',
+        }
+      )
 
       return NextResponse.json({ success: true })
     }

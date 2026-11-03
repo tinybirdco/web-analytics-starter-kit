@@ -1,5 +1,5 @@
 import fetch from 'cross-fetch'
-import { PipeParams, QueryPipe, QuerySQL, QueryError } from './types/api'
+import { PipeParams, QueryPipe, QueryError } from './types/api'
 import { getStoredCredentials } from './hooks/use-login'
 
 function getAuthHeaders(): HeadersInit {
@@ -26,25 +26,6 @@ export async function queryPipe<T>(
   const response = await fetch(`/api/endpoints/${name}?${searchParams}`, {
     headers: getAuthHeaders(),
   })
-  const data = await response.json()
-
-  if (!response.ok) {
-    throw new QueryError(data?.error ?? 'Something went wrong', response.status)
-  }
-
-  return data
-}
-
-export async function querySQL<T>(sql: string): Promise<QuerySQL<T>> {
-  const response = await fetch('/api/sql', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      ...getAuthHeaders(),
-    },
-    body: JSON.stringify({ sql }),
-  })
-
   const data = await response.json()
 
   if (!response.ok) {
